@@ -28,11 +28,6 @@ EOF
 systemctl enable meilisearch
 systemctl start meilisearch
 
-# Setup firewalls and Nginx
-ufw allow 'Nginx Full'
-ufw allow 'OpenSSH'
-ufw --force enable
-
 # Delete default Nginx config
 rm /etc/nginx/sites-enabled/default
 
@@ -66,6 +61,11 @@ HOME_URL="https://www.debian.org/"
 SUPPORT_URL="https://www.debian.org/support"
 BUG_REPORT_URL="https://bugs.debian.org/"
 EOF
+
+# Setup firewalls and Nginx
+ufw allow 'Nginx Full'
+ufw allow 'OpenSSH'
+ufw --force enable
 
 # Delete remaining logs
 rm -rf /var/log/*.log
