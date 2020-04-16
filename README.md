@@ -1,2 +1,2 @@
-# meilisearc-digital-ocean
-Meilisearch services on Digital Ocean
+# meilisearch-digital-ocean
+WIP: Meilisearch services on Digital Ocean
