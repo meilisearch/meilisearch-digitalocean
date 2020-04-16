@@ -24,7 +24,7 @@ ExecStart=/usr/bin/meilisearch
 [Install]
 WantedBy=default.target
 EOF
-
+y
 # Start MeiliSearch service
 systemctl enable meilisearch
 systemctl start meilisearch
@@ -32,7 +32,7 @@ systemctl start meilisearch
 # Setup firewalls and Nginx
 ufw allow 'Nginx Full'
 ufw allow 'OpenSSH'
-ufw enable
+ufw --force enable
 
 # Delete default Nginx config
 rm /etc/nginx/sites-enabled/default
