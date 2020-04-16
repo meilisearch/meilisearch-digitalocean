@@ -11,7 +11,6 @@ wget --directory-prefix=/etc/meilisearch/ https://github.com/meilisearch/MeiliSe
 apt install /etc/meilisearch/meilisearch.deb
 
 # Prepare systemd service for MeiliSearch
-mv target/release/meilisearch /usr/bin/
 cat << EOF >/etc/systemd/system/meilisearch.service
 [Unit]
 Description=MeiliSearch
@@ -24,7 +23,7 @@ ExecStart=/usr/bin/meilisearch
 [Install]
 WantedBy=default.target
 EOF
-y
+
 # Start MeiliSearch service
 systemctl enable meilisearch
 systemctl start meilisearch
@@ -54,6 +53,22 @@ systemctl restart nginx
 
 # Clean up image using DigitalOcean scripts
 curl https://raw.githubusercontent.com/digitalocean/marketplace-partners/master/scripts/cleanup.sh | bash
-rm /var/log/*
+
+# Reset os-release file
+cat << EOF > /etc/os-release
+PRETTY_NAME="Debian GNU/Linux 10 (buster)"
+NAME="Debian GNU/Linux"
+VERSION_ID="10"
+VERSION="10 (buster)"
+VERSION_CODENAME=buster
+ID=debian
+HOME_URL="https://www.debian.org/"
+SUPPORT_URL="https://www.debian.org/support"
+BUG_REPORT_URL="https://bugs.debian.org/"
+EOF
+
+# Delete remaining logs
+rm -rf /var/log/*.log
 rm -rf /root/.ssh/authorized_keys
+
 curl https://raw.githubusercontent.com/digitalocean/marketplace-partners/master/scripts/img_check.sh | bash
