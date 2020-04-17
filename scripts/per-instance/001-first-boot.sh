@@ -4,3 +4,4 @@
 # and will be run automatically by DO at the droplet creation
 
 mkdir /root/firts-boot-dir
+mkdir /root/firts-boot-dir2
