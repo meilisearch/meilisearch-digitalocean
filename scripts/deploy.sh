@@ -67,6 +67,10 @@ ufw allow 'Nginx Full'
 ufw allow 'OpenSSH'
 ufw --force enable
 
+# Create SUDO user for MeiliSearch
+useradd -e "" -s /bin/bash meilisearch
+usermod -aG sudo meilisearch
+
 # Delete remaining logs
 rm -rf /var/log/*.log
 rm -rf /root/.ssh/authorized_keys
