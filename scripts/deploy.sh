@@ -46,6 +46,20 @@ server {
 EOF
 systemctl restart nginx
 
+# Copy MeiliSearch configuration scripts
+mkdir -p /var/log/meilisearch
+mkdir -p /var/opt/meilisearch/scripts/first-login
+git clone https://github.com/meilisearch/meilisearch-digital-ocean.git /tmp/meili-tmp
+cd /tmp/meili-tmp
+git checkout v0.10.0
+chmod 755 /tmp/meili-tmp/scripts/per-instance/*
+chmod 755 /tmp/meili-tmp/scripts/first-login/*
+cp -r /tmp/meili-tmp/scripts/per-instance/* /var/lib/cloud/scripts/per-instance/.
+cp -r /tmp/meili-tmp/scripts/first-login/* /var/opt/meilisearch/scripts/first-login/.
+
+# Set launch MeiliSearch first login script
+echo "sh /var/opt/meilisearch/scripts/first-login/001-first-login.sh" >> /root/.bashrc
+
 # Clean up image using DigitalOcean scripts
 curl https://raw.githubusercontent.com/digitalocean/marketplace-partners/master/scripts/cleanup.sh | bash
 
@@ -66,14 +80,6 @@ EOF
 ufw allow 'Nginx Full'
 ufw allow 'OpenSSH'
 ufw --force enable
-
-# Copy meilisearch configuration scripts
-mkdir -p /var/log/meilisearch
-git clone https://github.com/meilisearch/meilisearch-digital-ocean.git /tmp/meili-tmp
-cd /tmp/meili-tmp
-git checkout v0.10.0
-chmod 755 /tmp/meili-tmp/scripts/per-instance/*
-cp /tmp/meili-tmp/scripts/per-instance/* /var/lib/cloud/scripts/per-instance/.
 
 # Delete remaining logs
 rm -rf /var/log/*.log
