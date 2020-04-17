@@ -91,7 +91,7 @@ done
 # ask_ssl_configure
 
 while true; do
-    read -p "$(echo $BOLD$BLUE"Do you wish to setup ssl with certbot [y/n]? "$RESET)" domainname
+    read -p "$(echo $BOLD$BLUE"Do you wish to setup ssl with certbot [y/n]? "$RESET)" yn
     case $yn in
         [Yy]* ) want_ssl=true; break;;
         [Nn]* ) want_ssl=false; break;;
