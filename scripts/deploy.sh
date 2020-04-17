@@ -74,15 +74,14 @@ usermod -aG sudo meilisearch
 # Copy meilisearch configuration scripts
 mkdir -p /var/log/meilisearch
 git clone https://github.com/meilisearch/meilisearch-digital-ocean.git /tmp/meili-tmp
-
-cd /tmp/meili-tmp #temporary
-git checkout add_first_installation_script #temporary
-
+cd /tmp/meili-tmp
+git checkout v0.10.0
 chmod 755 /tmp/meili-tmp/scripts/per-instance/*
 cp /tmp/meili-tmp/scripts/per-instance/* /var/lib/cloud/scripts/per-instance/.
 
 # Delete remaining logs
 rm -rf /var/log/*.log
 rm -rf /root/.ssh/authorized_keys
+rm -rf /tmp/meili-tmp
 
 curl https://raw.githubusercontent.com/digitalocean/marketplace-partners/master/scripts/img_check.sh | bash
