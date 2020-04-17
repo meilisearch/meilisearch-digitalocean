@@ -72,13 +72,14 @@ useradd -e "" -s /bin/bash meilisearch
 usermod -aG sudo meilisearch
 
 # Copy meilisearch configuration scripts
-mkdir -p /opt/meilisearch/scripts/first-boot
 mkdir -p /var/log/meilisearch
 git clone https://github.com/meilisearch/meilisearch-digital-ocean.git /tmp/meili-tmp
-cd /tmp/meili-tmp
-git checkout add_first_installation_script
-cp /tmp/meili-tmp/scripts/first-boot/001.first-boot.sh /opt/meilisearch/scripts/first-boot/.
-echo "sh /opt/meilisearch/scripts/first-boot.sh >> /var/log/meilisearch/first-boot.log" >> /root/.bashrc
+
+cd /tmp/meili-tmp #temporary
+git checkout add_first_installation_script #temporary
+
+chmod 755 /tmp/meili-tmp/scripts/per-instance/*
+cp /tmp/meili-tmp/scripts/per-instance/* /var/lib/cloud/scripts/per-instance/.
 
 # Delete remaining logs
 rm -rf /var/log/*.log
