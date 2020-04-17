@@ -4,27 +4,35 @@
 # This script will be installed in /var/opt/meilisearch/scripts/first-login
 # and will be run automatically when user logs via ssh
 
+GREEN="\033[32;5;11m"
+BLUE="\033[34;5;11m"
+YELLOW="\033[33;5;11m"
+RED="\033[31;5;11m"
+BOLD="\033[1m"
+RESET="\033[0m"
 
-echo "Thank you for using MeiliSearch."
-echo "This is the first login on this newly confgured VM and we need some basic configuration first."
+echo "\n\nThank you for using$BLUE MeiliSearch.$RESET\n\n"
+echo "This is the first login here, and we need to set some basic configuration first.\n"
+echo "If you don't mind...\n"
+
 
 
 # ask_master_key_setup
 
 while true; do
-    read -p "Do you wish to setup a MEILI_API_KEY for your search engine [y/n]? " yn
+    read -p "$(echo $BOLD$GREEN"Do you wish to setup a MEILI_API_KEY for your search engine [y/n]?  "$RESET)" yn
     case $yn in
         [Yy]* ) set_master_key=true; break;;
         [Nn]* ) set_master_key=false; break;;
-        * ) echo "Please answer yes or no.";;
+        * ) echo "Please answer yes or no.";
     esac
 done
 
-if [ $set_master_key == true ]; then
+if [ $set_master_key = true ]; then
     # set_master_key
 
     while true; do
-        read -p "Do you wish to specify you MEILI_API_KEY (otherwise it will be generated) [y/n]? " yn
+        read -p "$(echo $BOLD$GREEN"Do you wish to specify you MEILI_API_KEY (otherwise it will be generated) [y/n]? "$RESET)" yn
         case $yn in
             [Yy]* ) read -p "MEILI_API_KEY: " api_key; break;;
             [Nn]* ) api_key=$(date +%s | sha256sum | base64 | head -c 32); echo "You MEILI_API_KEY is $api_key"; echo "You should keep it somewhere safe."; break;;
@@ -55,7 +63,7 @@ fi
 # ask_domain_name_setup
 
 while true; do
-    read -p "Do you wish to setup a domain name [y/n]? " yn
+    read -p "$(echo $BOLD$BLUE"Do you wish to setup a domain name [y/n]? "$RESET)" yn
     case $yn in
         [Yy]* ) ask_domain_name=true; break;;
         [Nn]* ) ask_domain_name=false; break;;
@@ -66,13 +74,13 @@ done
 # ask_domain_name
 
 if [ $ask_domain_name != true ]; then
-    echo "Configuration is over. Thanks"
+    echo "$BOLD$GREEN Configuration is over. Thanks$RESET"
     cp -f /etc/skel/.bashrc /root/.bashrc
     exit
 fi
 
 while true; do
-    read -p "What is your domain name? " domainname
+    read -p "$(echo $BOLD$BLUE"What is your domain name? "$RESET)" domainname
     case $domainname in
         "" ) echo "Please enter a valid domain name";;
         * ) break;;
@@ -83,7 +91,7 @@ done
 # ask_ssl_configure
 
 while true; do
-    read -p "Do you wish to setup ssl with certbot [y/n]? " yn
+    read -p "$(echo $BOLD$BLUE"Do you wish to setup ssl with certbot [y/n]? "$RESET)" domainname
     case $yn in
         [Yy]* ) want_ssl=true; break;;
         [Nn]* ) want_ssl=false; break;;
@@ -117,6 +125,6 @@ fi
 
 
 
-echo "Configuration is over. Thanks"
+echo "$BOLD$GREEN Configuration is over. Thanks$RESET"
 cp -f /etc/skel/.bashrc /root/.bashrc
 
