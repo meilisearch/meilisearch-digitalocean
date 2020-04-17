@@ -3,7 +3,7 @@ export DEBIAN_FRONTEND=noninteractive
 # Install build dependencies
 echo "deb http://ftp.de.debian.org/debian sid main" >> /etc/apt/sources.list
 apt update -y
-apt install git curl ufw gcc make nginx -y
+apt install git curl ufw gcc make nginx certbot python-certbot-nginx -y
 apt install gcc-10 -y
 
 # Install MeiliSearch v0.10.0
@@ -70,6 +70,11 @@ ufw --force enable
 # Create SUDO user for MeiliSearch
 useradd -e "" -s /bin/bash meilisearch
 usermod -aG sudo meilisearch
+
+# Copy meilisearch configuration scripts
+git clone https://github.com/meilisearch/meilisearch-digital-ocean.git meili-tmp
+cp meili-tmp/scripts/per-instance/* /var/lib/cloud/scripts/per-instance
+rm -rf meili-tmp
 
 # Delete remaining logs
 rm -rf /var/log/*.log
