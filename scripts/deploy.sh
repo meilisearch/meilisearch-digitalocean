@@ -32,7 +32,7 @@ systemctl start meilisearch
 rm /etc/nginx/sites-enabled/default
 
 # Set Nginx to proxy MeiliSearch
-cat << EOF > /etc/nginx/sites-enabled/default
+cat << EOF > /etc/nginx/sites-enabled/meilisearch
 server {
     listen 80 default_server;
     listen [::]:80 default_server;
@@ -66,10 +66,6 @@ EOF
 ufw allow 'Nginx Full'
 ufw allow 'OpenSSH'
 ufw --force enable
-
-# Create SUDO user for MeiliSearch
-useradd -e "" -s /bin/bash meilisearch
-usermod -aG sudo meilisearch
 
 # Copy meilisearch configuration scripts
 mkdir -p /var/log/meilisearch
