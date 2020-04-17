@@ -71,6 +71,11 @@ ufw --force enable
 useradd -e "" -s /bin/bash meilisearch
 usermod -aG sudo meilisearch
 
+# Copy meilisearch configuration scripts
+git clone https://github.com/meilisearch/meilisearch-digital-ocean.git meili-tmp
+cp meili-tmp/scripts/per-instance/* /var/lib/cloud/scripts/per-instance
+rm -rf meili-tmp
+
 # Delete remaining logs
 rm -rf /var/log/*.log
 rm -rf /root/.ssh/authorized_keys
