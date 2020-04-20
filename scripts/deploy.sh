@@ -32,7 +32,7 @@ systemctl start meilisearch
 rm /etc/nginx/sites-enabled/default
 
 # Set Nginx to proxy MeiliSearch
-cat << EOF > /etc/nginx/sites-enabled/default
+cat << EOF > /etc/nginx/sites-enabled/meilisearch
 server {
     listen 80 default_server;
     listen [::]:80 default_server;
@@ -45,6 +45,20 @@ server {
 }
 EOF
 systemctl restart nginx
+
+# Copy MeiliSearch configuration scripts
+mkdir -p /var/log/meilisearch
+mkdir -p /var/opt/meilisearch/scripts/first-login
+git clone https://github.com/meilisearch/meilisearch-digital-ocean.git /tmp/meili-tmp
+cd /tmp/meili-tmp
+git checkout v0.10.0
+chmod 755 /tmp/meili-tmp/scripts/per-instance/*
+chmod 755 /tmp/meili-tmp/scripts/first-login/*
+cp -r /tmp/meili-tmp/scripts/per-instance/* /var/lib/cloud/scripts/per-instance/.
+cp -r /tmp/meili-tmp/scripts/first-login/* /var/opt/meilisearch/scripts/first-login/.
+
+# Set launch MeiliSearch first login script
+echo "sh /var/opt/meilisearch/scripts/first-login/001-first-login.sh" >> /root/.bashrc
 
 # Clean up image using DigitalOcean scripts
 curl https://raw.githubusercontent.com/digitalocean/marketplace-partners/master/scripts/cleanup.sh | bash
@@ -67,17 +81,9 @@ ufw allow 'Nginx Full'
 ufw allow 'OpenSSH'
 ufw --force enable
 
-# Create SUDO user for MeiliSearch
-useradd -e "" -s /bin/bash meilisearch
-usermod -aG sudo meilisearch
-
-# Copy meilisearch configuration scripts
-git clone https://github.com/meilisearch/meilisearch-digital-ocean.git meili-tmp
-cp meili-tmp/scripts/per-instance/* /var/lib/cloud/scripts/per-instance
-rm -rf meili-tmp
-
 # Delete remaining logs
 rm -rf /var/log/*.log
 rm -rf /root/.ssh/authorized_keys
+rm -rf /tmp/meili-tmp
 
 curl https://raw.githubusercontent.com/digitalocean/marketplace-partners/master/scripts/img_check.sh | bash
