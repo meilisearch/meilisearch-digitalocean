@@ -193,7 +193,8 @@ server {
 }
 EOF
 
-elif [ $want_ssl != true ]
+elif [ $want_ssl != true ];
+then
 
     # set_domain_name_in_nginx_no_ssl
 
