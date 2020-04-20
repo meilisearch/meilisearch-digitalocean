@@ -75,6 +75,8 @@ done
 
 if [ $ask_domain_name != true ]; then
     echo "$BOLD$GREEN Configuration is over. Thanks$RESET"
+    echo "$BOLD If you want to run this script again, run the following command:$RESET"
+    echo "sh /var/opt/meilisearch/scripts/first-login/001-first-login.sh"
     cp -f /etc/skel/.bashrc /root/.bashrc
     exit
 fi
@@ -99,8 +101,103 @@ while true; do
     esac
 done
 
-if [ $want_ssl != true ]; then
-    # set_domain_name_in_nginx
+if [ $want_ssl = true ]; then
+
+    echo "Ok! Cool we'll setup SSL with Certbot";
+
+    certbot --nginx -d $domainname
+
+else
+
+    while true; do
+        read -p "$(echo $BOLD$BLUE"Do you wish to provide your own SSL certificate [y/n]? "$RESET)" yn
+        case $yn in
+            [Yy]* ) has_own_ssl=true; break;;
+            [Nn]* ) has_own_ssl=false; break;;
+            * ) echo "Please answer by writting 'y' for yes or 'n' for no.";
+        esac
+    done
+
+fi
+
+if [ $has_own_ssl = true ]; then
+
+    tmp_certificates_path=/tmp/etc/ssl
+    certificates_path=/etc/ssl
+    server_crt_path=$domainname.pem
+    private_key_crt_path=$domainname.key
+
+    if [ -f $tmp_certificates_path/$server_crt_path ]; then
+        rm -rf $tmp_certificates_path/$server_crt_path
+        rm -rf $tmp_certificates_path/$private_key_crt_path
+    fi
+    mkdir -p $tmp_certificates_path
+    touch $tmp_certificates_path/$server_crt_path
+    touch $tmp_certificates_path/$private_key_crt_path
+
+    # ask for SERVER CERTIFICATE
+    echo $BOLD$BLUE"Please write here (copy/paste) your SERVER CERTIFICATE (.pem): "$RESET"\n"
+    while IFS= read -r line; do
+        if [ line = "" ]; then
+            break;
+        fi
+        printf '%s\n' "$line" >> $tmp_certificates_path/$server_crt_path
+    done
+
+    # ask for INTERMEDIATE CERTIFICATE
+    echo $BOLD$BLUE"Please write here (copy/paste) your INTERMEDIATE CERTIFICATE (.pem): "$RESET"\n"
+    echo $BOLD$BLUE"(Leave empty to ignore)\n"$RESET
+    while IFS= read -r line; do
+        if [ line = "" ] | [ line = "\n" ]; then
+            break;
+        fi
+        printf '%s\n' "$line" >> $tmp_certificates_path/$server_crt_path
+    done
+
+    # ask for PRIVATE KEY
+    echo $BOLD$BLUE"Please write here (copy/paste) your PRIVATE KEY (.key): "$RESET"\n"
+    while IFS= read -r line; do
+        if [ line = "" ] | [ line = "\n" ]; then
+            break;
+        fi
+        printf '%s\n' "$line" >> $tmp_certificates_path/$private_key_crt_path
+    done
+
+    cp -r $tmp_certificates_path/* $certificates_path/.
+
+    cat << EOF > /etc/nginx/sites-enabled/meilisearch
+server {
+    listen 80 default_server;
+    listen [::]:80 default_server;
+
+    server_name $domainname;
+
+    location / {
+        proxy_pass  http://127.0.0.1:7700;
+    }
+}
+server {
+    server_name $domainname;
+
+    location / {
+        proxy_pass  http://127.0.0.1:7700;
+    }
+
+    listen [::]:443 ssl ipv6only=on;
+    listen 443 ssl;
+
+    access_log /var/log/nginx/nginx.vhost.access.log;
+    error_log /var/log/nginx/nginx.vhost.error.log;
+    ssl_certificate $certificates_path/$server_crt_path;
+    ssl_certificate_key $certificates_path/$private_key_crt_path;
+}
+EOF
+    systemctl restart nginx
+
+
+else
+
+    # set_domain_name_in_nginx_no_ssl
 
     cat << EOF > /etc/nginx/sites-enabled/meilisearch
 server {
@@ -112,19 +209,14 @@ location / {
 }
 }
 EOF
-systemctl restart nginx
-    exit
-
-else
-
-    echo "Ok! Cool we'll setup SSL with Certbot";
-
-    certbot --nginx -d $domainname
+    systemctl restart nginx
 
 fi
 
 
 
 echo "$BOLD$GREEN Configuration is over. Thanks$RESET"
+echo "$BOLD If you want to run this script again, run the following command:$RESET"
+echo "sh /var/opt/meilisearch/scripts/first-login/001-first-login.sh"
 cp -f /etc/skel/.bashrc /root/.bashrc
 
