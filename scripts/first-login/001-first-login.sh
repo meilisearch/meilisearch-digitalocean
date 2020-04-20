@@ -105,7 +105,7 @@ if [ $want_ssl = true ]; then
 
     echo "Ok! Cool we'll setup SSL with Certbot";
 
-    certbot --nginx -d $domainname
+    certbot --nginx --agree-tos --email info@meilisearch.com -q -d $domainname
 
 else
 
@@ -117,7 +117,6 @@ else
             * ) echo "Please answer by writting 'y' for yes or 'n' for no.";
         esac
     done
-
 fi
 
 if [ $has_own_ssl = true ]; then
