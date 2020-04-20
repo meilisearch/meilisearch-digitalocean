@@ -138,29 +138,29 @@ if [ $has_own_ssl = true ]; then
     # ask for SERVER CERTIFICATE
     echo $BOLD$BLUE"Please write here (copy/paste) your SERVER CERTIFICATE (.pem): "$RESET"\n"
     while IFS= read -r line; do
-        if [ line = "" ]; then
+        printf '%s\n' "$line" >> $tmp_certificates_path/$server_crt_path
+        if [ "$line" = "" ]; then
             break;
         fi
-        printf '%s\n' "$line" >> $tmp_certificates_path/$server_crt_path
     done
 
     # ask for INTERMEDIATE CERTIFICATE
     echo $BOLD$BLUE"Please write here (copy/paste) your INTERMEDIATE CERTIFICATE (.pem): "$RESET"\n"
     echo $BOLD$BLUE"(Leave empty to ignore)\n"$RESET
     while IFS= read -r line; do
-        if [ line = "" ] | [ line = "\n" ]; then
+        printf '%s\n' "$line" >> $tmp_certificates_path/$server_crt_path
+        if [ "$line" = "" ]; then
             break;
         fi
-        printf '%s\n' "$line" >> $tmp_certificates_path/$server_crt_path
     done
 
     # ask for PRIVATE KEY
     echo $BOLD$BLUE"Please write here (copy/paste) your PRIVATE KEY (.key): "$RESET"\n"
     while IFS= read -r line; do
-        if [ line = "" ] | [ line = "\n" ]; then
+        printf '%s\n' "$line" >> $tmp_certificates_path/$private_key_crt_path
+        if [ "$line" = "" ]; then
             break;
         fi
-        printf '%s\n' "$line" >> $tmp_certificates_path/$private_key_crt_path
     done
 
     cp -r $tmp_certificates_path/* $certificates_path/.
