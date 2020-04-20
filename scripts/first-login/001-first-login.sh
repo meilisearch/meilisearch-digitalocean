@@ -16,21 +16,29 @@ echo "This is the first login here, and we need to set some basic configuration 
 echo "If you don't mind...\n"
 
 
+exit_with_message() {
+    systemctl restart nginx
+    systemctl daemon-reload
+    systemctl restart meilisearch
+    echo "$BOLD$GREEN Configuration is over. Thanks$RESET"
+    echo "$BOLD If you want to run this script again, run the following command:$RESET"
+    echo "sh /var/opt/meilisearch/scripts/first-login/001-first-login.sh"
+    cp -f /etc/skel/.bashrc /root/.bashrc
+    exit
+}
 
-# ask_master_key_setup
+ask_master_key_setup() {
+    while true; do
+        read -p "$(echo $BOLD$GREEN"Do you wish to setup a MEILI_API_KEY for your search engine [y/n]?  "$RESET)" yn
+        case $yn in
+            [Yy]* ) set_master_key=true; break;;
+            [Nn]* ) set_master_key=false; break;;
+            * ) echo "Please answer yes or no.";
+        esac
+    done
+}
 
-while true; do
-    read -p "$(echo $BOLD$GREEN"Do you wish to setup a MEILI_API_KEY for your search engine [y/n]?  "$RESET)" yn
-    case $yn in
-        [Yy]* ) set_master_key=true; break;;
-        [Nn]* ) set_master_key=false; break;;
-        * ) echo "Please answer yes or no.";
-    esac
-done
-
-if [ $set_master_key = true ]; then
-    # set_master_key
-
+generate_master_key() {
     while true; do
         read -p "$(echo $BOLD$GREEN"Do you wish to specify you MEILI_API_KEY (otherwise it will be generated) [y/n]? "$RESET)" yn
         case $yn in
@@ -39,7 +47,9 @@ if [ $set_master_key = true ]; then
             * ) echo "Please answer yes or no.";;
         esac
     done
+}
 
+configure_master_key() {
     cat << EOF >/etc/systemd/system/meilisearch.service
 [Unit]
 Description=MeiliSearch
@@ -55,60 +65,41 @@ WantedBy=default.target
 EOF
 systemctl daemon-reload
 systemctl restart meilisearch
+}
 
-fi
+ask_domain_name_setup() {
+    while true; do
+        read -p "$(echo $BOLD$BLUE"Do you wish to setup a domain name [y/n]? "$RESET)" yn
+        case $yn in
+            [Yy]* ) ask_domain_name=true; break;;
+            [Nn]* ) ask_domain_name=false; break;;
+            * ) echo "Please answer yes or no.";;
+        esac
+    done
+}
 
+ask_domain_name_input() {
+    while true; do
+        read -p "$(echo $BOLD$BLUE"What is your domain name? "$RESET)" domainname
+        case $domainname in
+            "" ) echo "Please enter a valid domain name";;
+            * ) break;;
+        esac
+    done
+}
 
+ask_ssl_configure() {
+    while true; do
+        read -p "$(echo $BOLD$BLUE"Do you wish to setup ssl with certbot [y/n]? "$RESET)" yn
+        case $yn in
+            [Yy]* ) want_ssl_certbot=true; break;;
+            [Nn]* ) want_ssl_certbot=false; break;;
+            * ) echo "Please answer by writting 'y' for yes or 'n' for no.";
+        esac
+    done
+}
 
-# ask_domain_name_setup
-
-while true; do
-    read -p "$(echo $BOLD$BLUE"Do you wish to setup a domain name [y/n]? "$RESET)" yn
-    case $yn in
-        [Yy]* ) ask_domain_name=true; break;;
-        [Nn]* ) ask_domain_name=false; break;;
-        * ) echo "Please answer yes or no.";;
-    esac
-done
-
-# ask_domain_name
-
-if [ $ask_domain_name != true ]; then
-    echo "$BOLD$GREEN Configuration is over. Thanks$RESET"
-    echo "$BOLD If you want to run this script again, run the following command:$RESET"
-    echo "sh /var/opt/meilisearch/scripts/first-login/001-first-login.sh"
-    cp -f /etc/skel/.bashrc /root/.bashrc
-    exit
-fi
-
-while true; do
-    read -p "$(echo $BOLD$BLUE"What is your domain name? "$RESET)" domainname
-    case $domainname in
-        "" ) echo "Please enter a valid domain name";;
-        * ) break;;
-    esac
-done
-
-
-# ask_ssl_configure
-
-while true; do
-    read -p "$(echo $BOLD$BLUE"Do you wish to setup ssl with certbot [y/n]? "$RESET)" yn
-    case $yn in
-        [Yy]* ) want_ssl=true; break;;
-        [Nn]* ) want_ssl=false; break;;
-        * ) echo "Please answer by writting 'y' for yes or 'n' for no.";
-    esac
-done
-
-if [ $want_ssl = true ]; then
-
-    echo "Ok! Cool we'll setup SSL with Certbot";
-
-    certbot --nginx --agree-tos --email info@meilisearch.com -q -d $domainname
-
-else
-
+ask_has_own_ssl() {
     while true; do
         read -p "$(echo $BOLD$BLUE"Do you wish to provide your own SSL certificate [y/n]? "$RESET)" yn
         case $yn in
@@ -117,10 +108,9 @@ else
             * ) echo "Please answer by writting 'y' for yes or 'n' for no.";
         esac
     done
-fi
+}
 
-if [ $has_own_ssl = true ]; then
-
+setup_own_ssl() {
     tmp_certificates_path=/tmp/etc/ssl
     certificates_path=/etc/ssl
     server_crt_path=$domainname.pem
@@ -191,12 +181,9 @@ server {
     ssl_certificate_key $certificates_path/$private_key_crt_path;
 }
 EOF
+}
 
-elif [ $want_ssl != true ];
-then
-
-    # set_domain_name_in_nginx_no_ssl
-
+set_domain_name_in_nginx_no_ssl() {
     cat << EOF > /etc/nginx/sites-enabled/meilisearch
 server {
 listen 80 default_server;
@@ -207,13 +194,48 @@ location / {
 }
 }
 EOF
+}
 
+setup_ssl_certbot() {
+    echo "Ok! Cool we'll setup SSL with Certbot";
+    certbot --nginx --agree-tos --email info@meilisearch.com -q -d $domainname
+}
+
+# Ask user if he wants to setup a master key for MeiliSearch
+
+ask_master_key_setup
+
+if [ $set_master_key = true ]; then
+    generate_master_key
+    configure_master_key
 fi
 
+# Ask user if he wants to setup a domain name for MeiliSearch
 
-systemctl restart nginx
-echo "$BOLD$GREEN Configuration is over. Thanks$RESET"
-echo "$BOLD If you want to run this script again, run the following command:$RESET"
-echo "sh /var/opt/meilisearch/scripts/first-login/001-first-login.sh"
-cp -f /etc/skel/.bashrc /root/.bashrc
+ask_domain_name_setup
 
+if [ $ask_domain_name != true ]; then
+    exit_with_message
+fi
+
+ask_domain_name_input
+
+# Ask user if he wants to setup an SSL configuration for MeiliSearch
+# [certbot or own SSL]
+
+ask_ssl_configure
+
+if [ $want_ssl_certbot = true ]; then
+    setup_ssl_certbot
+else
+    ask_has_own_ssl
+fi
+
+if [ $want_ssl_certbot = false ] && [ $has_own_ssl = true ]; then
+    setup_own_ssl
+elif [ $want_ssl_certbot != true ];
+then
+    set_domain_name_in_nginx_no_ssl
+fi
+
+exit_with_message
