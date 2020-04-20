@@ -192,10 +192,8 @@ server {
     ssl_certificate_key $certificates_path/$private_key_crt_path;
 }
 EOF
-    systemctl restart nginx
 
-
-else
+elif [ $want_ssl != true ]
 
     # set_domain_name_in_nginx_no_ssl
 
@@ -209,12 +207,11 @@ location / {
 }
 }
 EOF
-    systemctl restart nginx
 
 fi
 
 
-
+systemctl restart nginx
 echo "$BOLD$GREEN Configuration is over. Thanks$RESET"
 echo "$BOLD If you want to run this script again, run the following command:$RESET"
 echo "sh /var/opt/meilisearch/scripts/first-login/001-first-login.sh"
