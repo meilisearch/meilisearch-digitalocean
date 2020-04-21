@@ -84,4 +84,40 @@ Paste it in your browser. If this screen is shown, your MeiliSearch is now ready
 
 # Configure settings in your MeiliSearch Droplet
 
-Coming...
+Configuring your MeiliSearch from a DigitalOcean droplet is very straigth-forward. Establish an SSH connexion with your droplet and a script will guide you through the process.
+
+### 12. Make your domain name point to your droplet
+
+If you want to use your own domnain name (or sub-domain), add an A record in your domain name provider account
+
+![alt text](./doc/img/12.domain-a-record.png "Domain to  MeiliSearch")  
+
+This should work out of the box. Your domain should be usable for your MeiliSearch
+
+![alt text](./doc/img/12.working-domain.png "Domain to  MeiliSearch")  
+
+### 13. Set API KEY and SSL (HTTPS)
+
+Meilisearch is running out of the box. It means that you haven't set an API KEY (anyone can read/write from your MeiliSearch) and you can't use HTTPS. But no worries, the configuration process is automated and very simple. Just connect via SSH to your new MeiliSearch Droplet and answer a few questions:
+
+### 13.1. Open a terminal
+
+Open a terminal and start a new SSH connection with the IP you got from DigitalOcean  
+
+Write in your terminal `ssh root@134.122.99.185`  and press Enter to establish connection 
+
+![alt text](./doc/img/13.open-terminal-ssh.png "Terminal ssh")  
+
+Write `yes` and press Enter to accept the authentication process  
+
+![alt text](./doc/img/13.auth-yeh.png "Auth")  
+
+A script will run automatically, asking for your settings. If you want to run this script anytime, you can run it again by typing:  
+
+`sh /var/opt/meilisearch/scripts/first-login/001-first-login.sh`
+
+### 14. Enjoy your ready to use MeiliSearch 
+
+Enjoy!
+
+![alt text](./doc/img/14.finish.png "Enjoy")  
