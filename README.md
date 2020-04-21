@@ -15,13 +15,13 @@ In any DigitalOcean page, when you are logged in, you will find a menu in the up
 
 ### 2. Select MeiliSearch snapshot
 
-By default DigitalOcean will propose "distributions" tab. Select the "Snapshots" tab and look for our own MeiliSearch Debian image
+By default DigitalOcean will show you the "distributions" tab. Select the "Snapshots" tab and look for our own MeiliSearch Debian image
 
 ![img](./doc/img/02.snapshot.png "Snapshot")  
 
 ### 3. Click on show all plans
 
-By default, Digital Ocean propose plans that might be to expensive for our testing purposes. If you want to select the cheapest plan for testing, click on "show all plans" (bottom-left corner)
+By default, Digital Ocean propose plans that might be to expensive for our testing purposes. If you want to select the cheapest plan for testing, click on "show all plans" (bottom-right corner)
 
 ![img](./doc/img/03.show-plans.png "Show all plans")  
 
@@ -33,13 +33,13 @@ Select the cheapest plan by clicking on it
 
 ### 5. Select a region for your droplet
 
-Sleect the region where you want to deploy your droplet. Remember, closer is faster, but prices can change significantly. We will choose London for this example, but it works wnywhere
+Select the region where you want to deploy your droplet. Remember, closer is faster, but prices can change significantly. We will choose London for this example, but it works anywhere
 
 ![img](./doc/img/05.select-region.png "Select region")  
 
 ### 6. Add your ssh key
 
-Select your SSH key in order to be able to connet to your droplet later. If you don't see your SSH key add yours to your account.  
+Select your SSH key in order to be able to connect to your droplet later. If you don't see your SSH key add yours to your account.  
 
 If you need help with this, visit [this link](https://www.digitalocean.com/docs/droplets/how-to/add-ssh-keys/to-account/)
 
