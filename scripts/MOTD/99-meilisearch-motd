@@ -1,0 +1,20 @@
+#!/bin/sh
+
+echo "                                                        ";
+echo "\e[32m________________________________________________        ";
+echo "________________________________________________        ";
+echo "             _ _ _ __                     _             ";
+echo "  /\/\   ___(_) (_) _\ ___  __ _ _ __ ___| |__          ";
+echo " /    \ / _ \ | | \ \ / _ \/ _\` | '__/ __| '_ \        ";
+echo "/ /\/\ \  __/ | | |\ \  __/ (_| | | | (__| | | |        ";
+echo "\/    \/\___|_|_|_\__/\___|\__,_|_|  \___|_| |_|        ";
+echo "                                                        ";
+echo "________________________________________________        ";
+echo "________________________________________________        \e[39m";
+echo "                                                        ";
+echo "Welcome to your MeilSearch server                       ";
+echo "                                                        ";
+echo "    Documentation: https://docs.meilisearch.com         ";
+echo "    Sources: https://github.com/meilisearch/MeiliSearch ";
+echo "    Support: support@meilisearch.com                    ";
+echo "                                                        ";

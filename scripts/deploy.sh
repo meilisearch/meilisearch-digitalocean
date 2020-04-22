@@ -54,8 +54,10 @@ cd /tmp/meili-tmp
 git checkout v0.10.0
 chmod 755 /tmp/meili-tmp/scripts/per-instance/*
 chmod 755 /tmp/meili-tmp/scripts/first-login/*
+chmod 755 /tmp/meili-tmp/scripts/MOTD/*
 cp -r /tmp/meili-tmp/scripts/per-instance/* /var/lib/cloud/scripts/per-instance/.
 cp -r /tmp/meili-tmp/scripts/first-login/* /var/opt/meilisearch/scripts/first-login/.
+cp -r /tmp/meili-tmp/scripts/MOTD/* /etc/update-motd.d/.
 
 # Set launch MeiliSearch first login script
 echo "sh /var/opt/meilisearch/scripts/first-login/001-first-login.sh" >> /root/.bashrc
