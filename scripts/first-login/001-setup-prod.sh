@@ -144,6 +144,8 @@ if [ "$DOMAIN_NAME" = "" ]; then
     exit_with_message
 fi
 
+domainname=$DOMAIN_NAME
+
 # Setup an SSL configuration for MeiliSearch
 
 if [ "$USE_SSL" = "" ]; then

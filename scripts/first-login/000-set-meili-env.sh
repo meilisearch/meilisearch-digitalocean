@@ -22,12 +22,12 @@ USE_CERTBOT="false"
 
 exit_with_message() {
 
-    echo "export USE_API_KEY="$USE_API_KEY >> /var/opt/meilisearch/env
+    echo "export USE_API_KEY="$USE_API_KEY > /var/opt/meilisearch/env
     echo "export MEILISEARCH_API_KEY="$MEILISEARCH_API_KEY >> /var/opt/meilisearch/env
     echo "export DOMAIN_NAME="$DOMAIN_NAME >> /var/opt/meilisearch/env
     echo "export USE_SSL="$USE_SSL >> /var/opt/meilisearch/env
     echo "export USE_CERTBOT="$USE_CERTBOT >> /var/opt/meilisearch/env
-    source /var/opt/meilisearch/env
+    . /var/opt/meilisearch/env
 
     echo "$BOLD$GREEN     --- OK, now we will set up MeiliSearch for you! --- $RESET"
     sh /var/opt/meilisearch/scripts/first-login/001-setup-prod.sh
