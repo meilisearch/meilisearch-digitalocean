@@ -17,11 +17,18 @@ echo "This is the first login here, and we need to set some basic configuration 
 USE_API_KEY="false"
 MEILISEARCH_API_KEY=""
 DOMAIN_NAME=""
-USE_SSL=""
+USE_SSL="false"
 USE_CERTBOT="false"
 
 exit_with_message() {
-    echo "$BOLD$BLUE We will set up MeiliSearch for you!$RESET"
+
+    echo "export USE_API_KEY="$USE_API_KEY >> /var/opt/meilisearch/scripts/first-login/env
+    echo "export MEILISEARCH_API_KEY="$MEILISEARCH_API_KEY >> /var/opt/meilisearch/scripts/first-login/env
+    echo "export DOMAIN_NAME="$DOMAIN_NAME >> /var/opt/meilisearch/scripts/first-login/env
+    echo "export USE_SSL="$USE_SSL >> /var/opt/meilisearch/scripts/first-login/env
+    echo "export USE_CERTBOT="$USE_CERTBOT >> /var/opt/meilisearch/scripts/first-login/env
+
+    echo "$BOLD$GREEN     --- OK, now we will set up MeiliSearch for you! --- $RESET"
     exit
 }
 
