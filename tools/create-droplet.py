@@ -1,6 +1,5 @@
 import digitalocean
 import os
-import requests
 
 # Script settings
 
@@ -60,7 +59,7 @@ droplet = digitalocean.Droplet(token=os.getenv("DIGITALOCEAN_ACCESS_TOKEN"),
                                name=DROPLET_NAME,
                                region='lon1', # London
                                image=meili_img.id, # Meilis Snapshot
-                               size_slug='2gb',
+                               size_slug='1gb',
                                tags=DROPLET_TAGS,
                                ssh_keys=SSH_KEYS_FINGERPRINTS,
                                user_data=USER_DATA,

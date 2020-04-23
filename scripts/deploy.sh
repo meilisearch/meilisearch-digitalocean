@@ -63,7 +63,7 @@ cp -r /tmp/meili-tmp/scripts/MOTD/* /etc/update-motd.d/.
 touch /var/opt/meilisearch/env
 echo "source /var/opt/meilisearch/env" >> /root/.bashrc
 echo "source /var/opt/meilisearch/env" >> /etc/skel/.bashrc
-echo "sh /var/opt/meilisearch/scripts/first-login/001-first-login.sh" >> /root/.bashrc
+echo "sh /var/opt/meilisearch/scripts/first-login/000-set-meili-env.sh" >> /root/.bashrc
 
 # Clean up image using DigitalOcean scripts
 curl https://raw.githubusercontent.com/digitalocean/marketplace-partners/master/scripts/cleanup.sh | bash
