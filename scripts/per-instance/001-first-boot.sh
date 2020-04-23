@@ -4,7 +4,7 @@
 # This script will be installed in /var/lib/cloud/scripts/per-instance
 # and will be run automatically by DO at the droplet creation
 
-if [ MEILI_SKIP_USER_INPUT = true ]; then
+if [ $MEILI_SKIP_USER_INPUT = true ]; then
     # remove the auto-launch config at first login
     cp -f /etc/skel/.bashrc /root/.bashrc
 

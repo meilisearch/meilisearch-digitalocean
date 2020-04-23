@@ -49,7 +49,9 @@ print("{name}: {id}. Regions: {reg}. Tags: {tags}. Size: {size}".format(
             ))
 
 # Set initial MeiliSearch config
-USER_DATA="""export USE_API_KEY={USE_API_KEY}
+USER_DATA="""
+export MEILI_SKIP_USER_INPUT=true
+export USE_API_KEY={USE_API_KEY}
 export MEILISEARCH_API_KEY={MEILISEARCH_API_KEY}
 export USE_SSL={USE_SSL}
 export DOMAIN_NAME={DOMAIN_NAME}
