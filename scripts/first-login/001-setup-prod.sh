@@ -11,42 +11,15 @@ RED="\033[31;5;11m"
 BOLD="\033[1m"
 RESET="\033[0m"
 
-echo "\n\nThank you for using$BLUE MeiliSearch.$RESET\n\n"
-echo "This is the first login here, and we need to set some basic configuration first.\n"
-echo "If you don't mind...\n"
-
-
 exit_with_message() {
     systemctl restart nginx
     systemctl daemon-reload
     systemctl restart meilisearch
     echo "$BOLD$GREEN Configuration is over. Thanks$RESET"
     echo "$BOLD If you want to run this script again, run the following command:$RESET"
-    echo "sh /var/opt/meilisearch/scripts/first-login/001-first-login.sh"
+    echo "sh /var/opt/meilisearch/scripts/first-login/000-set-meili-env.sh"
     cp -f /etc/skel/.bashrc /root/.bashrc
     exit
-}
-
-ask_master_key_setup() {
-    while true; do
-        read -p "$(echo $BOLD$GREEN"Do you wish to setup a MEILI_API_KEY for your search engine [y/n]?  "$RESET)" yn
-        case $yn in
-            [Yy]* ) set_master_key=true; break;;
-            [Nn]* ) set_master_key=false; break;;
-            * ) echo "Please answer yes or no.";
-        esac
-    done
-}
-
-generate_master_key() {
-    while true; do
-        read -p "$(echo $BOLD$GREEN"Do you wish to specify you MEILI_API_KEY (otherwise it will be generated) [y/n]? "$RESET)" yn
-        case $yn in
-            [Yy]* ) read -p "MEILI_API_KEY: " api_key; break;;
-            [Nn]* ) api_key=$(date +%s | sha256sum | base64 | head -c 32); echo "You MEILI_API_KEY is $api_key"; echo "You should keep it somewhere safe."; break;;
-            * ) echo "Please answer yes or no.";;
-        esac
-    done
 }
 
 configure_master_key() {
@@ -65,49 +38,6 @@ WantedBy=default.target
 EOF
 systemctl daemon-reload
 systemctl restart meilisearch
-}
-
-ask_domain_name_setup() {
-    while true; do
-        read -p "$(echo $BOLD$BLUE"Do you wish to setup a domain name [y/n]? "$RESET)" yn
-        case $yn in
-            [Yy]* ) ask_domain_name=true; break;;
-            [Nn]* ) ask_domain_name=false; break;;
-            * ) echo "Please answer yes or no.";;
-        esac
-    done
-}
-
-ask_domain_name_input() {
-    while true; do
-        read -p "$(echo $BOLD$BLUE"What is your domain name? "$RESET)" domainname
-        case $domainname in
-            "" ) echo "Please enter a valid domain name";;
-            * ) break;;
-        esac
-    done
-}
-
-ask_ssl_configure() {
-    while true; do
-        read -p "$(echo $BOLD$BLUE"Do you wish to setup ssl with certbot [y/n]? "$RESET)" yn
-        case $yn in
-            [Yy]* ) want_ssl_certbot=true; break;;
-            [Nn]* ) want_ssl_certbot=false; break;;
-            * ) echo "Please answer by writting 'y' for yes or 'n' for no.";
-        esac
-    done
-}
-
-ask_has_own_ssl() {
-    while true; do
-        read -p "$(echo $BOLD$BLUE"Do you wish to provide your own SSL certificate [y/n]? "$RESET)" yn
-        case $yn in
-            [Yy]* ) has_own_ssl=true; break;;
-            [Nn]* ) has_own_ssl=false; break;;
-            * ) echo "Please answer by writting 'y' for yes or 'n' for no.";
-        esac
-    done
 }
 
 setup_own_ssl() {
@@ -201,41 +131,31 @@ setup_ssl_certbot() {
     certbot --nginx --agree-tos --email info@meilisearch.com -q -d $domainname
 }
 
-# Ask user if he wants to setup a master key for MeiliSearch
+# Setup a master key for MeiliSearch
 
-ask_master_key_setup
-
-if [ $set_master_key = true ]; then
-    generate_master_key
+if [ $USE_API_KEY = true ]; then
+    echo "Seting up MASTER KEY"
     configure_master_key
 fi
 
-# Ask user if he wants to setup a domain name for MeiliSearch
+# Setup a domain name for MeiliSearch
 
-ask_domain_name_setup
-
-if [ $ask_domain_name != true ]; then
+if [ "$DOMAIN_NAME" = "" ]; then
     exit_with_message
 fi
 
-ask_domain_name_input
+# Setup an SSL configuration for MeiliSearch
 
-# Ask user if he wants to setup an SSL configuration for MeiliSearch
-# [certbot or own SSL]
-
-ask_ssl_configure
-
-if [ $want_ssl_certbot = true ]; then
-    setup_ssl_certbot
-else
-    ask_has_own_ssl
+if [ "$USE_SSL" = "" ]; then
+    echo "No SSL Configuration"
+    set_domain_name_in_nginx_no_ssl
+    exit_with_message
 fi
 
-if [ $want_ssl_certbot = false ] && [ $has_own_ssl = true ]; then
+if [ $USE_CERTBOT = true ]; then
+    setup_ssl_certbot
+else
     setup_own_ssl
-elif [ $want_ssl_certbot != true ];
-then
-    set_domain_name_in_nginx_no_ssl
 fi
 
 exit_with_message
