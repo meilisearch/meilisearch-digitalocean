@@ -11,6 +11,8 @@ RED="\033[31;5;11m"
 BOLD="\033[1m"
 RESET="\033[0m"
 
+. /var/opt/meilisearch/env
+
 exit_with_message() {
     systemctl restart nginx
     systemctl daemon-reload

@@ -37,7 +37,7 @@ USE_API_KEY="true" # String ["true" / "false"]
 MEILISEARCH_API_KEY="123456" # String [Any]
 USE_SSL="true" # String ["true" / "false"]
 USE_CERTBOT="true" # String ["true" / "false"]
-DOMAIN_NAME="samo12.{}".format(CLOUDFLARE_ZONE) # String [Any]
+DOMAIN_NAME="samo5p.{}".format(CLOUDFLARE_ZONE) # String [Any]
 
 manager = digitalocean.Manager(token=DIGITALOCEAN_ACCESS_TOKEN)
 images = manager.get_images()
@@ -131,36 +131,38 @@ print("SSH Port is available")
 
 # Execute deploy script via SSH
 
+# time.sleep(10)
 
-ssh_command = "ssh {user}@{host} '/usr/bin/sh /var/opt/meilisearch/scripts/first-login/001-setup-prod.sh'".format(
-        user='root',
-        host=DOMAIN_NAME
-    )
-print(ssh_command)
-os.system(ssh_command)
-
-# try:
-#     client = SSHClient()
-#     client.load_system_host_keys()
-#     client.set_missing_host_key_policy(AutoAddPolicy())
-    
-# except Exception as e:
-#     print("ERROR:", e)
-#     droplet.destroy()
-
-# try:
-#     client.connect(
-#         droplet.ip_address,
-#         username='root',
-#         look_for_keys=True,
+# ssh_command = "ssh {user}@{host} -o StrictHostKeyChecking=no 'echo $USE_SSL'".format(
+#         user='root',
+#         host=DOMAIN_NAME
 #     )
-#     cmd = "sh /var/opt/meilisearch/scripts/first-login/001-setup-prod.sh"
-#     print("EXECUTE COMMAND:", cmd)
-#     stdin, stdout, stderr = client.exec_command(cmd)
-#     status = stdout.channel.recv_exit_status()
-#     print("Process return status", status)
-#     response = stdout.readlines()
-#     for line in response:
-#         print("\t\t", line)
-# except Exception as e:
-#     print("ERROR:", e)
+# print(ssh_command)
+# os.system(ssh_command)
+
+try:
+    client = SSHClient()
+    client.load_system_host_keys()
+    client.set_missing_host_key_policy(AutoAddPolicy())
+    
+except Exception as e:
+    print("ERROR:", e)
+    droplet.destroy()
+
+try:
+    client.connect(
+        droplet.ip_address,
+        username='root',
+        look_for_keys=True,
+    )
+    # cmd = "sh /var/opt/meilisearch/scripts/first-login/001-setup-prod.sh"
+    cmd = "echo $USE_SSL"
+    print("EXECUTE COMMAND:", cmd)
+    stdin, stdout, stderr = client.exec_command(cmd)
+    status = stdout.channel.recv_exit_status()
+    print("Process return status", status)
+    response = stdout.readlines()
+    for line in response:
+        print("\t\t", line)
+except Exception as e:
+    print("ERROR:", e)
