@@ -99,7 +99,7 @@ ask_has_own_ssl() {
     done
 }
 
-if [ $MEILI_SKIP_USER_INPUT = true ]; then
+if [ "$MEILI_SKIP_USER_INPUT" = "true" ]; then
     . /var/opt/meilisearch/env
     sh /var/opt/meilisearch/scripts/first-login/001-setup-prod.sh
 fi

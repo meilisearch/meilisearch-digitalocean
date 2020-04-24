@@ -1,6 +1,5 @@
 import digitalocean
 from paramiko import SSHClient, AutoAddPolicy
-from scp import SCPClient, SCPException
 import os
 import time
 import socket
@@ -16,7 +15,7 @@ SIZE_SLUG="s-1vcpu-1gb" # https://developers.digitalocean.com/documentation/chan
 # Droplet settings
 
 DROPLET_NAME="{}-BUILD".format(SNAPSHOT_NAME)
-DROPLET_TAGS=["SAM", "TEST"]
+DROPLET_TAGS=["MARKETPLACE", "AUTOBUILD"]
 SSH_KEYS_FINGERPRINTS=[
     "d4:b1:a5:ce:10:01:27:14:44:aa:a9:8e:41:bd:39:bc"
 ]
@@ -104,12 +103,14 @@ except Exception as e:
 
 # Power down droplet
 
+print("Powering down droplet and creating a snapshot: {}".format(SNAPSHOT_NAME))
+
 droplet.take_snapshot(SNAPSHOT_NAME, return_dict=True, power_off=False)
 
 while True:
     d = droplet.get_actions()
     if d[0].type == "snapshot" and d[0].status == "completed":
-        print("Snapshot created")
+        print("Snapshot created: {}".format(SNAPSHOT_NAME))
         break
 
 print("Destroying droplet")
