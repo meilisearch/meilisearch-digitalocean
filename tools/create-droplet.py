@@ -1,5 +1,6 @@
 import digitalocean
 from paramiko import SSHClient, AutoAddPolicy
+from do_meili_tools import wait_for_droplet_creation, wait_for_ssh_availability
 import os
 import time
 import socket
@@ -36,7 +37,7 @@ USE_API_KEY="true" # String ["true" / "false"]
 MEILISEARCH_API_KEY="123456" # String [Any]
 USE_SSL="true" # String ["true" / "false"]
 USE_CERTBOT="true" # String ["true" / "false"]
-DOMAIN_NAME="klklkl.getmeili.com" # String [Any]
+DOMAIN_NAME="samo12.{}".format(CLOUDFLARE_ZONE) # String [Any]
 
 manager = digitalocean.Manager(token=DIGITALOCEAN_ACCESS_TOKEN)
 images = manager.get_images()
@@ -85,14 +86,7 @@ print("Creating droplet...")
 
 # Wait for Droplet to be created
 
-while True:
-    d = droplet.get_actions()
-    if d[0].type == "create" and d[0].status == "completed":
-        droplet = droplet.load()
-        print("IP:", droplet.ip_address, "id:", droplet.id)
-        break
-    time.sleep(1)
-
+wait_for_droplet_creation(droplet)
 print("Droplet created")
 
 # CREATE A RECORD CLOUDFLARE
@@ -108,10 +102,13 @@ try:
     print("CLOUDFLARE: Found zone for {}. Id: {}".format(CLOUDFLARE_ZONE, zone_id))
 except CloudFlare.exceptions.CloudFlareAPIError as e:
     exit('/zones.get %d %s - api call failed' % (e, e))
+    droplet.destroy()
 except Exception as e:
     exit('/zones.get - %s - api call failed' % (e))
+    droplet.destroy()
 if len(zones) == 0:
-        exit('No zones found')
+    exit('No zones found')
+    droplet.destroy()
 
 dns_record = {
             'name':DOMAIN_NAME,
@@ -129,50 +126,41 @@ zone_info = cf.zones.dns_records.post(zones[0]['id'], data=dns_record)
 
 # Wait for port 22 (SSH) to be available
 
-while True:
-    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    try:
-        s.connect((droplet.ip_address, 22))
-        s.shutdown(2)
-        s.close()
-        break
-    except:
-        continue
-    time.sleep(1)
-
+wait_for_ssh_availability(droplet)
 print("SSH Port is available")
 
 # Execute deploy script via SSH
 
-commands = [
-    "sh /var/opt/meilisearch/scripts/first-login/001-setup-prod.sh",
-]
 
-try:
-    client = SSHClient()
-    client.load_system_host_keys()
-    client.set_missing_host_key_policy(AutoAddPolicy())
-    
-except Exception as e:
-    print("ERROR:", e)
-
-try:
-    client.connect(
-        droplet.ip_address,
-        username='root',
-        look_for_keys=True,
+ssh_command = "ssh {user}@{host} '/usr/bin/sh /var/opt/meilisearch/scripts/first-login/001-setup-prod.sh'".format(
+        user='root',
+        host=DOMAIN_NAME
     )
-    while len(commands) > 0:
-        cmd = commands[0]
-        print("EXECUTE COMMAND:", cmd)
-        stdin, stdout, stderr = client.exec_command(cmd)
-        status = stdout.channel.recv_exit_status()
-        if int(status) == 0:
-            commands.pop(0)
-        print("Process return status", status)
-        response = stdout.readlines()
-        for line in response:
-            print("\t\t", line)
-        time.sleep(5)
-except Exception as e:
-    print("ERROR:", e)
+print(ssh_command)
+os.system(ssh_command)
+
+# try:
+#     client = SSHClient()
+#     client.load_system_host_keys()
+#     client.set_missing_host_key_policy(AutoAddPolicy())
+    
+# except Exception as e:
+#     print("ERROR:", e)
+#     droplet.destroy()
+
+# try:
+#     client.connect(
+#         droplet.ip_address,
+#         username='root',
+#         look_for_keys=True,
+#     )
+#     cmd = "sh /var/opt/meilisearch/scripts/first-login/001-setup-prod.sh"
+#     print("EXECUTE COMMAND:", cmd)
+#     stdin, stdout, stderr = client.exec_command(cmd)
+#     status = stdout.channel.recv_exit_status()
+#     print("Process return status", status)
+#     response = stdout.readlines()
+#     for line in response:
+#         print("\t\t", line)
+# except Exception as e:
+#     print("ERROR:", e)

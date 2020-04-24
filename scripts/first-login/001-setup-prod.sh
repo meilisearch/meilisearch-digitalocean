@@ -133,7 +133,7 @@ setup_ssl_certbot() {
 
 # Setup a master key for MeiliSearch
 
-if [ $USE_API_KEY = true ]; then
+if [ "$USE_API_KEY" = "true" ]; then
     echo "Seting up MASTER KEY"
     configure_master_key
 fi
@@ -154,7 +154,7 @@ if [ "$USE_SSL" = "" ]; then
     exit_with_message
 fi
 
-if [ $USE_CERTBOT = true ]; then
+if [ "$USE_CERTBOT" = "true" ]; then
     setup_ssl_certbot
 else
     setup_own_ssl

@@ -1,5 +1,6 @@
 import digitalocean
 from paramiko import SSHClient, AutoAddPolicy
+from do_meili_tools import wait_for_droplet_creation, wait_for_ssh_availability
 import os
 import time
 import socket
@@ -37,29 +38,12 @@ print("Creating droplet...")
 
 # Wait for Droplet to be created
 
-while True:
-    d = droplet.get_actions()
-    if d[0].type == "create" and d[0].status == "completed":
-        droplet = droplet.load()
-        print("IP:", droplet.ip_address, "id:", droplet.id)
-        break
-    time.sleep(1)
-
+wait_for_droplet_creation(droplet)
 print("Droplet created")
 
 # Wait for port 22 (SSH) to be available
 
-while True:
-    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    try:
-        s.connect((droplet.ip_address, 22))
-        s.shutdown(2)
-        s.close()
-        break
-    except:
-        continue
-    time.sleep(1)
-
+wait_for_ssh_availability(droplet)
 print("SSH Port is available")
 
 # Execute deploy script via SSH
@@ -68,8 +52,6 @@ commands = [
     "apt update",
     "apt install curl -y",
     "curl https://raw.githubusercontent.com/meilisearch/meilisearch-digital-ocean/{}/scripts/deploy.sh | sh".format(MEILI_VERSION_TAG),
-    # "rm -rf /var/log/*.log",
-    # "history -c",
 ]
 
 try:
@@ -79,6 +61,7 @@ try:
     
 except Exception as e:
     print("ERROR:", e)
+    droplet.destroy()
 
 try:
     client.connect(
@@ -100,6 +83,7 @@ try:
         time.sleep(5)
 except Exception as e:
     print("ERROR:", e)
+    droplet.destroy()
 
 # Power down droplet
 
