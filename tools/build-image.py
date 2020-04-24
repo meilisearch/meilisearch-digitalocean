@@ -50,6 +50,7 @@ print("SSH Port is available")
 
 commands = [
     "apt update",
+    "apt update",
     "apt install curl -y",
     "curl https://raw.githubusercontent.com/meilisearch/meilisearch-digital-ocean/{}/scripts/deploy.sh | sh".format(MEILI_VERSION_TAG),
 ]
@@ -74,8 +75,8 @@ try:
         print("EXECUTE COMMAND:", cmd)
         stdin, stdout, stderr = client.exec_command(cmd)
         status = stdout.channel.recv_exit_status()
-        if int(status) == 0:
-            commands.pop(0)
+        # if int(status) == 0:
+        commands.pop(0)
         print("Process return status", status)
         response = stdout.readlines()
         for line in response:
@@ -84,6 +85,8 @@ try:
 except Exception as e:
     print("ERROR:", e)
     droplet.destroy()
+
+# TODO: Add a check by HTTP request to IP. If fail no build.
 
 # Power down droplet
 

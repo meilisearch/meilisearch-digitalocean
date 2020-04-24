@@ -7,6 +7,9 @@ import socket
 import CloudFlare
 import json
 
+subdomain_name="jesuisla2"
+size_slug="s-1vcpu-1gb"
+
 # Script settings
 
 DIGITALOCEAN_ACCESS_TOKEN=os.getenv("DIGITALOCEAN_ACCESS_TOKEN")
@@ -23,8 +26,8 @@ MEILI_IMG_SLUG="meilisearch" # MeiliSearch
 
 # Droplet settings
 
-SIZE_SLUG="s-1vcpu-1gb" # https://developers.digitalocean.com/documentation/changelog/api-v2/new-size-slugs-for-droplet-plan-changes/
-DROPLET_NAME="TestSam-AUTO"
+SIZE_SLUG=size_slug # https://developers.digitalocean.com/documentation/changelog/api-v2/new-size-slugs-for-droplet-plan-changes/
+DROPLET_NAME="SAAS-{}".format(subdomain_name)
 DROPLET_TAGS=["SAAS", "AUTOBUILD"]
 SSH_KEYS_FINGERPRINTS=[
     "d4:b1:a5:ce:10:01:27:14:44:aa:a9:8e:41:bd:39:bc"
@@ -37,7 +40,7 @@ USE_API_KEY="true" # String ["true" / "false"]
 MEILISEARCH_API_KEY="123456" # String [Any]
 USE_SSL="true" # String ["true" / "false"]
 USE_CERTBOT="true" # String ["true" / "false"]
-DOMAIN_NAME="samo5p.{}".format(CLOUDFLARE_ZONE) # String [Any]
+DOMAIN_NAME="{}.{}".format(subdomain_name, CLOUDFLARE_ZONE) # String [Any]
 
 manager = digitalocean.Manager(token=DIGITALOCEAN_ACCESS_TOKEN)
 images = manager.get_images()
@@ -131,38 +134,15 @@ print("SSH Port is available")
 
 # Execute deploy script via SSH
 
-# time.sleep(10)
+time.sleep(10)
 
-# ssh_command = "ssh {user}@{host} -o StrictHostKeyChecking=no 'echo $USE_SSL'".format(
-#         user='root',
-#         host=DOMAIN_NAME
-#     )
-# print(ssh_command)
-# os.system(ssh_command)
-
-try:
-    client = SSHClient()
-    client.load_system_host_keys()
-    client.set_missing_host_key_policy(AutoAddPolicy())
-    
-except Exception as e:
-    print("ERROR:", e)
-    droplet.destroy()
-
-try:
-    client.connect(
-        droplet.ip_address,
-        username='root',
-        look_for_keys=True,
+ssh_command = "ssh {user}@{host} -o StrictHostKeyChecking=no 'sh /var/opt/meilisearch/scripts/first-login/001-setup-prod.sh'".format(
+        user='root',
+        host=DOMAIN_NAME
     )
-    # cmd = "sh /var/opt/meilisearch/scripts/first-login/001-setup-prod.sh"
-    cmd = "echo $USE_SSL"
-    print("EXECUTE COMMAND:", cmd)
-    stdin, stdout, stderr = client.exec_command(cmd)
-    status = stdout.channel.recv_exit_status()
-    print("Process return status", status)
-    response = stdout.readlines()
-    for line in response:
-        print("\t\t", line)
-except Exception as e:
-    print("ERROR:", e)
+print(ssh_command)
+os.system(ssh_command)
+
+# Make a callback to tell everything went ok and share KEY and URL
+
+print("API_KEY={}, URL=http://{}".format(MEILISEARCH_API_KEY, DOMAIN_NAME))
