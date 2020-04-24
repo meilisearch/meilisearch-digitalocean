@@ -8,11 +8,12 @@ DIGITALOCEAN_END_POINT="https://api.digitalocean.com/v2"
 
 # Starting snapshot for Droplet
 
-MEILI_VERSION="" # 0.10.0
-MEILI_IMG_SLUG="TestSam" # MeiliSearch
+MEILI_VERSION="v0.10.0" # v0.10.0
+MEILI_IMG_SLUG="meilisearch" # MeiliSearch
 
 # Droplet settings
 
+SIZE_SLUG="s-1vcpu-1gb" # https://developers.digitalocean.com/documentation/changelog/api-v2/new-size-slugs-for-droplet-plan-changes/
 DROPLET_NAME="TestSam-AUTO"
 DROPLET_TAGS=["SAM", "TEST"]
 SSH_KEYS_FINGERPRINTS=[
@@ -25,6 +26,7 @@ ENABLE_BACKUPS=False
 USE_API_KEY="true" # String ["true" / "false"]
 MEILISEARCH_API_KEY="123456" # String [Any]
 USE_SSL="true" # String ["true" / "false"]
+USE_CERTBOT="true" # String ["true" / "false"]
 DOMAIN_NAME="sam.meilisearch.com" # String [Any]
 
 
@@ -45,11 +47,12 @@ print("{name}: {id}. Regions: {reg}. Tags: {tags}. Size: {size}".format(
                 id=meili_img.id,
                 reg=meili_img.regions,
                 tags=meili_img.tags,
-                size=meili_img.size_gigabytes,
+                size=SIZE_SLUG,
             ))
 
 # Set initial MeiliSearch config
 USER_DATA="""
+export MEILI_SKIP_USER_INPUT=true
 export MEILI_SKIP_USER_INPUT=true
 export USE_API_KEY={USE_API_KEY}
 export MEILISEARCH_API_KEY={MEILISEARCH_API_KEY}

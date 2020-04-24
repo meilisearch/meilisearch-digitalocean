@@ -11,6 +11,7 @@ DIGITALOCEAN_ACCESS_TOKEN=os.getenv("DIGITALOCEAN_ACCESS_TOKEN")
 DIGITALOCEAN_END_POINT="https://api.digitalocean.com/v2"
 MEILI_VERSION_TAG="v0.10.0"
 SNAPSHOT_NAME="MeiliSearch-{}-Debian-10.3".format(MEILI_VERSION_TAG)
+SIZE_SLUG="s-1vcpu-1gb" # https://developers.digitalocean.com/documentation/changelog/api-v2/new-size-slugs-for-droplet-plan-changes/
 
 # Droplet settings
 
@@ -27,7 +28,7 @@ droplet = digitalocean.Droplet(token=os.getenv("DIGITALOCEAN_ACCESS_TOKEN"),
                                name=DROPLET_NAME,
                                region='lon1', # London
                                image="debian-10-x64", # Debian 10.3
-                               size_slug='1gb',
+                               size_slug=SIZE_SLUG,
                                tags=["marketplace"],
                                ssh_keys=SSH_KEYS_FINGERPRINTS,
                                backups=ENABLE_BACKUPS)
