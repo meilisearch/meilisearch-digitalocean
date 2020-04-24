@@ -50,41 +50,21 @@ print("SSH Port is available")
 
 commands = [
     "apt update",
-    "apt update",
+    "apt update", # Needed ?
     "apt install curl -y",
     "curl https://raw.githubusercontent.com/meilisearch/meilisearch-digital-ocean/{}/scripts/deploy.sh | sh".format(MEILI_VERSION_TAG),
 ]
 
-try:
-    client = SSHClient()
-    client.load_system_host_keys()
-    client.set_missing_host_key_policy(AutoAddPolicy())
-    
-except Exception as e:
-    print("ERROR:", e)
-    droplet.destroy()
-
-try:
-    client.connect(
-        droplet.ip_address,
-        username='root',
-        look_for_keys=True,
+for cmd in commands:
+    ssh_command = "ssh {user}@{host} -o StrictHostKeyChecking=no '{cmd}'".format(
+        user='root',
+        host=droplet.ip_address,
+        cmd=cmd,
     )
-    while len(commands) > 0:
-        cmd = commands[0]
-        print("EXECUTE COMMAND:", cmd)
-        stdin, stdout, stderr = client.exec_command(cmd)
-        status = stdout.channel.recv_exit_status()
-        # if int(status) == 0:
-        commands.pop(0)
-        print("Process return status", status)
-        response = stdout.readlines()
-        for line in response:
-            print("\t\t", line)
-        time.sleep(5)
-except Exception as e:
-    print("ERROR:", e)
-    droplet.destroy()
+    print("EXECUTE COMMAND:", ssh_command)
+    os.system(ssh_command)
+    time.sleep(5)
+
 
 # TODO: Add a check by HTTP request to IP. If fail no build.
 

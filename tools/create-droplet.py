@@ -7,7 +7,7 @@ import socket
 import CloudFlare
 import json
 
-subdomain_name="jesuisla2"
+subdomain_name="auto-img"
 size_slug="s-1vcpu-1gb"
 
 # Script settings
