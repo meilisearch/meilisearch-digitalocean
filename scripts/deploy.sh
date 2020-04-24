@@ -60,7 +60,10 @@ cp -r /tmp/meili-tmp/scripts/first-login/* /var/opt/meilisearch/scripts/first-lo
 cp -r /tmp/meili-tmp/scripts/MOTD/* /etc/update-motd.d/.
 
 # Set launch MeiliSearch first login script
-echo "sh /var/opt/meilisearch/scripts/first-login/001-first-login.sh" >> /root/.bashrc
+touch /var/opt/meilisearch/env
+echo "source /var/opt/meilisearch/env" >> /root/.bashrc
+echo "source /var/opt/meilisearch/env" >> /etc/skel/.bashrc
+echo "sh /var/opt/meilisearch/scripts/first-login/000-set-meili-env.sh" >> /root/.bashrc
 
 # Clean up image using DigitalOcean scripts
 curl https://raw.githubusercontent.com/digitalocean/marketplace-partners/master/scripts/cleanup.sh | bash
@@ -84,8 +87,8 @@ ufw allow 'OpenSSH'
 ufw --force enable
 
 # Delete remaining logs
-rm -rf /var/log/*.log
 rm -rf /root/.ssh/authorized_keys
 rm -rf /tmp/meili-tmp
+rm -rf /var/log/*.log
 
 curl https://raw.githubusercontent.com/digitalocean/marketplace-partners/master/scripts/img_check.sh | bash
