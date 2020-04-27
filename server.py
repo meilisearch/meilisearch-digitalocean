@@ -43,3 +43,6 @@ def create_meilisearch():
             return Response("Droplet is being created", status=201, mimetype='application/json')
     except Exception as e:       
         return "ERROR: {}".format(e), 400
+
+if __name=='__main__':
+    app.run(threaded=True, port=80)
