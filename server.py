@@ -44,5 +44,5 @@ def create_meilisearch():
     except Exception as e:       
         return "ERROR: {}".format(e), 400
 
-if __name=='__main__':
+if __name__=='__main__':
     app.run(threaded=True, port=80)
