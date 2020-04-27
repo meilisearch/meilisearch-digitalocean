@@ -3,16 +3,19 @@ from paramiko import SSHClient, AutoAddPolicy
 from tools.do_meili_tools import wait_for_droplet_creation, wait_for_ssh_availability
 import os
 import time
+import datetime
 import socket
 import CloudFlare
 import json
+import random
+import hashlib
 
-def trigger_droplet_creation(subdomain_name, size_slug):
+def trigger_droplet_creation(subdomain_name, size_slug, meilisearch_api_key):
     print("Triggered droplet creation: {}".format(subdomain_name))
-    create_droplet(subdomain_name, size_slug)
+    create_droplet(subdomain_name, size_slug, meilisearch_api_key)
     print("DRPLOET CREATED: {}".format(subdomain_name))
 
-def create_droplet(subdomain_name, size_slug):
+def create_droplet(subdomain_name, size_slug, meilisearch_api_key):
 
     # Script settings
 
@@ -34,14 +37,21 @@ def create_droplet(subdomain_name, size_slug):
     DROPLET_NAME=subdomain_name
     DROPLET_TAGS=["SAAS", "AUTOBUILD"]
     SSH_KEYS_FINGERPRINTS=[
-        "d4:b1:a5:ce:10:01:27:14:44:aa:a9:8e:41:bd:39:bc"
+        "d4:b1:a5:ce:10:01:27:14:44:aa:a9:8e:41:bd:39:bc",
+        "0b:9b:00:21:60:17:6f:e4:d6:f3:d0:8a:e0:cc:a6:97",
     ]
     ENABLE_BACKUPS=False
 
     # Meili starting config
 
+    if meilisearch_api_key == "":
+        seed = datetime.datetime.now().microsecond + random.randint(100000,1000000)
+        key = hashlib.md5()
+        key.update(str(seed).encode('utf-8'))
+        meilisearch_api_key = key.hexdigest()
+
     USE_API_KEY="true" # String ["true" / "false"]
-    MEILISEARCH_API_KEY="123456" # String [Any]
+    MEILISEARCH_API_KEY=meilisearch_api_key # String [Any]
     USE_SSL="true" # String ["true" / "false"]
     USE_CERTBOT="true" # String ["true" / "false"]
     DOMAIN_NAME="{}.{}".format(subdomain_name, CLOUDFLARE_ZONE) # String [Any]
@@ -149,7 +159,10 @@ def create_droplet(subdomain_name, size_slug):
 
     # Make a callback to tell everything went ok and share KEY and URL
 
-    response = "{'api_key':'{}','domain_name':'{}'}".format(MEILISEARCH_API_KEY, DOMAIN_NAME)
+    response = {
+        'api_key':MEILISEARCH_API_KEY,
+        'domain_name':DOMAIN_NAME,
+    }
     return response
 
 if __name__ == "__main__":
