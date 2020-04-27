@@ -1,21 +1,23 @@
 import digitalocean
-from paramiko import SSHClient, AutoAddPolicy
 from tools.do_meili_tools import wait_for_droplet_creation, wait_for_ssh_availability
 import os
 import time
 import datetime
-import socket
 import CloudFlare
-import json
 import random
 import hashlib
+import logging
 
-def trigger_droplet_creation(subdomain_name, size_slug, meilisearch_api_key):
-    print("Triggered droplet creation: {}".format(subdomain_name))
-    create_droplet(subdomain_name, size_slug, meilisearch_api_key)
-    print("DRPLOET CREATED: {}".format(subdomain_name))
 
-def create_droplet(subdomain_name, size_slug, meilisearch_api_key):
+def create_droplet(subdomain_name, size_slug, meilisearch_api_key, domain, logger):
+    
+    logger.info("{0: <15} | TRIGGERED DROPLET CREATION: {0}".format(subdomain_name))
+
+    """
+    -----------------------------------------
+     MeiliSearch DigitalOcean Droplet Config
+    -----------------------------------------
+    """
 
     # Script settings
 
@@ -24,7 +26,7 @@ def create_droplet(subdomain_name, size_slug, meilisearch_api_key):
 
     CLOUDFLARE_API_KEY=os.getenv("CLOUDFLARE_API_KEY")
     CLOUDFLARE_EMAIL=os.getenv("CLOUDFLARE_EMAIL")
-    CLOUDFLARE_ZONE='getmeili.com'
+    CLOUDFLARE_ZONE=domain
 
     # Starting snapshot for Droplet
 
@@ -56,6 +58,12 @@ def create_droplet(subdomain_name, size_slug, meilisearch_api_key):
     USE_CERTBOT="true" # String ["true" / "false"]
     DOMAIN_NAME="{}.{}".format(subdomain_name, CLOUDFLARE_ZONE) # String [Any]
 
+    """
+    -------------------------------------------
+     MeiliSearch DigitalOcean Droplet Creation
+    -------------------------------------------
+    """
+
     manager = digitalocean.Manager(token=DIGITALOCEAN_ACCESS_TOKEN)
     images = manager.get_images()
     meili_img=None
@@ -63,14 +71,18 @@ def create_droplet(subdomain_name, size_slug, meilisearch_api_key):
     for img in images:
         if MEILI_IMG_SLUG.lower() in img.name.lower() and MEILI_VERSION.lower() in img.name.lower():
             meili_img = img
-            print("Found image: {} created at {}".format(img.name, img.created_at))
+            logger.info("{0: <15} | Found image: {name} created at {created_at}".format(
+                subdomain_name,
+                name=img.name,
+                created_at=img.created_at
+            ))
             break
 
     if meili_img is None:
         raise Exception("Couldn't find the specified image: {} {}".format(MEILI_IMG_SLUG, MEILI_VERSION))
 
-    print("{name}: {id}. Regions: {reg}. Tags: {tags}. Size: {size}".format(
-                    name=meili_img.name,
+    logger.info("{0: <15} | id: {id}. Regions: {reg}. Tags: {tags}. Size: {size}".format(
+                    subdomain_name,
                     id=meili_img.id,
                     reg=meili_img.regions,
                     tags=meili_img.tags,
@@ -99,12 +111,12 @@ def create_droplet(subdomain_name, size_slug, meilisearch_api_key):
                                 backups=ENABLE_BACKUPS)
     droplet.create()
 
-    print("Creating droplet...")
+    logger.info("{0: <15} | Creating droplet...".format(subdomain_name))
 
     # Wait for Droplet to be created
 
     wait_for_droplet_creation(droplet)
-    print("Droplet created")
+    logger.info("{0: <15} | Droplet created".format(subdomain_name))
 
     # CREATE A RECORD CLOUDFLARE
 
@@ -116,7 +128,11 @@ def create_droplet(subdomain_name, size_slug, meilisearch_api_key):
     try:
         zones = cf.zones.get(params={'name':CLOUDFLARE_ZONE})
         zone_id = zones[0]['id']
-        print("CLOUDFLARE: Found zone for {}. Id: {}".format(CLOUDFLARE_ZONE, zone_id))
+        logger.info("{0: <15} | CLOUDFLARE: Found zone for {zone}. Id: {zone_id}".format(
+            subdomain_name,
+            zone=CLOUDFLARE_ZONE,
+            zone_id=zone_id,
+        ))
     except CloudFlare.exceptions.CloudFlareAPIError as e:
         exit('/zones.get %d %s - api call failed' % (e, e))
         droplet.destroy()
@@ -136,15 +152,18 @@ def create_droplet(subdomain_name, size_slug, meilisearch_api_key):
                 'zone_id': CLOUDFLARE_ZONE
             }
 
-    print("Creating CloudFlare A Record with params:")
-    print(str(dns_record))
+    logger.info("{0: <15} | Creating CloudFlare A Record with params:".format(subdomain_name))
+    logger.info("{0: <15} | {dns}".format(
+        subdomain_name,
+        dns=str(dns_record),
+    ))
 
     zone_info = cf.zones.dns_records.post(zones[0]['id'], data=dns_record)
 
     # Wait for port 22 (SSH) to be available
 
     wait_for_ssh_availability(droplet)
-    print("SSH Port is available")
+    logger.info("{0: <15} | SSH Port is available".format(subdomain_name))
 
     # Execute deploy script via SSH
 
@@ -154,10 +173,16 @@ def create_droplet(subdomain_name, size_slug, meilisearch_api_key):
             user='root',
             host=DOMAIN_NAME
         )
-    print(ssh_command)
+    logger.info("{0: <15} | {command}".format(
+        subdomain_name,
+        command=ssh_command,
+    ))
     os.system(ssh_command)
 
     # Make a callback to tell everything went ok and share KEY and URL
+
+    logger.info("DROPLET CREATED: {}".format(subdomain_name))
+
 
     response = {
         'api_key':MEILISEARCH_API_KEY,

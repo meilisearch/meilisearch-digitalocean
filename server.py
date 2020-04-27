@@ -1,4 +1,4 @@
-from tools.create_droplet import trigger_droplet_creation
+from tools.create_droplet import create_droplet
 from datetime import datetime
 from flask import Flask, request, Response
 from multiprocessing import Process
@@ -6,7 +6,9 @@ from multiprocessing import Process
 import jsonify
 import digitalocean
 import os
+
 app = Flask(__name__)
+domain = 'meilisearch.dev'
 
 DIGITALOCEAN_ACCESS_TOKEN=os.getenv("DIGITALOCEAN_ACCESS_TOKEN")
 DIGITALOCEAN_END_POINT="https://api.digitalocean.com/v2"
@@ -32,22 +34,29 @@ def create_meilisearch():
         meilisearch_api_key = request.json['meilisearch_api_key']
     except Exception:
         meilisearch_api_key = ""
-        print("Meilisearch API KEY will be defined dynmically")
     try:     
-        domain_name = request.json['domain_name']
+        subdomain_name = request.json['subdomain_name']
         size_slug = request.json['size_slug']
+        if meilisearch_api_key == "":
+            app.logger.info("{0: <15} | Meilisearch API KEY will be defined dynmically".format(
+                subdomain_name,
+            ))
         manager = digitalocean.Manager(token=DIGITALOCEAN_ACCESS_TOKEN)
         droplets = manager.get_all_droplets(tag_name="SAAS")
         for drop in droplets:
-            if drop.name == domain_name:
+            if drop.name == subdomain_name:
                 return "ERROR: {}".format("Droplet exists already"), 400
         creation_proc = Process(
-            target=trigger_droplet_creation,
+            target=create_droplet,
             daemon=True,
-            args=(domain_name, size_slug, meilisearch_api_key, )
+            args=(subdomain_name, size_slug, meilisearch_api_key, domain, app.logger)
         )
         creation_proc.start()
-        return Response("Droplet is being created", status=201, mimetype='application/json')
+        return Response(
+            "Droplet {}.{} is being created".format(subdomain_name, domain),
+            status=201,
+            mimetype='application/json'
+        )
     except Exception as e:       
         return "ERROR: {}".format(e), 400
 
