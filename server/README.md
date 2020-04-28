@@ -6,6 +6,12 @@
 
 git clone https://github.com/meilisearch/meilisearch-digital-ocean.git
 cd meilisearch-digital-ocean
+
+echo "CLOUDFLARE_API_KEY=<cloudflare-api-key>" >> .env
+echo "CLOUDFLARE_EMAIL=<cloudflare-email>" >> .env
+echo "DIGITALOCEAN_ACCESS_TOKEN=<do-token>" >> .env
+echo "MEILI_SAAS_KEY=<meili-token>" >> .env
+
 pip3 install -r server/requirements.txt
 cp server/godmeili.service /etc/systemd/system
 chmod 644 /etc/systemd/system/godmeili.service
