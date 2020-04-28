@@ -1,4 +1,4 @@
-from tools.create_droplet import create_droplet
+from tools.create_droplet import trigger_create_droplet
 from datetime import datetime
 from flask import Flask, request, Response
 from multiprocessing import Process
@@ -37,6 +37,7 @@ def create_meilisearch():
     try:     
         subdomain_name = request.json['subdomain_name']
         size_slug = request.json['size_slug']
+        callback_url = request.json['callback_url']
         if meilisearch_api_key == "":
             app.logger.info("{0: <15} | Meilisearch API KEY will be defined dynmically".format(
                 subdomain_name,
@@ -47,9 +48,15 @@ def create_meilisearch():
             if drop.name == subdomain_name:
                 return "ERROR: {}".format("Droplet exists already"), 400
         creation_proc = Process(
-            target=create_droplet,
+            target=trigger_create_droplet,
             daemon=True,
-            args=(subdomain_name, size_slug, meilisearch_api_key, domain, app.logger)
+            args=(
+                subdomain_name,
+                size_slug,
+                callback_url,
+                meilisearch_api_key,
+                domain,
+                app.logger)
         )
         creation_proc.start()
         return Response(

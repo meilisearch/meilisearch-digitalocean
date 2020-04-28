@@ -7,10 +7,39 @@ import CloudFlare
 import random
 import hashlib
 import logging
+import requests 
 
+logger = None
 
-def create_droplet(subdomain_name, size_slug, meilisearch_api_key, domain, logger):
+def trigger_create_droplet(subdomain_name, size_slug, callback_url, meilisearch_api_key, domain, logger):
+    try:
+        response = create_droplet(subdomain_name, size_slug, callback_url, meilisearch_api_key, domain, logger)
+    except Exception as e:
+        requests.post(
+            callback_url,
+            json={
+                'status': 'fail',
+                'message': str(e),
+                'domain_name': subdomain_name,
+                'api_key': None
+            },
+        )
+        logger.error("{0: <15} | ERROR CREATING DROPLET: {error}".format(subdomain_name, error=e))
+    else:
+        requests.post(
+            callback_url,
+            json={
+                'status': 'ok',
+                'message': 'Droplet created successfuly',
+                'domain_name': "https://{url}".format(url=response['domain_name']),
+                'api_key': response['api_key']
+            },
+        )
+        logger.info("{0: <15} | DROPLET CREATED".format(subdomain_name))
+
+def create_droplet(subdomain_name, size_slug, callback_url, meilisearch_api_key, domain, logger):
     
+
     logger.info("{0: <15} | TRIGGERED DROPLET CREATION: {0}".format(subdomain_name))
 
     """
@@ -104,7 +133,7 @@ def create_droplet(subdomain_name, size_slug, meilisearch_api_key, domain, logge
                                 name=DROPLET_NAME,
                                 region='lon1', # London
                                 image=meili_img.id, # Meilis Snapshot
-                                size_slug='1gb',
+                                size_slug=SIZE_SLUG,
                                 tags=DROPLET_TAGS,
                                 ssh_keys=SSH_KEYS_FINGERPRINTS,
                                 user_data=USER_DATA,
@@ -134,14 +163,14 @@ def create_droplet(subdomain_name, size_slug, meilisearch_api_key, domain, logge
             zone_id=zone_id,
         ))
     except CloudFlare.exceptions.CloudFlareAPIError as e:
-        exit('/zones.get %d %s - api call failed' % (e, e))
         droplet.destroy()
+        raise Exception('/zones.get %d %s - api call failed' % (e, e))
     except Exception as e:
-        exit('/zones.get - %s - api call failed' % (e))
         droplet.destroy()
+        raise Exception('/zones.get - %s - api call failed' % (e))
     if len(zones) == 0:
-        exit('No zones found')
         droplet.destroy()
+        raise Exception('No zones found')
 
     dns_record = {
                 'name':DOMAIN_NAME,
@@ -179,18 +208,8 @@ def create_droplet(subdomain_name, size_slug, meilisearch_api_key, domain, logge
     ))
     os.system(ssh_command)
 
-    # Make a callback to tell everything went ok and share KEY and URL
-
-    logger.info("DROPLET CREATED: {}".format(subdomain_name))
-
-
     response = {
         'api_key':MEILISEARCH_API_KEY,
         'domain_name':DOMAIN_NAME,
     }
     return response
-
-if __name__ == "__main__":
-    subdomain_name="auto-img"
-    size_slug="s-1vcpu-1gb"
-    create_droplet(subdomain_name, size_slug)
