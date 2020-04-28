@@ -1,0 +1,11 @@
+[Unit]
+Description=Run god service to handle DO droplets.
+After=network.target
+
+[Service]
+Type=simple
+WorkingDirectory=/root/meilisearch-digital-ocean
+ExecStart=/usr/local/bin/gunicorn --bind 0.0.0.0:5000 --workers=2 wsgi:app
+
+[Install]
+WantedBy=multi-user.target
