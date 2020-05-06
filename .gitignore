@@ -140,3 +140,6 @@ dmypy.json
 cython_debug/
 
 env_digitalocean
+
+.DS_Store
+.vscode/

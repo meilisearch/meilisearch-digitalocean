@@ -4,10 +4,10 @@
 # This script will be installed in /var/opt/meilisearch/scripts/first-login
 # and will be run automatically when user logs via ssh
 
-GREEN="\033[32;5;11m"
-BLUE="\033[34;5;11m"
-YELLOW="\033[33;5;11m"
-RED="\033[31;5;11m"
+GREEN="\033[32;11m"
+BLUE="\033[34;11m"
+YELLOW="\033[33;11m"
+RED="\033[31;11m"
 BOLD="\033[1m"
 RESET="\033[0m"
 
