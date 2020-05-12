@@ -1,11 +1,6 @@
-# Deploy an out of the box MeiliSearch in DigitalOcean
+# Deploy MeiliSearch through DigitalOcean Marketplace
 
-### Disclaimer
-
-The current DigitalOcean image is not yet available in the marketplace.  
-This steps are only addressed for MeiliSearch team (for now).  
-
-# Create an out of the box MeiliSearch
+## Create an out of the box MeiliSearch
 
 ### 1. Create a new droplet
 
@@ -15,13 +10,13 @@ In any DigitalOcean page, when you are logged in, you will find a menu in the up
 
 ### 2. Select MeiliSearch snapshot
 
-By default DigitalOcean will show you the "distributions" tab. Select the "Snapshots" tab and look for our own MeiliSearch Debian image
+By default DigitalOcean will show you the "distributions" tab. Select the "Marketplace" tab and search for "meili". Select it.
 
-![img](../doc/img/02.snapshot.png "Snapshot")  
+![img](../doc/img/02.marketplace.png "Marketplace")  
 
 ### 3. Click on show all plans
 
-By default, Digital Ocean propose plans that might be to expensive for our testing purposes. If you want to select the cheapest plan for testing, click on "show all plans" (bottom-right corner)
+By default, Digital Ocean propose plans that might be too expensive for our testing purposes. If you want to select the cheapest plan for testing, click on "show all plans" (bottom-right corner) or the arrow pointing left.
 
 ![img](../doc/img/03.show-plans.png "Show all plans")  
 
@@ -84,7 +79,7 @@ Paste it in your browser. If this screen is shown, your MeiliSearch is now ready
 
 # Configure settings in your MeiliSearch Droplet
 
-Configuring your MeiliSearch from a DigitalOcean droplet is very straigth-forward. Establish an SSH connexion with your droplet and a script will guide you through the process.
+Configuring your MeiliSearch from a DigitalOcean droplet is very straigth-forward. Establish an SSH connection with your droplet and a script will guide you through the process.
 
 ### 12. Make your domain name point to your droplet
 
@@ -98,7 +93,7 @@ This should work out of the box. Your domain should be usable for your MeiliSear
 
 ### 13. Set API KEY and SSL (HTTPS)
 
-Meilisearch is running out of the box. It means that you haven't set an API KEY (anyone can read/write from your MeiliSearch) and you can't use HTTPS. But no worries, the configuration process is automated and very simple. Just connect via SSH to your new MeiliSearch Droplet and answer a few questions:
+Meilisearch is running unconfigured. It means that you haven't set up an API KEY (anyone can read/write from your MeiliSearch) and you can't use HTTPS. But no worries, the configuration process is automated and very simple. Just connect via SSH to your new MeiliSearch Droplet and answer a few questions:
 
 ### 13.1. Open a terminal
 
