@@ -9,7 +9,7 @@ import socket
 
 DIGITALOCEAN_ACCESS_TOKEN=os.getenv("DIGITALOCEAN_ACCESS_TOKEN")
 DIGITALOCEAN_END_POINT="https://api.digitalocean.com/v2"
-MEILI_VERSION_TAG="v0.10.0"
+MEILI_VERSION_TAG="v0.10.1"
 SNAPSHOT_NAME="MeiliSearch-{}-Debian-10.3".format(MEILI_VERSION_TAG)
 SIZE_SLUG="s-1vcpu-1gb" # https://developers.digitalocean.com/documentation/changelog/api-v2/new-size-slugs-for-droplet-plan-changes/
 
