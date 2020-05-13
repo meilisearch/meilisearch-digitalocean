@@ -16,15 +16,15 @@ By default DigitalOcean will show you the "distributions" tab. Select the "Marke
 
 ### 3. Select your plan
 
-Select your plan, starting at $5 (click on 'See all plans for more options).
+Select your plan, starting at $5 (click on 'See all plans for more options). Memory optimized options will give you better results for a production environment on big datasets.
 
-![img](doc/img/04.select-plan.png "Select plan")  
+![img](doc/img/03.select-plan.png "Select plan")  
 
 ### 4. Select a region for your droplet
 
 Select the region where you want to deploy your droplet. Remember, the closer you are to your users or customers, the better it will be their search experience with MeiliSearch.
 
-![img](doc/img/05.select-region.png "Select region")  
+![img](doc/img/04.select-region.png "Select region")  
 
 ### 5. Add your ssh key
 
@@ -32,41 +32,43 @@ Select your SSH key in order to be able to connect to your droplet later. If you
 
 If you need help with this, visit [this link](https://www.digitalocean.com/docs/droplets/how-to/add-ssh-keys/to-account/)
 
-![img](doc/img/06.add-ssh-key.png "Add ssh key")  
+You can also set a password for `root` user if you prefer this authentication method.
+
+![img](doc/img/05.add-ssh-key.png "Add ssh key")  
 
 ### 6. Choose your droplet name and tags
 
 Here you can select the name that will be visible everywhere in your DigitalOcean account. Choose wisely!
 
-![img](doc/img/07.droplet-name.png "Droplet name")  
+![img](doc/img/06.droplet-name.png "Droplet name")  
 
 Tags are a very good method to know who created ressources, and for organizing resources or projects. Try to always add some tags to make clear what are the server  purposes.
 
-![img](doc/img/08.add-tags.png "Add tags")  
+![img](doc/img/06.add-tags.png "Add tags")  
 
 ### 7. Finally click on Create Droplet
 
-![img](doc/img/09.create-droplet.png "Create droplet")  
+![img](doc/img/07.create-droplet.png "Create droplet")  
 
 ### 8. Your MeiliSearch is running (with no config).  
 
  While creating...  
 
-![img](doc/img/10.creating.png "Creating") 
+![img](doc/img/08.creating.png "Creating") 
 
 When it's done...  
 
-![img](doc/img/10.created-ip.png "Created") 
+![img](doc/img/08.created-ip.png "Created") 
 
 ### 9. Test MeiliSearch.
 
 Copy the public IP address
 
-![img](doc/img/11.copy-ip.png "Copy IP")  
+![img](doc/img/09.copy-ip.png "Copy IP")  
 
 Paste it in your browser. If this screen is shown, your MeiliSearch is now ready!
 
-![img](doc/img/11.test-meili.png "Test MeiliSearch")  
+![img](doc/img/09.test-meili.png "Test MeiliSearch")  
 
 
 # Configure production settings in your MeiliSearch Droplet
@@ -77,11 +79,11 @@ Configuring your MeiliSearch from a DigitalOcean droplet is very straigthforward
 
 If you want to use your own domain name (or sub-domain), add an `A record` in your domain name provider account
 
-![img](doc/img/12.domain-a-record.png "Domain to  MeiliSearch")  
+![img](doc/img/11.domain-a-record.png "Domain to  MeiliSearch")  
 
 This should work out of the box. Your domain should be usable for your MeiliSearch
 
-![img](doc/img/12.working-domain.png "Domain to  MeiliSearch")  
+![img](doc/img/11.working-domain.png "Domain to  MeiliSearch")  
 
 ### 2. Set API KEY and SSL (HTTPS)
 
@@ -93,18 +95,16 @@ Open a terminal and start a new SSH connection with the IP you got from DigitalO
 
 Write in your terminal `ssh root@<your-ip-address>`  and press Enter to establish connection 
 
-![img](doc/img/13.open-terminal-ssh.png "Terminal ssh")  
+![img](doc/img/12.open-terminal-ssh.png "Terminal ssh")  
 
 Write `yes` and press Enter to accept the authentication process  
 
-![img](doc/img/13.auth-yes.png "Auth")  
+A script will run automatically, asking for your settings and desired configuration. If you want to run this script anytime, you can run it again by typing:  
 
-A script will run automatically, asking for your settings. If you want to run this script anytime, you can run it again by typing:  
+`sh /var/opt/meilisearch/scripts/first-login/000-set-meili-env.sh`
 
-`sh /var/opt/meilisearch/scripts/first-login/001-first-login.sh`
+### 3. Enjoy your ready-to-use MeiliSearch droplet 
 
-### 12. Enjoy your ready to use MeiliSearch 
+![img](doc/img/13.finish.png "Enjoy")  
 
-Enjoy!
-
-![img](doc/img/14.finish.png "Enjoy")  
+**Enjoy**!
