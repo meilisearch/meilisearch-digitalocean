@@ -33,7 +33,7 @@ After=systend-user-sessions.service
 [Service]
 Type=simple
 ExecStart=/usr/bin/meilisearch
-Environment="MEILI_MASTER_KEY=$MEILISEARCH_API_KEY"
+Environment="MEILI_MASTER_KEY=$MEILISEARCH_MASTER_KEY"
 
 [Install]
 WantedBy=default.target
