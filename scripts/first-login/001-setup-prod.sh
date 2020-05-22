@@ -28,12 +28,12 @@ configure_master_key() {
     cat << EOF >/etc/systemd/system/meilisearch.service
 [Unit]
 Description=MeiliSearch
-After=systend-user-sessions.service
+After=systemd-user-sessions.service
 
 [Service]
 Type=simple
 ExecStart=/usr/bin/meilisearch
-Environment="MEILI_API_KEY=$api_key"
+Environment="MEILI_MASTER_KEY=$MEILISEARCH_MASTER_KEY"
 
 [Install]
 WantedBy=default.target

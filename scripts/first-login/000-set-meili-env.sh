@@ -15,7 +15,7 @@ echo "\n\nThank you for using$BLUE MeiliSearch.$RESET\n\n"
 echo "This is the first login here, and we need to set some basic configuration first.\n"
 
 USE_API_KEY="false"
-MEILISEARCH_API_KEY=""
+MEILISEARCH_MASTER_KEY=""
 DOMAIN_NAME=""
 USE_SSL="false"
 USE_CERTBOT="false"
@@ -23,7 +23,7 @@ USE_CERTBOT="false"
 exit_with_message() {
 
     echo "export USE_API_KEY="$USE_API_KEY > /var/opt/meilisearch/env
-    echo "export MEILISEARCH_API_KEY="$MEILISEARCH_API_KEY >> /var/opt/meilisearch/env
+    echo "export MEILISEARCH_MASTER_KEY="$MEILISEARCH_MASTER_KEY >> /var/opt/meilisearch/env
     echo "export DOMAIN_NAME="$DOMAIN_NAME >> /var/opt/meilisearch/env
     echo "export USE_SSL="$USE_SSL >> /var/opt/meilisearch/env
     echo "export USE_CERTBOT="$USE_CERTBOT >> /var/opt/meilisearch/env
@@ -36,7 +36,7 @@ exit_with_message() {
 
 ask_master_key_setup() {
     while true; do
-        read -p "$(echo $BOLD$BLUE"Do you wish to setup a MEILI_API_KEY for your search engine [y/n]?  "$RESET)" yn
+        read -p "$(echo $BOLD$BLUE"Do you wish to setup a MEILI_MASTER_KEY for your search engine [y/n]?  "$RESET)" yn
         case $yn in
             [Yy]* ) set_master_key=true; break;;
             [Nn]* ) set_master_key=false; break;;
@@ -47,10 +47,10 @@ ask_master_key_setup() {
 
 generate_master_key() {
     while true; do
-        read -p "$(echo $BOLD$BLUE"Do you wish to specify you MEILI_API_KEY (otherwise it will be generated) [y/n]? "$RESET)" yn
+        read -p "$(echo $BOLD$BLUE"Do you wish to specify your MEILI_MASTER_KEY (otherwise it will be generated) [y/n]? "$RESET)" yn
         case $yn in
-            [Yy]* ) read -p "MEILI_API_KEY: " api_key; break;;
-            [Nn]* ) api_key=$(date +%s | sha256sum | base64 | head -c 32); echo "You MEILI_API_KEY is $api_key"; echo "You should keep it somewhere safe."; break;;
+            [Yy]* ) read -p "MEILI_MASTER_KEY: " api_key; break;;
+            [Nn]* ) api_key=$(date +%s | sha256sum | base64 | head -c 32); echo "You MEILI_MASTER_KEY is $api_key"; echo "You should keep it somewhere safe."; break;;
             * ) echo "Please answer yes or no.";;
         esac
     done
@@ -111,7 +111,7 @@ ask_master_key_setup
 if [ $set_master_key = true ]; then
     generate_master_key
     USE_API_KEY="true"
-    MEILISEARCH_API_KEY=$api_key
+    MEILISEARCH_MASTER_KEY=$api_key
 fi
 
 # Ask user if he wants to setup a domain name for MeiliSearch
