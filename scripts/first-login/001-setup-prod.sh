@@ -28,7 +28,7 @@ configure_master_key() {
     cat << EOF >/etc/systemd/system/meilisearch.service
 [Unit]
 Description=MeiliSearch
-After=systend-user-sessions.service
+After=systemd-user-sessions.service
 
 [Service]
 Type=simple
