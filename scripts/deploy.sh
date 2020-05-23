@@ -18,7 +18,7 @@ After=systemd-user-sessions.service
 
 [Service]
 Type=simple
-ExecStart=/usr/bin/meilisearch --db-path /var/lib/meilisearch
+ExecStart=/usr/bin/meilisearch --db-path /var/lib/meilisearch --env production
 
 [Install]
 WantedBy=default.target
