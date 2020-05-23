@@ -18,7 +18,7 @@ After=systemd-user-sessions.service
 
 [Service]
 Type=simple
-ExecStart=/usr/bin/meilisearch
+ExecStart=/usr/bin/meilisearch --db-path /var/lib/meilisearch --env production
 
 [Install]
 WantedBy=default.target
@@ -48,6 +48,7 @@ systemctl restart nginx
 
 # Copy MeiliSearch configuration scripts
 mkdir -p /var/log/meilisearch
+mkdir -p /var/lib/meilisearch
 mkdir -p /var/opt/meilisearch/scripts/first-login
 git clone https://github.com/meilisearch/meilisearch-digital-ocean.git /tmp/meili-tmp
 cd /tmp/meili-tmp
