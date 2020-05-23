@@ -79,7 +79,7 @@ ask_domain_name_input() {
 
 ask_ssl_configure() {
     while true; do
-        read -p "$(echo $BOLD$BLUE"Do you wish to setup ssl with certbot [y/n]? "$RESET)" yn
+        read -p "$(echo $BOLD$BLUE"Do you wish to setup ssl with certbot (free and automated HTTPS) [y/n]? "$RESET)" yn
         case $yn in
             [Yy]* ) want_ssl_certbot=true; break;;
             [Nn]* ) want_ssl_certbot=false; break;;
