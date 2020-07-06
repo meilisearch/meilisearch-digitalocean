@@ -111,3 +111,29 @@ A script will run automatically, asking for your settings and desired configurat
 <hr>
 
 **MeiliSearch** provides and maintains many **SDKs and Integration tools** like this one. We want to provide everyone with an **amazing search experience for any kind of project**. If you want to contribute, make suggestions, or just know what's going on right now, visit us in the [integration-guides](https://github.com/meilisearch/integration-guides) repository.
+
+
+# How to update MeiliSearch image on Marketplace on new Release:
+
+1. Update version number `vX.X.X` on `scripts/deploy.sh`
+
+  * Update the `wget` command for downloading the right Debian release
+  * Update the `git checkout` command so the image is built from the right git tag.
+
+2. Update version number `vX.X.X` on `server/tools/build-image.py`
+
+  * Update the `MEILI_VERSION_TAG` constant.
+
+3. Commit your changes on a new branch on git.
+
+4. Create a git tag with the appropriate version number and push to repository `vX.X.X` (in the current working branch)
+
+5. Run `cd server/tools && python build-image.py`. This command will create a DigitalOcean droplet, do the configuration inside it in order to prepare the MeiliSearch Image. It will then create a Snapshot, which should be ready to be published to the marketplace. The Droplet will automatically be removed from the account after image creation. The Image name will be `MeiliSearch-v.X.X.X-Debian-X`.
+
+6. Test: Create a new droplet by hand from the new Snapshot `MeiliSearch-v.X.X.X-Debian-X`, and make sure everything is running smoothly (test production configuration: domain and HTTPS). Don't forget to destroy the droplet after test.
+
+7. Squash + Merge your changes into master.
+
+8. Move the git tag to the corresponding master commit.
+
+9. Submit to DigitalOcean [Vendor portal](https://marketplace.digitalocean.com/vendorportal), by updating the current official image. After the image gets reviewed and approved, it will be available on the MarketPlace.
