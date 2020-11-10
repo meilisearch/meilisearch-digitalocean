@@ -9,7 +9,7 @@ import socket
 
 DIGITALOCEAN_ACCESS_TOKEN=os.getenv("DIGITALOCEAN_ACCESS_TOKEN")
 DIGITALOCEAN_END_POINT="https://api.digitalocean.com/v2"
-MEILI_VERSION_TAG="v0.15.0"
+MEILI_VERSION_TAG="v0.16.0"
 SNAPSHOT_NAME="MeiliSearch-{}-Debian-10.3".format(MEILI_VERSION_TAG)
 SIZE_SLUG="s-1vcpu-1gb" # https://developers.digitalocean.com/documentation/changelog/api-v2/new-size-slugs-for-droplet-plan-changes/
 
@@ -70,9 +70,15 @@ for cmd in commands:
 
 # Power down droplet
 
-print("Powering down droplet and creating a snapshot: {}".format(SNAPSHOT_NAME))
+print("Powering down droplet")
 
-droplet.take_snapshot(SNAPSHOT_NAME, return_dict=True, power_off=False)
+shutdown = droplet.shutdown(return_dict=True)
+
+print("Response: {}".format(shutdown))
+print("Creating a snapshot: {}".format(SNAPSHOT_NAME))
+
+take_snapshot = droplet.take_snapshot(SNAPSHOT_NAME, return_dict=True, power_off=False)
+print("Response: {}".format(take_snapshot))
 
 while True:
     d = droplet.get_actions()
