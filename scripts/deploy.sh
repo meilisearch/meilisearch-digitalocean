@@ -19,6 +19,7 @@ After=systemd-user-sessions.service
 [Service]
 Type=simple
 ExecStart=/usr/bin/meilisearch --db-path /var/lib/meilisearch/data.ms
+Environment="MEILI_SERVER_PROVIDER=digital_ocean"
 
 [Install]
 WantedBy=default.target
