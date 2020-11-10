@@ -8,7 +8,7 @@ def wait_for_droplet_creation(droplet):
             droplet = droplet.load()
             print("IP:", droplet.ip_address, "id:", droplet.id)
             break
-        time.sleep(1)
+        time.sleep(2)
 
 def wait_for_ssh_availability(droplet):
     while True:
@@ -18,6 +18,6 @@ def wait_for_ssh_availability(droplet):
             s.shutdown(2)
             s.close()
             break
-        except:
+        except Exception:
             continue
-        time.sleep(1)
+        time.sleep(2)

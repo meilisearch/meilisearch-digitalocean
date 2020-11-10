@@ -70,9 +70,15 @@ for cmd in commands:
 
 # Power down droplet
 
-print("Powering down droplet and creating a snapshot: {}".format(SNAPSHOT_NAME))
+print("Powering down droplet")
 
-droplet.take_snapshot(SNAPSHOT_NAME, return_dict=True, power_off=False)
+shutdown = droplet.shutdown(return_dict=True)
+
+print("Response: {}".format(shutdown))
+print("Creating a snapshot: {}".format(SNAPSHOT_NAME))
+
+take_snapshot = droplet.take_snapshot(SNAPSHOT_NAME, return_dict=True, power_off=False)
+print("Response: {}".format(take_snapshot))
 
 while True:
     d = droplet.get_actions()
