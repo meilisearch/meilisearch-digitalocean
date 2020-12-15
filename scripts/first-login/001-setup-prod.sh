@@ -18,8 +18,14 @@ exit_with_message() {
     systemctl daemon-reload
     systemctl restart meilisearch
     echo "$BOLD$GREEN Configuration is over. Thanks$RESET"
+    echo ""
+    echo "-----------------------------------------------------------------"
+    echo ""
     echo "$BOLD If you want to run this script again, run the following command:$RESET"
-    echo "sh /var/opt/meilisearch/scripts/first-login/000-set-meili-env.sh"
+    echo ""
+    echo " sh /var/opt/meilisearch/scripts/first-login/000-set-meili-env.sh"
+    echo ""
+    echo "-----------------------------------------------------------------"
     cp -f /etc/skel/.bashrc /root/.bashrc
     exit
 }
@@ -137,7 +143,14 @@ setup_ssl_certbot() {
 # Setup a master key for MeiliSearch
 
 if [ "$USE_API_KEY" = "true" ]; then
-    echo "Seting up MASTER KEY"
+    echo ""
+    echo "---------------------"
+    echo ""
+    echo "  Your MASTER KEY is set to" $MEILISEARCH_MASTER_KEY
+    echo "  Keep it somewhere SAFE!"
+    echo ""
+    echo "---------------------"
+    echo ""
     configure_master_key
 fi
 
