@@ -20,6 +20,8 @@ DOMAIN_NAME=""
 USE_SSL="false"
 USE_CERTBOT="false"
 
+. /var/opt/meilisearch/env
+
 exit_with_message() {
 
     echo "export USE_API_KEY="$USE_API_KEY > /var/opt/meilisearch/env
@@ -48,7 +50,7 @@ ask_production_environment() {
 
 ask_master_key_setup() {
     while true; do
-        read -p "$(echo $BOLD$BLUE"Do you wish to setup a MEILI_MASTER_KEY for your search engine [y/n]?  "$RESET)" yn
+        read -p "$(echo $BOLD$BLUE"Do you wish to use a MEILI_MASTER_KEY for your search engine [y/n]?  "$RESET)" yn
         case $yn in
             [Yy]* ) set_master_key=true; break;;
             [Nn]* ) set_master_key=false; break;;
@@ -58,6 +60,22 @@ ask_master_key_setup() {
 }
 
 generate_master_key() {
+    if [ "$MEILISEARCH_MASTER_KEY" != "" ]; then
+        echo $BOLD$GREEN"A previous MEILI_MASTER_KEY has been detected. It was set to" $MEILISEARCH_MASTER_KEY$RESET
+        while true; do
+        read -p "$(echo $BOLD$BLUE"Do you wish to keep using this MEILI_MASTER_KEY for your search engine [y/n]?  "$RESET)" yn
+        case $yn in
+            [Yy]* ) keep_previous_master_key=true; break;;
+            [Nn]* ) keep_previous_master_key=false; break;;
+            * ) echo "  Please answer by writting 'y' for yes or 'n' for no.";
+        esac
+    done
+    fi
+    if [ "$keep_previous_master_key" = true ]; then
+        api_key=$MEILISEARCH_MASTER_KEY
+        echo "$BOLD keeping your old MEILI_MASTER_KEY $RESET"
+        return
+    fi
     while true; do
         read -p "$(echo $BOLD$BLUE"Do you wish to specify your MEILI_MASTER_KEY (otherwise it will be generated) [y/n]? "$RESET)" yn
         case $yn in

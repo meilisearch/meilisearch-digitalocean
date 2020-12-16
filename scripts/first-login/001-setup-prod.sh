@@ -17,7 +17,7 @@ exit_with_message() {
     systemctl restart nginx
     systemctl daemon-reload
     systemctl restart meilisearch
-    echo "$BOLD$GREEN Configuration is over. Thanks$RESET"
+    echo "$BOLD$GREEN  Configuration is over. Thanks$RESET"
     echo ""
     echo "-----------------------------------------------------------------"
     echo ""
@@ -165,7 +165,7 @@ domainname=$DOMAIN_NAME
 # Setup an SSL configuration for MeiliSearch
 
 if [ "$USE_SSL" = false ]; then
-    echo "No SSL Configuration"
+    echo "  No SSL Configuration"
     set_domain_name_in_nginx_no_ssl
     exit_with_message
 fi
