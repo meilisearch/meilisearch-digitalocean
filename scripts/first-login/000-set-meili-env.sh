@@ -20,6 +20,8 @@ DOMAIN_NAME=""
 USE_SSL="false"
 USE_CERTBOT="false"
 
+. /var/opt/meilisearch/env
+
 exit_with_message() {
 
     echo "export USE_API_KEY="$USE_API_KEY > /var/opt/meilisearch/env
@@ -30,28 +32,56 @@ exit_with_message() {
     . /var/opt/meilisearch/env
 
     echo "$BOLD$GREEN     --- OK, now we will set up MeiliSearch for you! --- $RESET"
+
     sh /var/opt/meilisearch/scripts/first-login/001-setup-prod.sh
     exit
 }
 
+ask_production_environment() {
+    while true; do
+        read -p "$(echo $BOLD$BLUE"Do you wish to use MeiliSearch in a PRODUCTION environment [y/n]?  "$RESET)" yn
+        case $yn in
+            [Yy]* ) set_production_env=true; set_master_key=true; break;;
+            [Nn]* ) set_production_env=false; break;;
+            * ) echo "  Please answer by writting 'y' for yes or 'n' for no.";
+        esac
+    done
+}
+
 ask_master_key_setup() {
     while true; do
-        read -p "$(echo $BOLD$BLUE"Do you wish to setup a MEILI_MASTER_KEY for your search engine [y/n]?  "$RESET)" yn
+        read -p "$(echo $BOLD$BLUE"Do you wish to use a MEILI_MASTER_KEY for your search engine [y/n]?  "$RESET)" yn
         case $yn in
             [Yy]* ) set_master_key=true; break;;
             [Nn]* ) set_master_key=false; break;;
-            * ) echo "Please answer yes or no.";
+            * ) echo "  Please answer by writting 'y' for yes or 'n' for no.";
         esac
     done
 }
 
 generate_master_key() {
+    if [ "$MEILISEARCH_MASTER_KEY" != "" ]; then
+        echo $BOLD$GREEN"A previous MEILI_MASTER_KEY has been detected. It was set to" $MEILISEARCH_MASTER_KEY$RESET
+        while true; do
+        read -p "$(echo $BOLD$BLUE"Do you wish to keep using this MEILI_MASTER_KEY for your search engine [y/n]?  "$RESET)" yn
+        case $yn in
+            [Yy]* ) keep_previous_master_key=true; break;;
+            [Nn]* ) keep_previous_master_key=false; break;;
+            * ) echo "  Please answer by writting 'y' for yes or 'n' for no.";
+        esac
+    done
+    fi
+    if [ "$keep_previous_master_key" = true ]; then
+        api_key=$MEILISEARCH_MASTER_KEY
+        echo "$BOLD keeping your old MEILI_MASTER_KEY $RESET"
+        return
+    fi
     while true; do
         read -p "$(echo $BOLD$BLUE"Do you wish to specify your MEILI_MASTER_KEY (otherwise it will be generated) [y/n]? "$RESET)" yn
         case $yn in
             [Yy]* ) read -p "MEILI_MASTER_KEY: " api_key; break;;
             [Nn]* ) api_key=$(date +%s | sha256sum | base64 | head -c 32); echo "You MEILI_MASTER_KEY is $api_key"; echo "You should keep it somewhere safe."; break;;
-            * ) echo "Please answer yes or no.";;
+            * ) echo "  Please answer by writting 'y' for yes or 'n' for no.";;
         esac
     done
 }
@@ -62,7 +92,7 @@ ask_domain_name_setup() {
         case $yn in
             [Yy]* ) ask_domain_name=true; break;;
             [Nn]* ) ask_domain_name=false; break;;
-            * ) echo "Please answer yes or no.";;
+            * ) echo "  Please answer by writting 'y' for yes or 'n' for no.";;
         esac
     done
 }
@@ -71,7 +101,7 @@ ask_domain_name_input() {
     while true; do
         read -p "$(echo $BOLD$BLUE"What is your domain name? "$RESET)" domainname
         case $domainname in
-            "" ) echo "Please enter a valid domain name";;
+            "" ) echo "  Please enter a valid domain name";;
             * ) break;;
         esac
     done
@@ -83,7 +113,7 @@ ask_ssl_configure() {
         case $yn in
             [Yy]* ) want_ssl_certbot=true; break;;
             [Nn]* ) want_ssl_certbot=false; break;;
-            * ) echo "Please answer by writting 'y' for yes or 'n' for no.";
+            * ) echo "  Please answer by writting 'y' for yes or 'n' for no.";
         esac
     done
 }
@@ -94,10 +124,12 @@ ask_has_own_ssl() {
         case $yn in
             [Yy]* ) has_own_ssl=true; break;;
             [Nn]* ) has_own_ssl=false; break;;
-            * ) echo "Please answer by writting 'y' for yes or 'n' for no.";
+            * ) echo "  Please answer by writting 'y' for yes or 'n' for no.";
         esac
     done
 }
+
+# This let's us avoid asking user for input and set production environment from Mmetadata
 
 if [ "$MEILI_SKIP_USER_INPUT" = "true" ]; then
     . /var/opt/meilisearch/env
@@ -106,7 +138,16 @@ fi
 
 # Ask user if he wants to setup a master key for MeiliSearch
 
-ask_master_key_setup
+ask_production_environment
+
+if [ $set_production_env = false ]; then
+    echo "  MeiliSearch will be run in a DEVELOPMENT environment"
+    ask_master_key_setup
+else
+    echo "  MeiliSearch will be run in a PRODUCTION environment"
+    echo "  MEILI_MASTER_KEY must be set for PRODUCTION"
+    echo "  Front-end integrated dashboard will be disabled for PRODUCTION"
+fi
 
 if [ $set_master_key = true ]; then
     generate_master_key
