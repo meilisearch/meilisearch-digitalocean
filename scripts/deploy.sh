@@ -75,6 +75,10 @@ ufw allow 'Nginx Full'
 ufw allow 'OpenSSH'
 ufw --force enable
 
+# Delete remaining logs
 
+rm -rf /root/.ssh/authorized_keys
+rm -rf /tmp/meili-tmp
+rm -rf /var/log/*.log
 
 curl https://raw.githubusercontent.com/digitalocean/marketplace-partners/master/scripts/img_check.sh | bash
