@@ -82,6 +82,8 @@ This command will create a DigitalOcean Droplet on MeiliSearch's account and con
 
 6. Test the image: create a new Droplet based on the new Snapshot `MeiliSearch-v.X.X.X-Debian-X`, and make sure everything is running smoothly. Connect via SSH to the droplet and test the configuration script that is run automatically on login. Don't forget to destroy the droplet after the test.
 
+⚠️ If you've done this steps with a MeiliSearch RC version, don't forget to finally remove the tag from the repository via the [GitHub interface](https://github.com/meilisearch/meilisearch-digitalocean/releases): click on the tag name, and then, on the red `Delete` button.
+
 ### Publish the DO Image
 
 ⚠️ The DO image should never be published with a `RC` version of MeiliSearch.
