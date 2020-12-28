@@ -56,7 +56,7 @@ Some notes on GitHub PRs:
 ## Release Process (for Admin only)
 
 The release tags of this package follow exactly the MeiliSearch versions.<br>
-It means that, for example, the `v0.17.0` tag in this repository corresponds to the DO image running MeiliSerach `v0.17.0`.
+It means that, for example, the `v0.17.0` tag in this repository corresponds to the DO image running MeiliSearch `v0.17.0`.
 
 This repository currently does not provide any automated way to test and release the DO image.<br>
 **Please, follow carefully the steps in the next sections before any release.**
@@ -67,7 +67,7 @@ This repository currently does not provide any automated way to test and release
 
 2. Commit your changes on a new branch.
 
-3. Create a tag on the last commit of the branch corresponding to the MeiliSearch version you've just changed(`vX.X.X` or `vX.X.XrcX`):
+3. Create a tag on the last commit of the branch corresponding to the MeiliSearch version you've just changed (`vX.X.X` or `vX.X.XrcX`), and then, push all your changes to the remote repository:
 ```bash
 $ git tag vX.X.X
 $ git push origin <branch-name>
@@ -78,9 +78,11 @@ $ git push origin <branch-name>
 $ python3 /server/tools/build-image.py
 ```
 
-This command will create a DigitalOcean Droplet on MeiliSearch's account and configure it in order to prepare the Marketplace image. It will then create a Snapshot, which should be ready to be published to the Marketplace. The Droplet will automatically be removed from the account after the image creation. The image name will be MeiliSearch-v.X.X.X-Debian-X.
+This command will create a DigitalOcean Droplet on MeiliSearch's account and configure it in order to prepare the Marketplace image. It will then create a snapshot, which should be ready to be published to the Marketplace. The Droplet will automatically be removed from the account after the image creation.<br>
+The image name will be MeiliSearch-v.X.X.X-Debian-X.
 
-6. Test the image: create a new Droplet based on the new Snapshot `MeiliSearch-v.X.X.X-Debian-X`, and make sure everything is running smoothly. Connect via SSH to the droplet and test the configuration script that is run automatically on login. Don't forget to destroy the droplet after the test.
+5. Test the image: create a new Droplet based on the new snapshot `MeiliSearch-v.X.X.X-Debian-X`, and make sure everything is running smoothly. Connect via SSH to the droplet and test the configuration script that is run automatically on login.<br>
+🗑 Don't forget to destroy the Droplet after the test.
 
 ⚠️ If you've done this steps with a MeiliSearch RC version, don't forget to finally remove the tag from the repository via the [GitHub interface](https://github.com/meilisearch/meilisearch-digitalocean/releases): click on the tag name, and then, on the red `Delete` button.
 
@@ -104,7 +106,7 @@ $ git tag vX.X.X
 
 ⚠️ If changes where made to the repository between your testing branch was created and the moment it was merged, you should consider building the image and testing it again. Some important changes may have been introduced, unexpectedly changing the behavior of the image that will be published to the Marketplace.
 
-3. In the [DigitalOcean Vendor Protal](https://marketplace.digitalocean.com/vendorportal), click on the title of the `MeiliSearch` Image. A form will open for a new image submission. Update the information regarding the new version in the form:
+3. In the [DigitalOcean Vendor Protal](https://marketplace.digitalocean.com/vendorportal), click on the title of the `MeiliSearch` image. A form will open for a new image submission. Update the information regarding the new version in the form:
 
 - Update the `App version` (with the version number, without the starting v, so `vX.X.X` becomes `X.X.X`).
 - In the `System image` field, click on `Select system image` and select the image you have tested from the list (`MeiliSearch-v.X.X.X-Debian-X`).
@@ -113,9 +115,9 @@ $ git tag vX.X.X
 - In the `Reason for update` field, write "Bump MeiliSearch to vX.X.X".
 - Verify the form, and hit on `Submit`.
 
-⚠️ When the image is submitted to the Marketplace, MeiliSearch will immediately lose it's ownership. The submitted image won't appear anymore in the organization dashboard, and no further modification can be done.
+⚠️ When the image is submitted to the Marketplace, MeiliSearch will immediately lose its ownership. The submitted image won't appear anymore in the organization dashboard, and no further modification can be done.
 
-This will start the DigitalOcean review process. This can take a few days, and the result will be notified via email to the DigitalOcean account admins. If the image is accepted, it will be automatically published on the Marketplace. If it is rejected, an email explaining the problems will be sent to administrators.
+This will start the DigitalOcean review process. This can take a few days, and the result will be notified via email to the DigitalOcean admin account. If the image is accepted, it will be automatically published on the Marketplace. If it is rejected, an email explaining the problems will be sent to administrators.
 
 ### Update the DO Image between two MeiliSearch Releases
 
