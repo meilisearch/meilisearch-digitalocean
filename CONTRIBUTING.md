@@ -104,6 +104,9 @@ $ git pull origin master
 $ git tag vX.X.X
 ```
 
+- Push it to the remote repository:
+```bash
+$ git push --tag origin master
 ⚠️ If changes where made to the repository between your testing branch was created and the moment it was merged, you should consider building the image and testing it again. Some important changes may have been introduced, unexpectedly changing the behavior of the image that will be published to the Marketplace.
 
 3. In the [DigitalOcean Vendor Protal](https://marketplace.digitalocean.com/vendorportal), click on the title of the `MeiliSearch` image. A form will open for a new image submission. Update the information regarding the new version in the form:
