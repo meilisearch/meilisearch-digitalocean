@@ -56,18 +56,18 @@ Some notes on GitHub PRs:
 ## Release Process (for Admin only)
 
 The release tags of this package follow exactly the MeiliSearch versions.<br>
-It means the `v0.17.0` tag in this repository corresponds to the DO image running with MeiliSerach `v0.17.0`.
+It means that, for example, the `v0.17.0` tag in this repository corresponds to the DO image running MeiliSearch `v0.17.0`.
 
 This repository currently does not provide any automated way to test and release the DO image.<br>
 **Please, follow carefully the steps in the next sections before any release.**
 
 ### Test before Releasing
 
-1. In (`scripts/deploy.sh`)[/scripts/deploy.sh] and [`server/tools/build-image.py`](/server/tools/build-image.py), change all the `vX.X.X` by the new MeiliSearch version. If you want to test with a MeiliSearch RC, replace them by the right RC version tag (`vX.X.XrcX`).
+1. In [`scripts/deploy.sh`](/scripts/deploy.sh) and [`server/tools/build-image.py`](/server/tools/build-image.py), change all the `vX.X.X` by the new MeiliSearch version. If you want to test with a MeiliSearch RC, replace them by the right RC version tag (`vX.X.XrcX`).
 
-2. Commit your changes on a new branch and open the related PR.
+2. Commit your changes on a new branch.
 
-3. Create a tag on the PR branch corresponding to the MeiliSearch version you've just changed(`vX.X.X` or `vX.X.XrcX`):
+3. Create a tag on the last commit of the branch corresponding to the MeiliSearch version you've just changed (`vX.X.X` or `vX.X.XrcX`), and then, push all your changes to the remote repository:
 ```bash
 $ git tag vX.X.X
 $ git push origin <branch-name>
@@ -75,12 +75,14 @@ $ git push origin <branch-name>
 
 4. Build the image:
 ```bash
-$ WIP
+$ python3 /server/tools/build-image.py
 ```
 
-3. ...
+This command will create a DigitalOcean Droplet on MeiliSearch's account and configure it in order to prepare the Marketplace image. It will then create a snapshot, which should be ready to be published to the Marketplace. The Droplet will automatically be removed from the account after the image creation.<br>
+The image name will be MeiliSearch-v.X.X.X-Debian-X.
 
-_WIP_
+5. Test the image: create a new Droplet based on the new snapshot `MeiliSearch-v.X.X.X-Debian-X`, and make sure everything is running smoothly. Connect via SSH to the droplet and test the configuration script that is run automatically on login.<br>
+🗑 Don't forget to destroy the Droplet after the test.
 
 ⚠️ If you've done this steps with a MeiliSearch RC version, don't forget to finally remove the tag from the repository via the [GitHub interface](https://github.com/meilisearch/meilisearch-digitalocean/releases): click on the tag name, and then, on the red `Delete` button.
 
@@ -90,7 +92,7 @@ _WIP_
 
 Once the tests in the previous section have been done:
 
-1. Merge the PR.
+1. Open a PR from the branch where changes where done and merge it.
 
 2. Move the tag from the branch commit to the last `master` commit:
 - Delete the tag remotely via the [release GitHub interface](https://github.com/meilisearch/meilisearch-digitalocean/releases). Click on the tag name and then on the red `Delete` button.
@@ -101,12 +103,26 @@ $ git checkout master
 $ git pull origin master
 $ git tag vX.X.X
 ```
+
 - Push it to the remote repository:
 ```bash
 $ git push --tag origin master
 ```
 
-3. ...
+⚠️ If changes where made to the repository between your testing branch was created and the moment it was merged, you should consider building the image and testing it again. Some important changes may have been introduced, unexpectedly changing the behavior of the image that will be published to the Marketplace.
+
+3. In the [DigitalOcean Vendor Protal](https://marketplace.digitalocean.com/vendorportal), click on the title of the `MeiliSearch` image. A form will open for a new image submission. Update the information regarding the new version in the form:
+
+- Update the `App version` (with the version number, without the starting v, so `vX.X.X` becomes `X.X.X`).
+- In the `System image` field, click on `Select system image` and select the image you have tested from the list (`MeiliSearch-v.X.X.X-Debian-X`).
+- In the `Software Included` field, update the MeiliSearch version.
+- Check the `Application summary`, `Application Description` and `Getting started instructions` fields for any inconsistent information that should be updated about MeiliSearch usage or installation.
+- In the `Reason for update` field, write "Bump MeiliSearch to vX.X.X".
+- Verify the form, and hit on `Submit`.
+
+⚠️ When the image is submitted to the Marketplace, MeiliSearch will immediately lose its ownership. The submitted image won't appear anymore in the organization dashboard, and no further modification can be done.
+
+This will start the DigitalOcean review process. This can take a few days, and the result will be notified via email to the DigitalOcean admin account. If the image is accepted, it will be automatically published on the Marketplace. If it is rejected, an email explaining the problems will be sent to administrators.
 
 ### Update the DO Image between two MeiliSearch Releases
 
