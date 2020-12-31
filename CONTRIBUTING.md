@@ -84,7 +84,7 @@ The image name will be MeiliSearch-v.X.X.X-Debian-X.
 5. Test the image: create a new Droplet based on the new snapshot `MeiliSearch-v.X.X.X-Debian-X`, and make sure everything is running smoothly. Connect via SSH to the droplet and test the configuration script that is run automatically on login.<br>
 🗑 Don't forget to destroy the Droplet after the test.
 
-⚠️ If you've done this steps with a MeiliSearch RC version, don't forget to finally remove the tag from the repository via the [GitHub interface](https://github.com/meilisearch/meilisearch-digitalocean/releases): click on the tag name, and then, on the red `Delete` button.
+⚠️ If you've done this steps with a MeiliSearch RC version, don't forget to finally remove the tag from the repository with the command `git push --delete origin vX.X.X`.
 
 ### Publish the DO Image
 
@@ -95,13 +95,14 @@ Once the tests in the previous section have been done:
 1. Open a PR from the branch where changes where done and merge it.
 
 2. Move the tag from the branch commit to the last `master` commit:
-- Delete the tag remotely via the [release GitHub interface](https://github.com/meilisearch/meilisearch-digitalocean/releases). Click on the tag name and then on the red `Delete` button.
-- Delete and re-create the tag in your local repository on the right commit:
+
 ```bash
+$ git push --delete origin vX.X.X
 $ git tag -d vX.X.X
 $ git checkout master
 $ git pull origin master
 $ git tag vX.X.X
+$ git push origin vX.X.X
 ```
 
 - Push it to the remote repository:
