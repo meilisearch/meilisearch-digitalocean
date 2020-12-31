@@ -12,7 +12,7 @@ BOLD="\033[1m"
 RESET="\033[0m"
 
 echo "\n\nThank you for using$BLUE MeiliSearch.$RESET\n\n"
-echo "This is the first login here, and we need to set some basic configuration first.\n"
+echo "This script will help you to set up some basic configuration.\n"
 
 USE_API_KEY="false"
 MEILISEARCH_MASTER_KEY=""
@@ -153,6 +153,9 @@ if [ $set_master_key = true ]; then
     generate_master_key
     USE_API_KEY="true"
     MEILISEARCH_MASTER_KEY=$api_key
+else
+    USE_API_KEY="false"
+    MEILISEARCH_MASTER_KEY=""
 fi
 
 # Ask user if he wants to setup a domain name for MeiliSearch
@@ -160,6 +163,9 @@ fi
 ask_domain_name_setup
 
 if [ $ask_domain_name != true ]; then
+    DOMAIN_NAME=""
+    USE_SSL="false"
+    USE_CERTBOT="false"
     exit_with_message
 fi
 
@@ -176,6 +182,7 @@ if [ $want_ssl_certbot = true ]; then
     USE_SSL="true"
     USE_CERTBOT="true"
 else
+    USE_CERTBOT="false"
     ask_has_own_ssl
 fi
 
