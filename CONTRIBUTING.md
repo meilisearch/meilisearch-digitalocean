@@ -95,13 +95,14 @@ Once the tests in the previous section have been done:
 1. Open a PR from the branch where changes where done and merge it.
 
 2. Move the tag from the branch commit to the last `master` commit:
-- Delete the tag remotely with the command `git push --delete origin vX.X.X` or via the [release GitHub interface](https://github.com/meilisearch/meilisearch-digitalocean/releases). Click on the tag name and then on the red `Delete` button.
-- Delete and re-create the tag in your local repository on the right commit:
+
 ```bash
+$ git push --delete origin vX.X.X
 $ git tag -d vX.X.X
 $ git checkout master
 $ git pull origin master
 $ git tag vX.X.X
+$ git push origin vX.X.X
 ```
 
 - Push it to the remote repository:
