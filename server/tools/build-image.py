@@ -75,6 +75,13 @@ print("Powering down droplet")
 shutdown = droplet.shutdown(return_dict=True)
 
 print("Response: {}".format(shutdown))
+
+while True:
+    d = droplet.get_actions()
+    if d[0].type == "shutdown" and d[0].status == "completed":
+        print("Droplet is OFF")
+        break
+
 print("Creating a snapshot: {}".format(SNAPSHOT_NAME))
 
 take_snapshot = droplet.take_snapshot(SNAPSHOT_NAME, return_dict=True, power_off=False)
