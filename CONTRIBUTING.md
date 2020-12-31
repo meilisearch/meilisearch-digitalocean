@@ -84,7 +84,7 @@ The image name will be MeiliSearch-v.X.X.X-Debian-X.
 5. Test the image: create a new Droplet based on the new snapshot `MeiliSearch-v.X.X.X-Debian-X`, and make sure everything is running smoothly. Connect via SSH to the droplet and test the configuration script that is run automatically on login.<br>
 🗑 Don't forget to destroy the Droplet after the test.
 
-⚠️ If you've done this steps with a MeiliSearch RC version, don't forget to finally remove the tag from the repository with the command `git push --delete origin vX.X.X` or via the [GitHub interface](https://github.com/meilisearch/meilisearch-digitalocean/releases): click on the tag name, and then, on the red `Delete` button.
+⚠️ If you've done this steps with a MeiliSearch RC version, don't forget to finally remove the tag from the repository with the command `git push --delete origin vX.X.X`.
 
 ### Publish the DO Image
 
