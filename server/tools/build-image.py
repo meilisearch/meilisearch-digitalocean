@@ -12,6 +12,7 @@ DIGITALOCEAN_END_POINT="https://api.digitalocean.com/v2"
 MEILI_VERSION_TAG="v0.17.0"
 SNAPSHOT_NAME="MeiliSearch-{}-Debian-10.3".format(MEILI_VERSION_TAG)
 SIZE_SLUG="s-1vcpu-1gb" # https://developers.digitalocean.com/documentation/changelog/api-v2/new-size-slugs-for-droplet-plan-changes/
+USER_DATA = "#cloud-config\n\npackage_update: true\npackages:\n  - git\n  - curl\n  - ufw\n  - gcc\n  - make\n - nginx\n  - certbot\n  - python-certbot-nginx\n  - qemu-utils\n  - gcc-10"
 
 # Droplet settings
 
@@ -31,7 +32,8 @@ droplet = digitalocean.Droplet(token=os.getenv("DIGITALOCEAN_ACCESS_TOKEN"),
                                size_slug=SIZE_SLUG,
                                tags=["marketplace"],
                                ssh_keys=SSH_KEYS_FINGERPRINTS,
-                               backups=ENABLE_BACKUPS)
+                               backups=ENABLE_BACKUPS,
+                               user_data=USER_DATA)
 droplet.create()
 
 print("Creating droplet...")
