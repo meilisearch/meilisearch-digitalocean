@@ -6,8 +6,8 @@ apt update -y
 apt upgrade -y
 apt install git curl ufw gcc make nginx certbot python-certbot-nginx qemu-utils gcc-10 -y
 
-# Install MeiliSearch v0.17.0
-wget --directory-prefix=/etc/meilisearch/ https://github.com/meilisearch/MeiliSearch/releases/download/v0.17.0/meilisearch.deb
+# Install MeiliSearch v0.18.0
+wget --directory-prefix=/etc/meilisearch/ https://github.com/meilisearch/MeiliSearch/releases/download/v0.18.0/meilisearch.deb
 apt install /etc/meilisearch/meilisearch.deb
 
 # Prepare systemd service for MeiliSearch
@@ -53,7 +53,7 @@ mkdir -p /var/lib/meilisearch
 mkdir -p /var/opt/meilisearch/scripts/first-login
 git clone https://github.com/meilisearch/meilisearch-digital-ocean.git /tmp/meili-tmp
 cd /tmp/meili-tmp
-git checkout v0.17.0
+git checkout v0.18.0
 chmod 755 /tmp/meili-tmp/scripts/per-instance/*
 chmod 755 /tmp/meili-tmp/scripts/first-login/*
 chmod 755 /tmp/meili-tmp/scripts/MOTD/*
