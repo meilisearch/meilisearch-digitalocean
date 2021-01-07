@@ -26,8 +26,27 @@ packages:
   - python-certbot-nginx
 
 runcmd:  
-  - wget --directory-prefix=/etc/meilisearch/ https://github.com/meilisearch/MeiliSearch/releases/download/v0.17.0/meilisearch.deb
-  - apt install /etc/meilisearch/meilisearch.deb
+  - wget --directory-prefix=/usr/bin/ -O /usr/bin/meilisearch https://github.com/meilisearch/MeiliSearch/releases/download/v0.17.0/meilisearch-linux-amd64
+  - chmod 755 /usr/bin/meilisearch
+
+write_files:
+  - path: /etc/systemd/system/meilisearch.service
+    content: |
+      [Unit]
+      Description=MeiliSearch
+      After=systemd-user-sessions.service
+
+      [Service]
+      Type=simple
+      ExecStart=/usr/bin/meilisearch --db-path /var/lib/meilisearch/data.ms
+      Environment="MEILI_SERVER_PROVIDER=digital_ocean"
+
+      [Install]
+      WantedBy=default.target
+
+runcmd:
+  - systemctl enable meilisearch
+  - systemctl start meilisearch
 """
 
 # Droplet settings
