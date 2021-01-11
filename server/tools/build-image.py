@@ -15,6 +15,10 @@ SIZE_SLUG="s-1vcpu-1gb" # https://developers.digitalocean.com/documentation/chan
 USER_DATA = """
 #cloud-config
 
+package_update: true
+
+package_upgrade: true
+
 packages:  
   - git
   - curl
@@ -57,10 +61,13 @@ write_files:
     content: |
       # Empty
 
-runcmd:  
+runcmd:
   - wget --directory-prefix=/usr/bin/ -O /usr/bin/meilisearch https://github.com/meilisearch/MeiliSearch/releases/download/v0.17.0/meilisearch-linux-amd64
   - chmod 755 /usr/bin/meilisearch
   - systemctl enable meilisearch.service
+  - ufw --force enable
+  - ufw allow 'Nginx Full'
+  - ufw allow 'OpenSSH'
 
 power_state:
   mode: reboot
@@ -105,48 +112,51 @@ print("SSH Port is available")
 
 # # Execute deploy script via SSH
 
-# commands = [
-#     "apt update",
-#     "apt update", # Needed ?
-#     "apt install curl -y",
-#     "curl https://github.com/meilisearch/meilisearch-digitalocean/blob/use_agnostic_scripts/scripts/deploy.sh | sh".format(MEILI_VERSION_TAG),
-# ]
+# TODO: Check MeiliSearch /health instead of sleep
+time.sleep(120)
 
-# for cmd in commands:
-#     ssh_command = "ssh {user}@{host} -o StrictHostKeyChecking=no '{cmd}'".format(
-#         user='root',
-#         host=droplet.ip_address,
-#         cmd=cmd,
-#     )
-#     print("EXECUTE COMMAND:", ssh_command)
-#     os.system(ssh_command)
-#     time.sleep(5)
+commands = [
+    "rm -rf /var/log/*.log",
+    "curl https://raw.githubusercontent.com/meilisearch/meilisearch-cloud/main/scripts/deploy-meilisearch.sh | bash",
+    "curl https://raw.githubusercontent.com/digitalocean/marketplace-partners/master/scripts/img_check.sh | bash",
+    'echo "sh /var/opt/meilisearch/scripts/first-login/000-set-meili-env.sh" >> /root/.bashrc && curl https://raw.githubusercontent.com/digitalocean/marketplace-partners/master/scripts/cleanup.sh | bash',
+]
+
+for cmd in commands:
+    ssh_command = "ssh {user}@{host} -o StrictHostKeyChecking=no '{cmd}'".format(
+        user='root',
+        host=droplet.ip_address,
+        cmd=cmd,
+    )
+    print("EXECUTE COMMAND:", ssh_command)
+    os.system(ssh_command)
+    time.sleep(5)
 
 
 # # TODO: Add a check by HTTP request to IP. If fail no build.
 
 # # Power down droplet
 
-# print("Powering down droplet")
+print("Powering down droplet")
 
-# shutdown = droplet.shutdown(return_dict=True)
+shutdown = droplet.shutdown(return_dict=True)
 
-# while True:
-#     d = droplet.get_actions()
-#     if d[0].type == "shutdown" and d[0].status == "completed":
-#         print("Droplet is OFF")
-#         break
+while True:
+    d = droplet.get_actions()
+    if d[0].type == "shutdown" and d[0].status == "completed":
+        print("Droplet is OFF")
+        break
 
-# print("Creating a snapshot: {}".format(SNAPSHOT_NAME))
+print("Creating a snapshot: {}".format(SNAPSHOT_NAME))
 
-# take_snapshot = droplet.take_snapshot(SNAPSHOT_NAME, return_dict=True, power_off=False)
+take_snapshot = droplet.take_snapshot(SNAPSHOT_NAME, return_dict=True, power_off=False)
 
-# while True:
-#     d = droplet.get_actions()
-#     if d[0].type == "snapshot" and d[0].status == "completed":
-#         print("Snapshot created: {}".format(SNAPSHOT_NAME))
-#         break
+while True:
+    d = droplet.get_actions()
+    if d[0].type == "snapshot" and d[0].status == "completed":
+        print("Snapshot created: {}".format(SNAPSHOT_NAME))
+        break
 
-# print("Destroying droplet")
-# droplet.destroy()
-# print("Droplet destroyed")
+print("Destroying droplet")
+droplet.destroy()
+print("Droplet destroyed")
