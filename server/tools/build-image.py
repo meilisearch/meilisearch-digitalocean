@@ -25,10 +25,6 @@ packages:
   - certbot
   - python-certbot-nginx
 
-runcmd:  
-  - wget --directory-prefix=/usr/bin/ -O /usr/bin/meilisearch https://github.com/meilisearch/MeiliSearch/releases/download/v0.17.0/meilisearch-linux-amd64
-  - chmod 755 /usr/bin/meilisearch
-
 write_files:
   - path: /etc/systemd/system/meilisearch.service
     content: |
@@ -44,9 +40,33 @@ write_files:
       [Install]
       WantedBy=default.target
 
-runcmd:
-  - systemctl enable meilisearch
-  - systemctl start meilisearch
+  - path: /etc/nginx/sites-enabled/meilisearch
+    content: |
+      server {
+          listen 80 default_server;
+          listen [::]:80 default_server;
+
+          server_name _;
+
+          location / {
+              proxy_pass  http://127.0.0.1:7700;
+          }
+      }
+  
+  - path: /etc/nginx/sites-enabled/default
+    content: |
+      # Empty
+
+runcmd:  
+  - wget --directory-prefix=/usr/bin/ -O /usr/bin/meilisearch https://github.com/meilisearch/MeiliSearch/releases/download/v0.17.0/meilisearch-linux-amd64
+  - chmod 755 /usr/bin/meilisearch
+  - systemctl enable meilisearch.service
+
+power_state:
+  mode: reboot
+  message: Bye Bye
+  timeout: 10
+  condition: True
 """
 
 # Droplet settings
