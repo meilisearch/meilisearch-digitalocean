@@ -3,7 +3,8 @@ from paramiko import SSHClient, AutoAddPolicy
 from do_meili_tools import wait_for_droplet_creation, wait_for_ssh_availability
 import os
 import time
-import socket
+import requests
+
 
 # Script settings
 
@@ -12,69 +13,7 @@ DIGITALOCEAN_END_POINT="https://api.digitalocean.com/v2"
 MEILI_VERSION_TAG="v0.17.0"
 SNAPSHOT_NAME="MeiliSearch-{}-Debian-10.3".format(MEILI_VERSION_TAG)
 SIZE_SLUG="s-1vcpu-1gb" # https://developers.digitalocean.com/documentation/changelog/api-v2/new-size-slugs-for-droplet-plan-changes/
-USER_DATA = """
-#cloud-config
-
-package_update: true
-
-package_upgrade: true
-
-packages:  
-  - git
-  - curl
-  - ufw
-  - gcc
-  - make
-  - nginx
-  - certbot
-  - python-certbot-nginx
-
-write_files:
-  - path: /etc/systemd/system/meilisearch.service
-    content: |
-      [Unit]
-      Description=MeiliSearch
-      After=systemd-user-sessions.service
-
-      [Service]
-      Type=simple
-      ExecStart=/usr/bin/meilisearch --db-path /var/lib/meilisearch/data.ms
-      Environment="MEILI_SERVER_PROVIDER=digital_ocean"
-
-      [Install]
-      WantedBy=default.target
-
-  - path: /etc/nginx/sites-enabled/meilisearch
-    content: |
-      server {
-          listen 80 default_server;
-          listen [::]:80 default_server;
-
-          server_name _;
-
-          location / {
-              proxy_pass  http://127.0.0.1:7700;
-          }
-      }
-  
-  - path: /etc/nginx/sites-enabled/default
-    content: |
-      # Empty
-
-runcmd:
-  - wget --directory-prefix=/usr/bin/ -O /usr/bin/meilisearch https://github.com/meilisearch/MeiliSearch/releases/download/v0.17.0/meilisearch-linux-amd64
-  - chmod 755 /usr/bin/meilisearch
-  - systemctl enable meilisearch.service
-  - ufw --force enable
-  - ufw allow 'Nginx Full'
-  - ufw allow 'OpenSSH'
-
-power_state:
-  mode: reboot
-  message: Bye Bye
-  timeout: 10
-  condition: True
-"""
+USER_DATA =requests.get("https://raw.githubusercontent.com/meilisearch/meilisearch-cloud/main/scripts/cloud-config.yaml").text
 
 # Droplet settings
 
