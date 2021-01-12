@@ -5,7 +5,6 @@ import os
 import time
 import requests
 
-
 # Script settings
 
 DIGITALOCEAN_ACCESS_TOKEN=os.getenv("DIGITALOCEAN_ACCESS_TOKEN")
@@ -49,9 +48,8 @@ print("Droplet created")
 wait_for_ssh_availability(droplet)
 print("SSH Port is available")
 
-# # Execute deploy script via SSH
+# Execute deploy script via SSH
 
-# TODO: Check MeiliSearch /health instead of sleep
 time.sleep(120)
 
 commands = [
@@ -72,9 +70,8 @@ for cmd in commands:
     time.sleep(5)
 
 
-# # TODO: Add a check by HTTP request to IP. If fail no build.
 
-# # Power down droplet
+# Power down droplet
 
 print("Powering down droplet")
 
