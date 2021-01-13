@@ -56,7 +56,7 @@ commands = [
     "rm -rf /var/log/*.log",
     "curl https://raw.githubusercontent.com/meilisearch/meilisearch-cloud/main/scripts/deploy-meilisearch.sh | bash",
     "curl https://raw.githubusercontent.com/digitalocean/marketplace-partners/master/scripts/img_check.sh | bash",
-    'echo "sh /var/opt/meilisearch/scripts/first-login/000-set-meili-env.sh" >> /root/.bashrc && curl https://raw.githubusercontent.com/digitalocean/marketplace-partners/master/scripts/cleanup.sh | bash',
+    "curl https://raw.githubusercontent.com/digitalocean/marketplace-partners/master/scripts/cleanup.sh | bash",
 ]
 
 for cmd in commands:
