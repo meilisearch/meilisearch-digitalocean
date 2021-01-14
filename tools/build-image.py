@@ -9,10 +9,10 @@ import requests
 
 DIGITALOCEAN_ACCESS_TOKEN=os.getenv("DIGITALOCEAN_ACCESS_TOKEN")
 DIGITALOCEAN_END_POINT="https://api.digitalocean.com/v2"
-MEILI_VERSION_TAG="v0.17.0"
-SNAPSHOT_NAME="MeiliSearch-{}-Debian-10.3".format(MEILI_VERSION_TAG)
+MEILI_CLOUD_SCRIPTS_VERSION_TAG="v0.18.0"
+SNAPSHOT_NAME="MeiliSearch-{}-Debian-10.3".format(MEILI_CLOUD_SCRIPTS_VERSION_TAG)
 SIZE_SLUG="s-1vcpu-1gb" # https://developers.digitalocean.com/documentation/changelog/api-v2/new-size-slugs-for-droplet-plan-changes/
-USER_DATA =requests.get("https://raw.githubusercontent.com/meilisearch/meilisearch-cloud/main/scripts/cloud-config.yaml").text
+USER_DATA =requests.get("https://raw.githubusercontent.com/meilisearch/cloud-scripts/{}/scripts/cloud-config.yaml".format(MEILI_CLOUD_SCRIPTS_VERSION_TAG)).text
 
 # Droplet settings
 
@@ -54,7 +54,7 @@ time.sleep(120)
 
 commands = [
     "rm -rf /var/log/*.log",
-    "curl https://raw.githubusercontent.com/meilisearch/meilisearch-cloud/main/scripts/deploy-meilisearch.sh | bash",
+    "curl https://raw.githubusercontent.com/meilisearch/cloud-scripts/{0}/scripts/deploy-meilisearch.sh | bash -s {0}".format(MEILI_CLOUD_SCRIPTS_VERSION_TAG),
     "curl https://raw.githubusercontent.com/digitalocean/marketplace-partners/master/scripts/img_check.sh | bash",
     "curl https://raw.githubusercontent.com/digitalocean/marketplace-partners/master/scripts/cleanup.sh | bash",
 ]
