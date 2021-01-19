@@ -1,7 +1,7 @@
 import digitalocean
 from paramiko import SSHClient, AutoAddPolicy
 from do_meili_tools import wait_for_droplet_creation, wait_for_ssh_availability, \
-    wait_for_health_check, wait_for_droplet_shutdown
+    wait_for_health_check, wait_for_droplet_shutdown, wait_for_snapshot_creation
 import os
 import time
 import requests
@@ -88,10 +88,7 @@ print("   Droplet is OFF")
 
 print("Creating a snapshot: {}".format(SNAPSHOT_NAME))
 take_snapshot = droplet.take_snapshot(SNAPSHOT_NAME, return_dict=True, power_off=False)
-while True:
-    d = droplet.get_actions()
-    if d[0].type == "snapshot" and d[0].status == "completed":
-        break
+wait_for_snapshot_creation(droplet)
 print("   Snapshot created: {}".format(SNAPSHOT_NAME))
 
 # Desroy Droplet
