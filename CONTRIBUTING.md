@@ -7,7 +7,7 @@ First of all, thank you for contributing to MeiliSearch! The goal of this docume
 - [Assumptions](#assumptions)
 - [How to Contribute](#how-to-contribute)
 - [Git Guidelines](#git-guidelines)
-- [Release Process (for Admin only)](#release-process-for-admin-only)
+- [Release Process (for internal team only)](#release-process-for-internal-team-only)
 
 <!-- /MarkdownTOC -->
 
@@ -53,7 +53,7 @@ Some notes on GitHub PRs:
 - All PRs must be reviewed and approved by at least one maintainer.
 - The PR title should be accurate and descriptive of the changes.
 
-## Release Process (for Admin only)
+## Release Process (for internal team only)
 
 The release tags of this package follow exactly the MeiliSearch versions.<br>
 It means that, for example, the `v0.17.0` tag in this repository corresponds to the DO image running MeiliSearch `v0.17.0`.
