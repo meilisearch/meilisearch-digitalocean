@@ -41,3 +41,13 @@ def wait_for_droplet_shutdown(droplet):
         except Exception as e:
             print("   Exception: {}".format(e))
             return
+<<<<<<< HEAD
+=======
+
+def wait_for_snapshot_creation(droplet):
+    while True:
+        time.sleep(2)
+        d = droplet.get_actions()
+        if d[0].type == "snapshot" and d[0].status == "completed":
+            return
+>>>>>>> 51edc8a... wait_for_snapshot_creation
