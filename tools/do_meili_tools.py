@@ -54,4 +54,6 @@ def wait_for_snapshot_creation(droplet):
             if d[0].type == "snapshot" and d[0].status == "completed":
                 return
         except Exception as e:
-            continue
+            print("   Exception: {}".format(e))
+            sleep(300)
+            return
