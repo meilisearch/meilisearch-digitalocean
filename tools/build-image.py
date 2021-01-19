@@ -80,8 +80,8 @@ for cmd in commands:
 
 print("Powering down droplet...")
 shutdown = droplet.shutdown(return_dict=True)
-print("   Droplet is OFF")
 wait_for_droplet_shutdown(droplet)
+print("   Droplet is OFF")
 
 
 # Create snapshot from Droplet
