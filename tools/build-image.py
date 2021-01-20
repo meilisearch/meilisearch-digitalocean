@@ -1,6 +1,7 @@
 import digitalocean
 from paramiko import SSHClient, AutoAddPolicy
-from do_meili_tools import wait_for_droplet_creation, wait_for_ssh_availability
+from do_meili_tools import wait_for_droplet_creation, wait_for_ssh_availability, \
+    wait_for_health_check, wait_for_droplet_shutdown
 import os
 import time
 import requests
@@ -41,16 +42,22 @@ print("Creating droplet...")
 # Wait for Droplet to be created
 
 wait_for_droplet_creation(droplet)
-print("Droplet created")
+droplet = droplet.load()
+print("   Droplet created. IP: {}, ID: {}".format(droplet.ip_address, droplet.id))
 
 # Wait for port 22 (SSH) to be available
 
+print("Waiting for SSH availability...")
 wait_for_ssh_availability(droplet)
-print("SSH Port is available")
+print("   SSH Port is available")
+
+# Wait for Health check after configuration is finished
+
+print("Waiting for Health check (may take a few minutes: config and reboot)")
+wait_for_health_check(droplet)
+print("   Instance is healthy")
 
 # Execute deploy script via SSH
-
-time.sleep(120)
 
 commands = [
     "rm -rf /var/log/*.log",
@@ -69,30 +76,26 @@ for cmd in commands:
     os.system(ssh_command)
     time.sleep(5)
 
+# Power down Droplet
 
-
-# Power down droplet
-
-print("Powering down droplet")
-
+print("Powering down droplet...")
 shutdown = droplet.shutdown(return_dict=True)
+print("   Droplet is OFF")
+wait_for_droplet_shutdown(droplet)
 
-while True:
-    d = droplet.get_actions()
-    if d[0].type == "shutdown" and d[0].status == "completed":
-        print("Droplet is OFF")
-        break
+
+# Create snapshot from Droplet
 
 print("Creating a snapshot: {}".format(SNAPSHOT_NAME))
-
 take_snapshot = droplet.take_snapshot(SNAPSHOT_NAME, return_dict=True, power_off=False)
-
 while True:
     d = droplet.get_actions()
     if d[0].type == "snapshot" and d[0].status == "completed":
-        print("Snapshot created: {}".format(SNAPSHOT_NAME))
         break
+print("   Snapshot created: {}".format(SNAPSHOT_NAME))
 
-print("Destroying droplet")
+# Desroy Droplet
+
+print("Destroying Droplet...")
 droplet.destroy()
-print("Droplet destroyed")
+print("   Droplet destroyed")
