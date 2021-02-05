@@ -16,7 +16,7 @@ itsdangerous==1.1.0
 Jinja2==2.11.2
 jsonify==0.5
 jsonlines==1.2.0
-jsonpickle==1.4.1
+jsonpickle==1.5.1
 MarkupSafe==1.1.1
 paramiko==2.7.1
 pycparser==2.20
