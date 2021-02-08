@@ -55,5 +55,5 @@ def wait_for_snapshot_creation(droplet):
                 return
         except Exception as e:
             print("   Exception: {}".format(e))
-            sleep(300)
+            time.sleep(300)
             return
