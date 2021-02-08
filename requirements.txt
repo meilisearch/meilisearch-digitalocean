@@ -15,7 +15,7 @@ invoke==1.4.1
 itsdangerous==1.1.0
 Jinja2==2.11.2
 jsonify==0.5
-jsonlines==1.2.0
+jsonlines==2.0.0
 jsonpickle==2.0.0
 MarkupSafe==1.1.1
 paramiko==2.7.1
