@@ -2,7 +2,7 @@ asyncio==3.4.3
 bcrypt==3.1.7
 certifi==2020.4.5.1
 cffi==1.14.0
-chardet==3.0.4
+chardet==4.0.0
 click==7.1.1
 cloudflare==2.6.5
 cryptography==3.2
