@@ -69,7 +69,7 @@ After cloning this repository, install python dependencies with the following co
 $ pip3 install -r requirements.txt
 ```
 
-Before running any script, make sure to obtain a DigitalOcean Access Key and set it in your environment:
+Before running any script, make sure to [obtain a DigitalOcean API Token](https://www.digitalocean.com/docs/apis-clis/api/create-personal-access-token/) and set it in your environment:
 
 ```bash
 $ export DIGITALOCEAN_ACCESS_TOKEN="XxXxxxxXXxxXXxxXXxxxXXXxXxXxXX"
