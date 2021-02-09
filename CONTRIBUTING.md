@@ -61,6 +61,20 @@ It means that, for example, the `v0.17.0` tag in this repository corresponds to 
 This repository currently does not provide any automated way to test and release the DO image.<br>
 **Please, follow carefully the steps in the next sections before any release.**
 
+### Set your environment
+
+After cloning this repository, install python dependencies with the following command:
+
+```bash
+$ pip3 install -r requirements.txt
+```
+
+Before running any script, make sure to obtain a DigitalOcean Access Key and set it in your environment:
+
+```bash
+export DIGITALOCEAN_ACCESS_TOKEN="XxXxxxxXXxxXXxxXXxxxXXXxXxXxXX"
+```
+
 ### Test before Releasing
 
 1. In [`tools/build-image.py`](tools/build-image.py), update the `MEILI_CLOUD_SCRIPTS_VERSION_TAG` variable value with the new MeiliSearch version you want to release, in the format: `vX.X.X`. If you want to test with a MeiliSearch RC, replace it by the right RC version tag (`vX.X.XrcX`).
