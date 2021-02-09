@@ -63,7 +63,7 @@ This repository currently does not provide any automated way to test and release
 
 ### Test before Releasing
 
-1. In [`scripts/deploy.sh`](/scripts/deploy.sh) and [`server/tools/build-image.py`](/server/tools/build-image.py), change all the `vX.X.X` by the new MeiliSearch version. If you want to test with a MeiliSearch RC, replace them by the right RC version tag (`vX.X.XrcX`).
+1. In [`tools/build-image.py`](tools/build-image.py), update the `MEILI_CLOUD_SCRIPTS_VERSION_TAG` variable value with the new MeiliSearch version you want to release, in the format: `vX.X.X`. If you want to test with a MeiliSearch RC, replace it by the right RC version tag (`vX.X.XrcX`).
 
 2. Commit your changes on a new branch.
 
@@ -75,7 +75,7 @@ $ git push origin <branch-name>
 
 4. Build the image:
 ```bash
-$ python3 /server/tools/build-image.py
+$ python3 tools/build-image.py
 ```
 
 This command will create a DigitalOcean Droplet on MeiliSearch's account and configure it in order to prepare the Marketplace image. It will then create a snapshot, which should be ready to be published to the Marketplace. The Droplet will automatically be removed from the account after the image creation.<br>
