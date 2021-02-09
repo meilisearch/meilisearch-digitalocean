@@ -55,6 +55,8 @@ Some notes on GitHub PRs:
 
 ## Release Process (for internal team only)
 
+⚠️ The [cloud-scripts](https://github.com/meilisearch/cloud-scripts) repository should be upgraded to the new version before this repository can be updated and released.
+
 The release tags of this package follow exactly the MeiliSearch versions.<br>
 It means that, for example, the `v0.17.0` tag in this repository corresponds to the DO image running MeiliSearch `v0.17.0`.
 
