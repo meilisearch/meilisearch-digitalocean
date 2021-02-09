@@ -72,7 +72,7 @@ $ pip3 install -r requirements.txt
 Before running any script, make sure to obtain a DigitalOcean Access Key and set it in your environment:
 
 ```bash
-export DIGITALOCEAN_ACCESS_TOKEN="XxXxxxxXXxxXXxxXXxxxXXXxXxXxXX"
+$ export DIGITALOCEAN_ACCESS_TOKEN="XxXxxxxXXxxXXxxXXxxxXXXxXxXxXX"
 ```
 
 ### Test before Releasing
