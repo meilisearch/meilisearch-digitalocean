@@ -112,7 +112,7 @@ $ git push origin vX.X.X
 
 ⚠️ If changes where made to the repository between your testing branch was created and the moment it was merged, you should consider building the image and testing it again. Some important changes may have been introduced, unexpectedly changing the behavior of the image that will be published to the Marketplace.
 
-4. In the [DigitalOcean Vendor Protal](https://marketplace.digitalocean.com/vendorportal), click on the title of the `MeiliSearch` image. A form will open for a new image submission. Update the information regarding the new version in the form:
+4. In the [DigitalOcean Vendor Portal](https://marketplace.digitalocean.com/vendorportal), click on the title of the `MeiliSearch` image. A form will open for a new image submission. Update the information regarding the new version in the form:
 
 - Update the `App version` (with the version number, without the starting v, so `vX.X.X` becomes `X.X.X`).
 - In the `System image` field, click on `Select system image` and select the image you have tested from the list (`MeiliSearch-v.X.X.X-Debian-X`).
