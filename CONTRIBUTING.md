@@ -65,7 +65,7 @@ This repository currently does not provide any automated way to test and release
 
 1. In [`tools/build-image.py`](tools/build-image.py), update the `MEILI_CLOUD_SCRIPTS_VERSION_TAG` variable value with the new MeiliSearch version you want to release, in the format: `vX.X.X`. If you want to test with a MeiliSearch RC, replace it by the right RC version tag (`vX.X.XrcX`).
 
-2. Run the `tools/build-image.py` script to build the DigitalOcean image:
+2. Run the [`tools/build-image.py`](tools/build-image.py) script to build the DigitalOcean image:
 
 ```bash
 $ python3 tools/build-image.py
