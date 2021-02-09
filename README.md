@@ -26,38 +26,23 @@
 
 ## Table of Contents <!-- omit in toc -->
 
-- [✋ Disclaimers](#-disclaimers)
+- [🚀 How to deploy MeiliSearch on DigitalOcean](#-how-to-deploy-meilisearch-on-digitalocean)
+- [🎁 Content of this repository](#-content-of-this-repository)
 - [📖 Documentation](#-documentation)
-- [🔧 Installation](#-installation)
 - [⚙️ Development Workflow and Contributing](#️-development-workflow-and-contributing)
 
-## ✋ Disclaimers
+## 🚀 How to deploy MeiliSearch on DigitalOcean
 
-### Deploying MeiliSearch on DigitalOcean  <!-- omit in toc -->
+If you want to learn how to deploy a MeiliSearch Instance on DigitalOcean visit [the dedicated page of our documentation](https://docs.meilisearch.com/create/how_to/digitalocean_droplet.html#deploy-a-meilisearch-instance-on-digitalocean)
 
-If you are looking for a guid to deploy a MeiliSearch Instance on DigitalOcean visit [the dedicated page of our documentation](https://docs.meilisearch.com/create/how_to/digitalocean_droplet.html#deploy-a-meilisearch-instance-on-digitalocean)
+## 🎁 Content of this repository
 
-### Content of this repository  <!-- omit in toc -->
-
-This repository contains a few tools and scripts used mainly by the MeiliSearch team, aiming to provide our users simple ways to deploy and configure MeiliSearch in the Cloud. As our heart resides on the Open Source community, we maintain several of this tools as open source project/repository.
+This repository contains a few tools and scripts used mainly by the MeiliSearch team, aiming to provide our users simple ways to deploy and configure MeiliSearch in the cloud. As our heart resides on the Open Source community, we maintain several of this tools as open source repository.
 
 ## 📖 Documentation
 
 See our [Documentation](https://docs.meilisearch.com/learn/tutorials/getting_started.html) or our [API References](https://docs.meilisearch.com/reference/api/).
 
-## 🔧 Installation
-
-After cloning this repository, install python dependencies with the following command:
-
-```bash
-$ pip3 install -r requirements.txt
-```
-
-Before running any script, make sure to obtain a DigitalOcean Access Key and set it in your environment:
-
-```bash
-export DIGITALOCEAN_ACCESS_TOKEN="XxXxxxxXXxxXXxxXXxxxXXXxXxXxXX"
-```
 
 ## ⚙️ Development Workflow and Contributing
 
