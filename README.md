@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://res.cloudinary.com/meilisearch/image/upload/v1612343595/SDKs/meilisearch_digital_ocean.svg" alt="MeiliSearch-Python" width="200" height="200" />
+  <img src="https://res.cloudinary.com/meilisearch/image/upload/v1612343595/SDKs/meilisearch_digital_ocean.svg" alt="MeiliSearch-DigitalOcean" width="200" height="200" />
 </p>
 
 <h1 align="center">MeiliSearch DigitalOcean</h1>
