@@ -14,7 +14,7 @@
 </h4>
 
 <p align="center">
-  <a href="https://github.com/meilisearch/meilisearch-python/blob/master/LICENSE"><img src="https://img.shields.io/badge/license-MIT-informational" alt="License"></a>
+  <a href="https://github.com/meilisearch/meilisearch-digitalocean/blob/master/LICENSE"><img src="https://img.shields.io/badge/license-MIT-informational" alt="License"></a>
 </p>
 
 <p align="center">⚡ MeiliSearch tools for DigitalOcean integration</p>
