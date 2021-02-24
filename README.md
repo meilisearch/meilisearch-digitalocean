@@ -33,7 +33,7 @@
 
 ## 🚀 How to deploy MeiliSearch on DigitalOcean
 
-If you want to learn how to deploy a MeiliSearch Instance on DigitalOcean visit [the dedicated page of our documentation](https://docs.meilisearch.com/create/how_to/digitalocean_droplet.html#deploy-a-meilisearch-instance-on-digitalocean)
+If you want to learn how to deploy a MeiliSearch Instance on DigitalOcean visit [the dedicated page of our documentation](https://docs.meilisearch.com/create/how_to/digitalocean_droplet.html#deploy-a-meilisearch-instance-on-digitalocean).
 
 ## 🎁 Content of this repository
 
