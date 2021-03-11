@@ -64,13 +64,13 @@ This repository currently does not provide any automated way to test and release
 After cloning this repository, install python dependencies with the following command:
 
 ```bash
-$ pip3 install -r requirements.txt
+pip3 install -r requirements.txt
 ```
 
 Before running any script, make sure to [obtain a DigitalOcean API Token](https://www.digitalocean.com/docs/apis-clis/api/create-personal-access-token/) and set it in your environment:
 
 ```bash
-$ export DIGITALOCEAN_ACCESS_TOKEN="XxXxxxxXXxxXXxxXXxxxXXXxXxXxXX"
+export DIGITALOCEAN_ACCESS_TOKEN="XxXxxxxXXxxXXxxXXxxxXXXxXxXxXX"
 ```
 
 ### Test before Releasing <!-- omit in TOC -->
@@ -80,7 +80,7 @@ $ export DIGITALOCEAN_ACCESS_TOKEN="XxXxxxxXXxxXXxxXXxxxXXXxXxXxXX"
 2. Run the [`tools/build-image.py`](tools/build-image.py) script to build the DigitalOcean image:
 
 ```bash
-$ python3 tools/build-image.py
+python3 tools/build-image.py
 ```
 
 This command will create a DigitalOcean Droplet on MeiliSearch's account and configure it in order to prepare the Marketplace image. It will then create a snapshot, which should be ready to be published to the Marketplace. The Droplet will automatically be removed from the account after the image creation.<br>
@@ -102,10 +102,10 @@ Once the tests in the previous section have been done:
 3. Create a git tag on the last `main` commit:
 
 ```bash
-$ git checkout main
-$ git pull origin main
-$ git tag vX.X.X
-$ git push origin vX.X.X
+git checkout main
+git pull origin main
+git tag vX.X.X
+git push origin vX.X.X
 ```
 
 ⚠️ If changes where made to the repository between your testing branch was created and the moment it was merged, you should consider building the image and testing it again. Some important changes may have been introduced, unexpectedly changing the behavior of the image that will be published to the Marketplace.
@@ -134,8 +134,8 @@ In this case:
 - Delete the current tag remotely and locally:
 
 ```bash
-$ git push --delete origin vX.X.X
-$ git tag -d vX.X.X
+git push --delete origin vX.X.X
+git tag -d vX.X.X
 ```
 
 - Publish the image again (see [Publish the DO Image](#publish-the-do-image))
