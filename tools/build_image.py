@@ -1,42 +1,21 @@
 import os
 import time
-import requests
 import digitalocean
-from do_meili_tools import wait_for_droplet_creation, wait_for_ssh_availability, \
+from utils import wait_for_droplet_creation, wait_for_ssh_availability, \
     wait_for_health_check, wait_for_droplet_shutdown, wait_for_snapshot_creation
 
-# Script settings
-
-DIGITALOCEAN_ACCESS_TOKEN = os.getenv("DIGITALOCEAN_ACCESS_TOKEN")
-DIGITALOCEAN_END_POINT = "https://api.digitalocean.com/v2"
-MEILI_CLOUD_SCRIPTS_VERSION_TAG = "v0.19.0"
-SNAPSHOT_NAME = "MeiliSearch-{}-Debian-10.3".format(
-    MEILI_CLOUD_SCRIPTS_VERSION_TAG)
-# https://developers.digitalocean.com/documentation/changelog/api-v2/new-size-slugs-for-droplet-plan-changes/
-SIZE_SLUG = "s-1vcpu-1gb"
-USER_DATA = requests.get(
-    "https://raw.githubusercontent.com/meilisearch/cloud-scripts/{}/scripts/cloud-config.yaml".format(MEILI_CLOUD_SCRIPTS_VERSION_TAG)).text
-
-# Droplet settings
-
-DROPLET_NAME = "{}-BUILD".format(SNAPSHOT_NAME)
-DROPLET_TAGS = ["MARKETPLACE", "AUTOBUILD"]
-SSH_KEYS_FINGERPRINTS = [
-    "d4:b1:a5:ce:10:01:27:14:44:aa:a9:8e:41:bd:39:bc"
-]
-ENABLE_BACKUPS = False
-
+import config as conf
 # Create droplet
 
-droplet = digitalocean.Droplet(token=os.getenv("DIGITALOCEAN_ACCESS_TOKEN"),
-                               name=DROPLET_NAME,
-                               region='lon1',  # London
+droplet = digitalocean.Droplet(token=conf.DIGITALOCEAN_ACCESS_TOKEN,
+                               name=conf.DROPLET_NAME,
+                               region="lon1",  # London
                                image="debian-10-x64",  # Debian 10.3
-                               size_slug=SIZE_SLUG,
+                               size_slug=conf.SIZE_SLUG,
                                tags=["marketplace"],
-                               ssh_keys=SSH_KEYS_FINGERPRINTS,
-                               backups=ENABLE_BACKUPS,
-                               user_data=USER_DATA)
+                               ssh_keys=conf.SSH_KEYS_FINGERPRINTS,
+                               backups=conf.ENABLE_BACKUPS,
+                               user_data=conf.USER_DATA)
 droplet.create()
 
 print("Creating droplet...")
@@ -65,7 +44,7 @@ print("   Instance is healthy")
 commands = [
     "rm -rf /var/log/*.log",
     "curl https://raw.githubusercontent.com/meilisearch/cloud-scripts/{0}/scripts/deploy-meilisearch.sh | bash -s {0}".format(
-        MEILI_CLOUD_SCRIPTS_VERSION_TAG),
+        conf.MEILI_CLOUD_SCRIPTS_VERSION_TAG),
     "curl https://raw.githubusercontent.com/digitalocean/marketplace-partners/master/scripts/img_check.sh | bash",
     "curl https://raw.githubusercontent.com/digitalocean/marketplace-partners/master/scripts/cleanup.sh | bash",
 ]
@@ -90,11 +69,11 @@ print("   Droplet is OFF")
 
 # Create snapshot from Droplet
 
-print("Creating a snapshot: {}".format(SNAPSHOT_NAME))
+print("Creating a snapshot: {}".format(conf.SNAPSHOT_NAME))
 take_snapshot = droplet.take_snapshot(
-    SNAPSHOT_NAME, return_dict=True, power_off=False)
+    conf.SNAPSHOT_NAME, return_dict=True, power_off=False)
 wait_for_snapshot_creation(droplet)
-print("   Snapshot created: {}".format(SNAPSHOT_NAME))
+print("   Snapshot created: {}".format(conf.SNAPSHOT_NAME))
 
 # Desroy Droplet
 
