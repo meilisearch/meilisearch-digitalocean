@@ -6,7 +6,7 @@ import datetime
 import CloudFlare
 import requests
 import digitalocean
-from do_meili_tools import wait_for_droplet_creation, wait_for_ssh_availability
+from utils import wait_for_droplet_creation, wait_for_ssh_availability
 
 logger = None
 
