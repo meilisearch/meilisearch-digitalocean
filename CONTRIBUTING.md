@@ -33,12 +33,6 @@ Install the required python packages to your environment:
 pip3 install -r requirements.txt
 ```
 
-After [adding your SSH key to DigitalOcean account](https://www.digitalocean.com/docs/droplets/how-to/add-ssh-keys/to-account/), include the fingerprint of your SSH key in the `SSH_KEYS_FINGERPRINTS` list on [`tools/config.py`](tools/config.py)
-
-```bash
-pip3 install -r requirements.txt
-```
-
 ### Tests and Linter <!-- omit in toc -->
 
 Each PR should pass the tests and the linter to be accepted.
@@ -98,6 +92,8 @@ Before running any script, make sure to [obtain a DigitalOcean API Token](https:
 ```bash
 export DIGITALOCEAN_ACCESS_TOKEN="XxXxxxxXXxxXXxxXXxxxXXXxXxXxXX"
 ```
+
+After [adding your SSH key to DigitalOcean account](https://www.digitalocean.com/docs/droplets/how-to/add-ssh-keys/to-account/), include the fingerprint of your SSH key in the `SSH_KEYS_FINGERPRINTS` list on [`tools/config.py`](tools/config.py)
 
 ### Test before Releasing <!-- omit in TOC -->
 
