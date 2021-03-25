@@ -19,8 +19,10 @@ SNAPSHOT_NAME = 'MeiliSearch-{}-Debian-10.3'.format(
     MEILI_CLOUD_SCRIPTS_VERSION_TAG)
 # https://developers.digitalocean.com/documentation/changelog/api-v2/new-size-slugs-for-droplet-plan-changes/
 SIZE_SLUG = 's-1vcpu-1gb'
+PROVIDER_NAME = 'digitalocean'
 USER_DATA = requests.get(
-    'https://raw.githubusercontent.com/meilisearch/cloud-scripts/{}/scripts/cloud-config.yaml'.format(MEILI_CLOUD_SCRIPTS_VERSION_TAG)).text
+    'https://raw.githubusercontent.com/meilisearch/cloud-scripts/{}/scripts/cloud-config.yaml'.format(MEILI_CLOUD_SCRIPTS_VERSION_TAG)).text.replace('unknown_provider', PROVIDER_NAME)
+
 
 # Droplet settings
 
