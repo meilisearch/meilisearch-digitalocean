@@ -53,7 +53,9 @@ disable=
     duplicate-code,
     missing-docstring,
     too-few-public-methods,
-    line-too-long
+    line-too-long,
+    no-member,
+    broad-except
 
 
 [REPORTS]

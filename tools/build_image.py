@@ -50,13 +50,13 @@ commands = [
 ]
 
 for cmd in commands:
-    ssh_command = 'ssh {user}@{host} -o StrictHostKeyChecking=no "{cmd}"'.format(
+    SSH_COMMAND = 'ssh {user}@{host} -o StrictHostKeyChecking=no "{cmd}"'.format(
         user='root',
         host=droplet.ip_address,
         cmd=cmd,
     )
-    print('EXECUTE COMMAND:', ssh_command)
-    os.system(ssh_command)
+    print('EXECUTE COMMAND:', SSH_COMMAND)
+    os.system(SSH_COMMAND)
     time.sleep(5)
 
 # Power down Droplet

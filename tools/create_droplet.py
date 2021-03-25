@@ -8,8 +8,33 @@ import requests
 import digitalocean
 from utils import wait_for_droplet_creation, wait_for_ssh_availability
 
-logger = None
 
+ # -----------------------------------------
+# MeiliSearch DigitalOcean Droplet Config
+# -----------------------------------------
+
+# Script settings
+
+DIGITALOCEAN_ACCESS_TOKEN = os.getenv("DIGITALOCEAN_ACCESS_TOKEN")
+CLOUDFLARE_API_KEY = os.getenv("CLOUDFLARE_API_KEY")
+CLOUDFLARE_EMAIL = os.getenv("CLOUDFLARE_EMAIL")
+
+# Droplet settings
+
+# https://developers.digitalocean.com/documentation/changelog/api-v2/new-size-slugs-for-droplet-plan-changes/
+DROPLET_TAGS = ["SAAS", "AUTOBUILD"]
+SSH_KEYS_FINGERPRINTS = [
+    "d4:b1:a5:ce:10:01:27:14:44:aa:a9:8e:41:bd:39:bc",
+    "0b:9b:00:21:60:17:6f:e4:d6:f3:d0:8a:e0:cc:a6:97",
+]
+ENABLE_BACKUPS = False
+
+MEILI_VERSION = "v0.10.0"  # v0.10.0
+MEILI_IMG_SLUG = "meilisearch"  # MeiliSearch
+
+USE_API_KEY = "true"  # String ["true" / "false"]
+USE_SSL = "true"  # String ["true" / "false"]
+USE_CERTBOT = "true"  # String ["true" / "false"]
 
 def trigger_create_droplet(subdomain_name, size_slug, callback_url, meilisearch_api_key, domain, logger):
     try:
@@ -42,52 +67,17 @@ def trigger_create_droplet(subdomain_name, size_slug, callback_url, meilisearch_
 
 def create_droplet(subdomain_name, size_slug, meilisearch_api_key, domain, logger):
 
+    cloudflare_zone = domain
     logger.info(
-        "{0: <15} | TRIGGERED DROPLET CREATION: {0}".format(subdomain_name))
-
-    # -----------------------------------------
-    # MeiliSearch DigitalOcean Droplet Config
-    # -----------------------------------------
-
-    # Script settings
-
-    DIGITALOCEAN_ACCESS_TOKEN = os.getenv("DIGITALOCEAN_ACCESS_TOKEN")
-
-    CLOUDFLARE_API_KEY = os.getenv("CLOUDFLARE_API_KEY")
-    CLOUDFLARE_EMAIL = os.getenv("CLOUDFLARE_EMAIL")
-    CLOUDFLARE_ZONE = domain
-
-    # Starting snapshot for Droplet
-
-    MEILI_VERSION = "v0.10.0"  # v0.10.0
-    MEILI_IMG_SLUG = "meilisearch"  # MeiliSearch
-
-    # Droplet settings
-
-    # https://developers.digitalocean.com/documentation/changelog/api-v2/new-size-slugs-for-droplet-plan-changes/
-    SIZE_SLUG = size_slug
-    DROPLET_NAME = subdomain_name
-    DROPLET_TAGS = ["SAAS", "AUTOBUILD"]
-    SSH_KEYS_FINGERPRINTS = [
-        "d4:b1:a5:ce:10:01:27:14:44:aa:a9:8e:41:bd:39:bc",
-        "0b:9b:00:21:60:17:6f:e4:d6:f3:d0:8a:e0:cc:a6:97",
-    ]
-    ENABLE_BACKUPS = False
-
-    # Meili starting config
-
+        "{0: <15} | TRIGGERED DROPLET CREATION: {0}".format(subdomain_name)
+    )
     if meilisearch_api_key == "":
         seed = datetime.datetime.now().microsecond + random.randint(100000, 1000000)
         key = hashlib.md5()
         key.update(str(seed).encode('utf-8'))
         meilisearch_api_key = key.hexdigest()
 
-    USE_API_KEY = "true"  # String ["true" / "false"]
-    MEILISEARCH_API_KEY = meilisearch_api_key  # String [Any]
-    USE_SSL = "true"  # String ["true" / "false"]
-    USE_CERTBOT = "true"  # String ["true" / "false"]
-    DOMAIN_NAME = "{}.{}".format(
-        subdomain_name, CLOUDFLARE_ZONE)  # String [Any]
+    domain_name = "{}.{}".format(subdomain_name, cloudflare_zone)
 
     # -------------------------------------------
     # MeiliSearch DigitalOcean Droplet Creation
@@ -116,28 +106,28 @@ def create_droplet(subdomain_name, size_slug, meilisearch_api_key, domain, logge
         id=meili_img.id,
         reg=meili_img.regions,
         tags=meili_img.tags,
-        size=SIZE_SLUG,
+        size=size_slug,
     ))
 
     # Set initial MeiliSearch config
 
-    USER_DATA = """
+    user_data = """
     export MEILI_SKIP_USER_INPUT=true
-    export USE_CERTBOT={USE_CERTBOT}
-    export USE_API_KEY={USE_API_KEY}
-    export MEILISEARCH_API_KEY={MEILISEARCH_API_KEY}
-    export USE_SSL={USE_SSL}
-    export DOMAIN_NAME={DOMAIN_NAME}
-    """.format(USE_CERTBOT=USE_CERTBOT, USE_API_KEY=USE_API_KEY, MEILISEARCH_API_KEY=MEILISEARCH_API_KEY, USE_SSL=USE_SSL, DOMAIN_NAME=DOMAIN_NAME)
+    export USE_CERTBOT={0}
+    export USE_API_KEY={1}
+    export MEILISEARCH_API_KEY={2}
+    export USE_SSL={3}
+    export DOMAIN_NAME={4}
+    """.format(USE_CERTBOT, USE_API_KEY, meilisearch_api_key, USE_SSL, domain_name)
 
     droplet = digitalocean.Droplet(token=os.getenv("DIGITALOCEAN_ACCESS_TOKEN"),
-                                   name=DROPLET_NAME,
+                                   name=subdomain_name,
                                    region='lon1',  # London
                                    image=meili_img.id,  # Meilis Snapshot
-                                   size_slug=SIZE_SLUG,
+                                   size_slug=size_slug,
                                    tags=DROPLET_TAGS,
                                    ssh_keys=SSH_KEYS_FINGERPRINTS,
-                                   user_data=USER_DATA,
+                                   user_data=user_data,
                                    backups=ENABLE_BACKUPS)
     droplet.create()
 
@@ -156,11 +146,11 @@ def create_droplet(subdomain_name, size_slug, meilisearch_api_key, domain, logge
         # debug=True,
     )
     try:
-        zones = cloudflare.zones.get(params={'name': CLOUDFLARE_ZONE})
+        zones = cloudflare.zones.get(params={'name': cloudflare_zone})
         zone_id = zones[0]['id']
         logger.info("{0: <15} | CLOUDFLARE: Found zone for {zone}. Id: {zone_id}".format(
             subdomain_name,
-            zone=CLOUDFLARE_ZONE,
+            zone=cloudflare_zone,
             zone_id=zone_id,
         ))
     except CloudFlare.exceptions.CloudFlareAPIError as err:
@@ -174,12 +164,12 @@ def create_droplet(subdomain_name, size_slug, meilisearch_api_key, domain, logge
         raise Exception('No zones found')
 
     dns_record = {
-        'name': DOMAIN_NAME,
+        'name': domain_name,
         'type': 'A',
         'content': droplet.ip_address,
         'proxied': False,
         'ttl': 1,
-        'zone_id': CLOUDFLARE_ZONE
+        'zone_id': cloudflare_zone
     }
 
     logger.info(
@@ -200,7 +190,7 @@ def create_droplet(subdomain_name, size_slug, meilisearch_api_key, domain, logge
 
     ssh_command = "ssh {user}@{host} -o StrictHostKeyChecking=no 'sh /var/opt/meilisearch/scripts/first-login/001-setup-prod.sh'".format(
         user='root',
-        host=DOMAIN_NAME
+        host=domain_name
     )
     logger.info("{0: <15} | {command}".format(
         subdomain_name,
@@ -209,7 +199,7 @@ def create_droplet(subdomain_name, size_slug, meilisearch_api_key, domain, logge
     os.system(ssh_command)
 
     response = {
-        'api_key': MEILISEARCH_API_KEY,
-        'domain_name': DOMAIN_NAME,
+        'api_key': meilisearch_api_key,
+        'domain_name': domain_name,
     }
     return response
