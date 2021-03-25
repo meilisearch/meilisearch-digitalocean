@@ -45,7 +45,7 @@ Each PR should pass the tests and the linter to be accepted.
 
 ```bash
 # Linter
-pylint --rcfile=.pylintrc tools
+pylint tools
 ```
 
 ## Git Guidelines
