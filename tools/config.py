@@ -5,6 +5,12 @@ import requests
 
 MEILI_CLOUD_SCRIPTS_VERSION_TAG = 'v0.19.0'
 
+# Update with the fingerprint of your own SSH key after uploading it to DigitalOcean Settings => Security
+
+SSH_KEYS_FINGERPRINTS = [
+    'd4:b1:a5:ce:10:01:27:14:44:aa:a9:8e:41:bd:39:bc'
+]
+
 # Script settings
 
 DIGITALOCEAN_ACCESS_TOKEN = os.getenv('DIGITALOCEAN_ACCESS_TOKEN')
@@ -20,7 +26,4 @@ USER_DATA = requests.get(
 
 DROPLET_NAME = '{}-BUILD'.format(SNAPSHOT_NAME)
 DROPLET_TAGS = ['MARKETPLACE', 'AUTOBUILD']
-SSH_KEYS_FINGERPRINTS = [
-    'd4:b1:a5:ce:10:01:27:14:44:aa:a9:8e:41:bd:39:bc'
-]
 ENABLE_BACKUPS = False
