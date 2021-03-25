@@ -27,6 +27,14 @@ First of all, thank you for contributing to MeiliSearch! The goal of this docume
 
 ### Setup <!-- omit in toc -->
 
+Install the required python packages to your environment:
+
+```bash
+pip3 install -r requirements.txt
+```
+
+After [adding your SSH key to DigitalOcean account](https://www.digitalocean.com/docs/droplets/how-to/add-ssh-keys/to-account/), include the fingerprint of your SSH key in the `SSH_KEYS_FINGERPRINTS` list on [`tools/config.py`](tools/config.py)
+
 ```bash
 pip3 install -r requirements.txt
 ```
