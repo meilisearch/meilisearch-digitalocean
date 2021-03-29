@@ -30,14 +30,6 @@ print('Waiting for Health check (may take a few minutes: config and reboot)')
 wait_for_health_check(droplet)
 print('   Instance is healthy')
 
-commands = [
-    'rm -rf /var/log/*.log',
-    'curl https://raw.githubusercontent.com/meilisearch/cloud-scripts/{0}/scripts/deploy-meilisearch.sh | bash -s {0}'.format(
-        conf.MEILI_CLOUD_SCRIPTS_VERSION_TAG),
-    'curl https://raw.githubusercontent.com/digitalocean/marketplace-partners/master/scripts/img_check.sh | bash',
-    'curl https://raw.githubusercontent.com/digitalocean/marketplace-partners/master/scripts/cleanup.sh | bash',
-]
-
 # Power down Droplet
 
 print('Powering down droplet...')
