@@ -1,8 +1,6 @@
-import os
-import time
 import digitalocean
-from utils import wait_for_droplet_creation, wait_for_ssh_availability, \
-    wait_for_health_check, wait_for_droplet_shutdown, wait_for_snapshot_creation
+from utils import wait_for_droplet_creation, wait_for_health_check, \
+    wait_for_droplet_shutdown, wait_for_snapshot_creation
 
 import config as conf
 # Create droplet
@@ -13,7 +11,6 @@ droplet = digitalocean.Droplet(token=conf.DIGITALOCEAN_ACCESS_TOKEN,
                                image='debian-10-x64',  # Debian 10.3
                                size_slug=conf.SIZE_SLUG,
                                tags=['marketplace'],
-                               ssh_keys=conf.SSH_KEYS_FINGERPRINTS,
                                backups=conf.ENABLE_BACKUPS,
                                user_data=conf.USER_DATA)
 droplet.create()
@@ -27,19 +24,11 @@ droplet = droplet.load()
 print('   Droplet created. IP: {}, ID: {}'.format(
     droplet.ip_address, droplet.id))
 
-# Wait for port 22 (SSH) to be available
-
-print('Waiting for SSH availability...')
-wait_for_ssh_availability(droplet)
-print('   SSH Port is available')
-
 # Wait for Health check after configuration is finished
 
 print('Waiting for Health check (may take a few minutes: config and reboot)')
 wait_for_health_check(droplet)
 print('   Instance is healthy')
-
-# Execute deploy script via SSH
 
 commands = [
     'rm -rf /var/log/*.log',
@@ -49,23 +38,12 @@ commands = [
     'curl https://raw.githubusercontent.com/digitalocean/marketplace-partners/master/scripts/cleanup.sh | bash',
 ]
 
-for cmd in commands:
-    SSH_COMMAND = 'ssh {user}@{host} -o StrictHostKeyChecking=no "{cmd}"'.format(
-        user='root',
-        host=droplet.ip_address,
-        cmd=cmd,
-    )
-    print('EXECUTE COMMAND:', SSH_COMMAND)
-    os.system(SSH_COMMAND)
-    time.sleep(5)
-
 # Power down Droplet
 
 print('Powering down droplet...')
 shutdown = droplet.shutdown(return_dict=True)
 wait_for_droplet_shutdown(droplet)
 print('   Droplet is OFF')
-
 
 # Create snapshot from Droplet
 
