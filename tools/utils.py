@@ -44,12 +44,12 @@ def wait_for_health_check(droplet, timeout_seconds=None):
     return STATUS_TIMEOUT
 
 
-def wait_for_droplet_power_off(droplet):
+def wait_for_droplet_shutdown(droplet):
     while True:
         try:
             actions = droplet.get_actions()
             for act in actions:
-                if act.type == "power_off" and actions[0].status == "completed":
+                if act.type == "shutdown" and actions[0].status == "completed":
                     return
         except Exception as err:
             print("   Exception: {}".format(err))

@@ -1,7 +1,8 @@
 import sys
+import time
 import digitalocean
 from utils import wait_for_droplet_creation, wait_for_health_check, \
-    wait_for_droplet_power_off, wait_for_snapshot_creation, \
+    wait_for_droplet_shutdown, wait_for_snapshot_creation, \
     destroy_droplet_and_exit, check_meilisearch_version, STATUS_OK
 import config as conf
 
@@ -50,10 +51,12 @@ print('   Version of meilisearch match!')
 
 # Power down Droplet
 
+time.sleep(60)
+
 print('Powering down droplet...')
-droplet.power_off()
+droplet.shutdown()
 try:
-    wait_for_droplet_power_off(droplet)
+    wait_for_droplet_shutdown(droplet)
 except Exception as err:
     print("   Exception: {}".format(err))
     destroy_droplet_and_exit(droplet)
