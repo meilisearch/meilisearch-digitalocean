@@ -52,7 +52,11 @@ print('   Version of meilisearch match!')
 
 print('Powering down droplet...')
 shutdown = droplet.shutdown(return_dict=True)
-wait_for_droplet_shutdown(droplet)
+try:
+    wait_for_droplet_shutdown(droplet)
+except Exception as err:
+    print("   Exception: {}".format(err))
+    destroy_droplet_and_exit(droplet)
 print('   Droplet is OFF')
 
 # Create snapshot from Droplet
