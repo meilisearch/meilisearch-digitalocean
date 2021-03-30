@@ -1,6 +1,8 @@
+import sys
 import digitalocean
 from utils import wait_for_droplet_creation, wait_for_health_check, \
-    wait_for_droplet_shutdown, wait_for_snapshot_creation
+    wait_for_droplet_shutdown, wait_for_snapshot_creation, \
+    destroy_droplet_and_exit, check_meilisearch_version, STATUS_OK
 
 import config as conf
 # Create droplet
@@ -27,8 +29,22 @@ print('   Droplet created. IP: {}, ID: {}'.format(
 # Wait for Health check after configuration is finished
 
 print('Waiting for Health check (may take a few minutes: config and reboot)')
-wait_for_health_check(droplet)
-print('   Instance is healthy')
+HEALTH = wait_for_health_check(droplet, timeout_seconds=600)
+if HEALTH == STATUS_OK:
+    print('   Instance is healthy')
+else:
+    print('   Timeout waiting for health check')
+    destroy_droplet_and_exit(droplet)
+
+# Check version
+
+print('Waiting for Version check')
+try:
+    check_meilisearch_version(
+        droplet, conf.MEILI_CLOUD_SCRIPTS_VERSION_TAG[1:])
+except Exception as err:
+    destroy_droplet_and_exit(droplet)
+print('   Version of meilisearch match!')
 
 # Power down Droplet
 
@@ -39,11 +55,17 @@ print('   Droplet is OFF')
 
 # Create snapshot from Droplet
 
-print('Creating a snapshot: {}'.format(conf.SNAPSHOT_NAME))
+
+if len(sys.argv) > 1:
+    SNAPSHOT_NAME = sys.argv[1]
+else:
+    SNAPSHOT_NAME = conf.SNAPSHOT_NAME
+
+print('Creating a snapshot: {}'.format(SNAPSHOT_NAME))
 take_snapshot = droplet.take_snapshot(
-    conf.SNAPSHOT_NAME, return_dict=True, power_off=False)
+    SNAPSHOT_NAME, return_dict=True, power_off=False)
 wait_for_snapshot_creation(droplet)
-print('   Snapshot created: {}'.format(conf.SNAPSHOT_NAME))
+print('   Snapshot created: {}'.format(SNAPSHOT_NAME))
 
 # Desroy Droplet
 
