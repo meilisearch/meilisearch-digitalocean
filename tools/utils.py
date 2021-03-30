@@ -18,7 +18,6 @@ def wait_for_droplet_creation(droplet):
 
 def wait_for_ssh_availability(droplet):
     while True:
-        time.sleep(2)
         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         try:
             sock.connect((droplet.ip_address, 22))
@@ -27,13 +26,13 @@ def wait_for_ssh_availability(droplet):
             return
         except Exception:
             continue
+        time.sleep(2)
 
 
 def wait_for_health_check(droplet, timeout_seconds=None):
     start_time = datetime.datetime.now()
     while timeout_seconds is None \
             or check_timeout(start_time, timeout_seconds) is not STATUS_TIMEOUT:
-        time.sleep(5)
         try:
             resp = requests.get(
                 'http://{}/health'.format(droplet.ip_address), verify=False, timeout=10)
@@ -41,20 +40,21 @@ def wait_for_health_check(droplet, timeout_seconds=None):
                 return STATUS_OK
         except Exception:
             pass
+        time.sleep(2)
     return STATUS_TIMEOUT
 
 
-def wait_for_droplet_shutdown(droplet):
+def wait_for_droplet_power_off(droplet):
     while True:
-        time.sleep(5)
         try:
             actions = droplet.get_actions()
             for act in actions:
-                if act.type == "shutdown" and actions[0].status == "completed":
+                if act.type == "power_off" and actions[0].status == "completed":
                     return
         except Exception as err:
             print("   Exception: {}".format(err))
             return
+        time.sleep(2)
 
 
 def wait_for_snapshot_creation(droplet):
