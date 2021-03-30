@@ -7,6 +7,8 @@ import config as conf
 
 # Create droplet
 
+print('Creating droplet...')
+
 droplet = digitalocean.Droplet(token=conf.DIGITALOCEAN_ACCESS_TOKEN,
                                name=conf.DROPLET_NAME,
                                region='lon1',  # London
@@ -17,7 +19,6 @@ droplet = digitalocean.Droplet(token=conf.DIGITALOCEAN_ACCESS_TOKEN,
                                user_data=conf.USER_DATA)
 droplet.create()
 
-print('Creating droplet...')
 
 # Wait for Droplet to be created
 

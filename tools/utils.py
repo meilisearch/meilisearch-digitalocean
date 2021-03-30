@@ -33,6 +33,7 @@ def wait_for_health_check(droplet, timeout_seconds=None):
     start_time = datetime.datetime.now()
     while timeout_seconds is None \
             or check_timeout(start_time, timeout_seconds) is not STATUS_TIMEOUT:
+        time.sleep(5)
         try:
             resp = requests.get(
                 'http://{}/health'.format(droplet.ip_address))
@@ -40,12 +41,12 @@ def wait_for_health_check(droplet, timeout_seconds=None):
                 return STATUS_OK
         except Exception:
             pass
-        time.sleep(1)
     return STATUS_TIMEOUT
 
 
 def wait_for_droplet_shutdown(droplet):
     while True:
+        time.sleep(5)
         try:
             actions = droplet.get_actions()
             for act in actions:
