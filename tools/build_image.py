@@ -52,24 +52,26 @@ print('   Version of meilisearch match!')
 
 # Power down Droplet
 
-time.sleep(30)
 print('Powering down droplet...')
-# droplet.shutdown()
+droplet.shutdown()
+time.sleep(30)
+droplet.power_off()
+time.sleep(10)
 
-AUTH = "Bearer {}".format(conf.DIGITALOCEAN_ACCESS_TOKEN)
-headers = {
-    'Content-Type': 'application/json',
-    'Authorization': AUTH
-}
-URL = 'https://api.digitalocean.com/v2/droplets/{}/actions'.format(droplet.id)
-payload = {"type": "shutdown"}
-r = requests.post(URL, json=payload, headers=headers, timeout=10)
+# AUTH = "Bearer {}".format(conf.DIGITALOCEAN_ACCESS_TOKEN)
+# headers = {
+#     'Content-Type': 'application/json',
+#     'Authorization': AUTH
+# }
+# URL = 'https://api.digitalocean.com/v2/droplets/{}/actions'.format(droplet.id)
+# payload = {"type": "shutdown"}
+# r = requests.post(URL, json=payload, headers=headers, timeout=10)
 
-try:
-    wait_for_droplet_shutdown(droplet)
-except Exception as err:
-    print("   Exception: {}".format(err))
-    destroy_droplet_and_exit(droplet)
+# try:
+#     wait_for_droplet_shutdown(droplet)
+# except Exception as err:
+#     print("   Exception: {}".format(err))
+#     destroy_droplet_and_exit(droplet)
 print('   Droplet is OFF')
 
 # Create snapshot from Droplet
