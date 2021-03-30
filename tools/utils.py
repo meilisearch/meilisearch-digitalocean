@@ -76,7 +76,7 @@ def wait_for_snapshot_creation(droplet):
 def check_meilisearch_version(droplet, version):
     resp = requests.get(
         "http://{}/version".format(droplet.ip_address)).json()
-    if resp["pkgVersion"] == version:
+    if resp["pkgVersion"] in version:
         return
     raise Exception(
         "    The version of meilisearch ({}) does not match the droplet ({})".format(version, resp["pkgVersion"]))
