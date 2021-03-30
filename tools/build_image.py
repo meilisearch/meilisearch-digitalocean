@@ -3,8 +3,8 @@ import digitalocean
 from utils import wait_for_droplet_creation, wait_for_health_check, \
     wait_for_droplet_shutdown, wait_for_snapshot_creation, \
     destroy_droplet_and_exit, check_meilisearch_version, STATUS_OK
-
 import config as conf
+
 # Create droplet
 
 droplet = digitalocean.Droplet(token=conf.DIGITALOCEAN_ACCESS_TOKEN,
@@ -54,7 +54,6 @@ wait_for_droplet_shutdown(droplet)
 print('   Droplet is OFF')
 
 # Create snapshot from Droplet
-
 
 if len(sys.argv) > 1:
     SNAPSHOT_NAME = sys.argv[1]

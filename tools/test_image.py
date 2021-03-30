@@ -13,6 +13,8 @@ else:
 print("Running test for image named: {name}...".format(
     name=SNAPSHOT_NAME))
 
+# Get the snapshot for the test
+
 manager = digitalocean.Manager(token=conf.DIGITALOCEAN_ACCESS_TOKEN)
 images = manager.get_images()
 
@@ -29,6 +31,8 @@ for img in images:
 if MEILI_IMG is None:
     raise Exception("Couldn't find the specified image: {}".format(
         SNAPSHOT_NAME))
+
+# Create droplet from the retreived snapshot
 
 droplet = digitalocean.Droplet(token=conf.DIGITALOCEAN_ACCESS_TOKEN,
                                name=conf.DROPLET_TEST_NAME,
