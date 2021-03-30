@@ -45,6 +45,7 @@ def wait_for_health_check(droplet, timeout_seconds=None):
 
 
 def wait_for_droplet_shutdown(droplet):
+    time.sleep(10)
     while True:
         try:
             actions = droplet.get_actions()
