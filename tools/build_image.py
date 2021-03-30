@@ -51,7 +51,7 @@ print('   Version of meilisearch match!')
 # Power down Droplet
 
 print('Powering down droplet...')
-shutdown = droplet.shutdown(return_dict=True)
+droplet.shutdown()
 try:
     wait_for_droplet_shutdown(droplet)
 except Exception as err:
