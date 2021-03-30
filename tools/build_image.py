@@ -63,7 +63,7 @@ headers = {
 }
 URL = 'https://api.digitalocean.com/v2/droplets/{}/actions'.format(droplet.id)
 payload = {"type": "shutdown"}
-r = requests.post(URL, json=payload, headers=headers)
+r = requests.post(URL, json=payload, headers=headers, timeout=10)
 
 try:
     wait_for_droplet_shutdown(droplet)
