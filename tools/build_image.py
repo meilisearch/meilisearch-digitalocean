@@ -43,6 +43,7 @@ try:
     check_meilisearch_version(
         droplet, conf.MEILI_CLOUD_SCRIPTS_VERSION_TAG)
 except Exception as err:
+    print("   Exception: {}".format(err))
     destroy_droplet_and_exit(droplet)
 print('   Version of meilisearch match!')
 
