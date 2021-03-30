@@ -1,6 +1,11 @@
+import datetime
+import sys
 import time
 import socket
 import requests
+
+STATUS_OK = 0
+STATUS_TIMEOUT = 1
 
 
 def wait_for_droplet_creation(droplet):
@@ -24,15 +29,19 @@ def wait_for_ssh_availability(droplet):
             continue
 
 
-def wait_for_health_check(droplet):
-    while True:
-        time.sleep(2)
+def wait_for_health_check(droplet, timeout_seconds=None):
+    start_time = datetime.datetime.now()
+    while timeout_seconds is None \
+            or check_timeout(start_time, timeout_seconds) is not STATUS_TIMEOUT:
         try:
-            resp = requests.get("http://{}/health".format(droplet.ip_address))
+            resp = requests.get(
+                'http://{}/health'.format(droplet.ip_address))
             if resp.status_code >= 200 and resp.status_code < 300:
-                return
+                return STATUS_OK
         except Exception:
-            continue
+            pass
+        time.sleep(1)
+    return STATUS_TIMEOUT
 
 
 def wait_for_droplet_shutdown(droplet):
@@ -62,3 +71,28 @@ def wait_for_snapshot_creation(droplet):
             print("   Exception: {}".format(err))
             time.sleep(300)
             return
+
+
+def check_meilisearch_version(droplet, version):
+    resp = requests.get(
+        "http://{}/version".format(droplet.ip_address)).json()
+    if resp["pkgVersion"] == version:
+        return
+    raise Exception(
+        "    The version of meilisearch ({}) does not match the droplet ({})".format(version, resp["pkgVersion"]))
+
+
+def destroy_droplet_and_exit(droplet):
+    print('   Destroying droplet {}'.format(droplet.id))
+    droplet.destroy()
+    print('ENDING PROCESS WITH EXIT CODE 1')
+    sys.exit(1)
+
+# GENERAL
+
+
+def check_timeout(start_time, timeout_seconds):
+    elapsed_time = datetime.datetime.now() - start_time
+    if elapsed_time.total_seconds() > timeout_seconds:
+        return STATUS_TIMEOUT
+    return STATUS_OK
