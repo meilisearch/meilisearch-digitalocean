@@ -36,7 +36,7 @@ def wait_for_health_check(droplet, timeout_seconds=None):
         time.sleep(5)
         try:
             resp = requests.get(
-                'http://{}/health'.format(droplet.ip_address))
+                'http://{}/health'.format(droplet.ip_address), verify=False, timeout=10)
             if resp.status_code >= 200 and resp.status_code < 300:
                 return STATUS_OK
         except Exception:
@@ -76,7 +76,7 @@ def wait_for_snapshot_creation(droplet):
 
 def check_meilisearch_version(droplet, version):
     resp = requests.get(
-        "http://{}/version".format(droplet.ip_address)).json()
+        "http://{}/version".format(droplet.ip_address), verify=False, timeout=10).json()
     if resp["pkgVersion"] in version:
         return
     raise Exception(
