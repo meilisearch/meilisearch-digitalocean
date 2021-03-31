@@ -15,16 +15,16 @@ jobs:
     # Will still run for each push to bump-meilisearch-v*
     if: github.event_name != 'pull_request' || !startsWith(github.base_ref, 'bump-meilisearch-v')
     name: build-image-test
-    runs-on: ubuntu-latest
+    runs-on: macos-11.0
     env:
       DIGITALOCEAN_ACCESS_TOKEN: ${{secrets.DIGITALOCEAN_ACCESS_TOKEN}}
       REQUEST_TIMEOUT_ENV_VAR: "30"
     steps:
     - uses: actions/checkout@v1
-    - name: Set up Python 3.8.8
+    - name: Set up Python 3.7
       uses: actions/setup-python@v1
       with:
-        python-version: 3.8.8
+        python-version: 3.7
     - name: Install dependencies
       run: pip3 install -r requirements.txt
     - name: Set image name as env variable
