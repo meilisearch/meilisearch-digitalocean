@@ -47,8 +47,13 @@ print('Creating droplet...')
 
 # Wait for Droplet to be created
 
-wait_for_droplet_creation(droplet)
-droplet = droplet.load()
+try:
+    wait_for_droplet_creation(droplet)
+    droplet = droplet.load()
+except Exception as err:
+    print("   Exception: {}".format(err))
+    destroy_droplet_and_exit(droplet)
+
 print('   Droplet created. IP: {}, ID: {}'.format(
     droplet.ip_address, droplet.id))
 
@@ -71,13 +76,19 @@ try:
 except Exception as err:
     print("   Exception: {}".format(err))
     destroy_droplet_and_exit(droplet)
+
 print('   Version of meilisearch match!')
 
 # Power down Droplet
 
 print('Powering down droplet...')
-droplet.shutdown()
-wait_for_droplet_shutdown(droplet)
+try:
+    shutdown = droplet.shutdown(return_dict=True)
+    wait_for_droplet_shutdown(droplet)
+except Exception as err:
+    print("   Exception: {}".format(err))
+    destroy_droplet_and_exit(droplet)
+
 print('   Droplet is OFF')
 
 # Destroy Droplet
