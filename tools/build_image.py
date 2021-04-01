@@ -1,4 +1,3 @@
-import time
 import sys
 import digitalocean
 from utils import wait_for_droplet_creation, wait_for_health_check, \
