@@ -13,15 +13,15 @@ def wait_for_droplet_creation(droplet):
         actions = droplet.get_actions()
         while True:
             for act in actions:
-                if act.type == "create":
+                if act.type == 'create':
                     act.load()
-                    print("    Action type: {} | Statut: {}".format(
+                    print('   Action {} is {}'.format(
                         act.type, act.status))
-                    if act.status == "completed":
+                    if act.status == 'completed':
                         return
-            time.sleep(2)
+            time.sleep(4)
     except Exception as err:
-        print("   Exception: {}".format(err))
+        print('   Exception: {}'.format(err))
         raise
 
 
@@ -58,15 +58,15 @@ def wait_for_droplet_shutdown(droplet):
         actions = droplet.get_actions()
         while True:
             for act in actions:
-                if act.type == "shutdown":
+                if act.type == 'shutdown':
                     act.load()
-                    print("    Action type: {} | Statut: {}".format(
+                    print('   Action {} is {}'.format(
                         act.type, act.status))
-                    if act.status == "completed":
+                    if act.status == 'completed':
                         return
-            time.sleep(2)
+            time.sleep(4)
     except Exception as err:
-        print("   Exception: {}".format(err))
+        print('   Exception: {}'.format(err))
         raise
 
 
@@ -75,26 +75,26 @@ def wait_for_snapshot_creation(droplet):
         actions = droplet.get_actions()
         while True:
             for act in actions:
-                if act.type == "snapshot":
+                if act.type == 'snapshot':
                     act.load()
-                    print("    Action type: {} | Statut: {}".format(
+                    print('   Action {} is {}'.format(
                         act.type, act.status))
-                    if act.status == "completed":
+                    if act.status == 'completed':
                         return
-            time.sleep(2)
+            time.sleep(4)
     except Exception as err:
-        print("   Exception: {}".format(err))
+        print('   Exception: {}'.format(err))
         time.sleep(300)
         raise
 
 
 def check_meilisearch_version(droplet, version):
     resp = requests.get(
-        "http://{}/version".format(droplet.ip_address), verify=False, timeout=10).json()
-    if resp["pkgVersion"] in version:
+        'http://{}/version'.format(droplet.ip_address), verify=False, timeout=10).json()
+    if resp['pkgVersion'] in version:
         return
     raise Exception(
-        "    The version of meilisearch ({}) does not match the droplet ({})".format(version, resp["pkgVersion"]))
+        '    The version of meilisearch ({}) does not match the droplet ({})'.format(version, resp['pkgVersion']))
 
 
 def destroy_droplet_and_exit(droplet):

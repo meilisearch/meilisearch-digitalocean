@@ -25,7 +25,7 @@ try:
     wait_for_droplet_creation(droplet)
     droplet = droplet.load()
 except Exception as err:
-    print("   Exception: {}".format(err))
+    print('   Exception: {}'.format(err))
     destroy_droplet_and_exit(droplet)
 
 print('   Droplet created. IP: {}, ID: {}'.format(
@@ -48,7 +48,7 @@ try:
     check_meilisearch_version(
         droplet, conf.MEILI_CLOUD_SCRIPTS_VERSION_TAG)
 except Exception as err:
-    print("   Exception: {}".format(err))
+    print('   Exception: {}'.format(err))
     destroy_droplet_and_exit(droplet)
 
 print('   Version of meilisearch match!')
@@ -60,7 +60,7 @@ try:
     shutdown = droplet.shutdown(return_dict=True)
     wait_for_droplet_shutdown(droplet)
 except Exception as err:
-    print("   Exception: {}".format(err))
+    print('   Exception: {}'.format(err))
     destroy_droplet_and_exit(droplet)
 
 print('   Droplet is OFF')
@@ -79,7 +79,7 @@ try:
         SNAPSHOT_NAME, return_dict=False, power_off=True)
     wait_for_snapshot_creation(droplet)
 except Exception as err:
-    print("  Exception: {}".format(err))
+    print('  Exception: {}'.format(err))
     destroy_droplet_and_exit(droplet)
 
 print('   Snapshot created: {}'.format(SNAPSHOT_NAME))
