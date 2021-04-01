@@ -9,16 +9,20 @@ STATUS_TIMEOUT = 1
 
 
 def wait_for_droplet_creation(droplet):
-    while True:
-        try:
-            actions = droplet.get_actions()
+    try:
+        actions = droplet.get_actions()
+        while True:
             for act in actions:
-                if act.type == "create" and act.status == "completed":
-                    return
-        except Exception as err:
-            print("   Exception: {}".format(err))
-            return
-    time.sleep(2)
+                if act.type == "create":
+                    act.load()
+                    print("    Action type: {} | Statut: {}".format(
+                        act.type, act.status))
+                    if act.status == "completed":
+                        return
+            time.sleep(2)
+    except Exception as err:
+        print("   Exception: {}".format(err))
+        raise
 
 
 def wait_for_ssh_availability(droplet):
@@ -50,30 +54,38 @@ def wait_for_health_check(droplet, timeout_seconds=None):
 
 
 def wait_for_droplet_shutdown(droplet):
-    while True:
-        try:
-            actions = droplet.get_actions()
+    try:
+        actions = droplet.get_actions()
+        while True:
             for act in actions:
-                if act.type == "shutdown" and act.status == "completed":
-                    return
-        except Exception as err:
-            print("   Exception: {}".format(err))
-            return
-        time.sleep(2)
+                if act.type == "shutdown":
+                    act.load()
+                    print("    Action type: {} | Statut: {}".format(
+                        act.type, act.status))
+                    if act.status == "completed":
+                        return
+            time.sleep(2)
+    except Exception as err:
+        print("   Exception: {}".format(err))
+        raise
 
 
 def wait_for_snapshot_creation(droplet):
-    while True:
-        try:
-            actions = droplet.get_actions()
+    try:
+        actions = droplet.get_actions()
+        while True:
             for act in actions:
-                if act.type == "snapshot" and act.status == "completed":
-                    return
-        except Exception as err:
-            print("   Exception: {}".format(err))
-            time.sleep(300)
-            return
-        time.sleep(2)
+                if act.type == "snapshot":
+                    act.load()
+                    print("    Action type: {} | Statut: {}".format(
+                        act.type, act.status))
+                    if act.status == "completed":
+                        return
+            time.sleep(2)
+    except Exception as err:
+        print("   Exception: {}".format(err))
+        time.sleep(300)
+        raise
 
 
 def check_meilisearch_version(droplet, version):
