@@ -10,10 +10,15 @@ STATUS_TIMEOUT = 1
 
 def wait_for_droplet_creation(droplet):
     while True:
-        actions = droplet.get_actions()
-        if actions[0].type == "create" and actions[0].status == "completed":
-            break
-        time.sleep(2)
+        try:
+            actions = droplet.get_actions()
+            for act in actions:
+                if act.type == "create" and act.status == "completed":
+                    return
+        except Exception as err:
+            print("   Exception: {}".format(err))
+            return
+    time.sleep(2)
 
 
 def wait_for_ssh_availability(droplet):
@@ -45,12 +50,11 @@ def wait_for_health_check(droplet, timeout_seconds=None):
 
 
 def wait_for_droplet_shutdown(droplet):
-    time.sleep(10)
     while True:
         try:
             actions = droplet.get_actions()
             for act in actions:
-                if act.type == "shutdown" and actions[0].status == "completed":
+                if act.type == "shutdown" and act.status == "completed":
                     return
         except Exception as err:
             print("   Exception: {}".format(err))
@@ -60,19 +64,16 @@ def wait_for_droplet_shutdown(droplet):
 
 def wait_for_snapshot_creation(droplet):
     while True:
-        time.sleep(2)
-        actions = droplet.get_actions()
-        if actions[0].type == "snapshot" and actions[0].status == "completed":
-            return
         try:
-            time.sleep(2)
             actions = droplet.get_actions()
-            if actions[0].type == "snapshot" and actions[0].status == "completed":
-                return
+            for act in actions:
+                if act.type == "snapshot" and act.status == "completed":
+                    return
         except Exception as err:
             print("   Exception: {}".format(err))
             time.sleep(300)
             return
+        time.sleep(2)
 
 
 def check_meilisearch_version(droplet, version):
