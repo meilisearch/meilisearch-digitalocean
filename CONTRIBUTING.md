@@ -4,6 +4,7 @@ First of all, thank you for contributing to MeiliSearch! The goal of this docume
 
 - [Assumptions](#assumptions)
 - [How to Contribute](#how-to-contribute)
+- [Development Workflow](#development-workflow)
 - [Git Guidelines](#git-guidelines)
 - [Release Process (for internal team only)](#release-process-for-internal-team-only)
 
@@ -21,6 +22,25 @@ First of all, thank you for contributing to MeiliSearch! The goal of this docume
 4. Make the changes on your branch.
 5. [Submit the branch as a PR](https://help.github.com/en/github/collaborating-with-issues-and-pull-requests/creating-a-pull-request-from-a-fork) pointing to the `main` branch of the main meilisearch-digitalocean repository. A maintainer should comment and/or review your Pull Request within a few days. Although depending on the circumstances, it may take longer.<br>
  We do not enforce a naming convention for the PRs, but **please use something descriptive of your changes**, having in mind that the title of your PR will be automatically added to the next [release changelog](https://github.com/meilisearch/meilisearch-digitalocean/releases/).
+
+## Development Workflow
+
+### Setup <!-- omit in toc -->
+
+Install the required python packages to your environment:
+
+```bash
+pip3 install -r requirements.txt
+```
+
+### Tests and Linter <!-- omit in toc -->
+
+Each PR should pass the tests and the linter to be accepted.
+
+```bash
+# Linter
+pylint tools
+```
 
 ## Git Guidelines
 
@@ -73,14 +93,16 @@ Before running any script, make sure to [obtain a DigitalOcean API Token](https:
 export DIGITALOCEAN_ACCESS_TOKEN="XxXxxxxXXxxXXxxXXxxxXXXxXxXxXX"
 ```
 
+After [adding your SSH key to DigitalOcean account](https://www.digitalocean.com/docs/droplets/how-to/add-ssh-keys/to-account/), include the fingerprint of your SSH key in the `SSH_KEYS_FINGERPRINTS` list on [`tools/config.py`](tools/config.py)
+
 ### Test before Releasing <!-- omit in TOC -->
 
-1. In [`tools/build-image.py`](tools/build-image.py), update the `MEILI_CLOUD_SCRIPTS_VERSION_TAG` variable value with the new MeiliSearch version you want to release, in the format: `vX.X.X`. If you want to test with a MeiliSearch RC, replace it by the right RC version tag (`vX.X.XrcX`).
+1. In [`tools/config.py`](tools/config.py), update the `MEILI_CLOUD_SCRIPTS_VERSION_TAG` variable value with the new MeiliSearch version you want to release, in the format: `vX.X.X`. If you want to test with a MeiliSearch RC, replace it by the right RC version tag (`vX.X.XrcX`).
 
-2. Run the [`tools/build-image.py`](tools/build-image.py) script to build the DigitalOcean image:
+2. Run the [`tools/build_image.py`](tools/build_image.py) script to build the DigitalOcean image:
 
 ```bash
-python3 tools/build-image.py
+python3 tools/build_image.py
 ```
 
 This command will create a DigitalOcean Droplet on MeiliSearch's account and configure it in order to prepare the Marketplace image. It will then create a snapshot, which should be ready to be published to the Marketplace. The Droplet will automatically be removed from the account after the image creation.<br>
