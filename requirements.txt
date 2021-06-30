@@ -17,7 +17,7 @@ Jinja2==2.11.3
 jsonify==0.5
 jsonlines==2.0.0
 jsonpickle==2.0.0
-MarkupSafe==1.1.1
+MarkupSafe==2.0.1
 paramiko==2.7.2
 pycparser==2.20
 pylint==2.9.1
