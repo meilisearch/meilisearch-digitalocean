@@ -25,7 +25,7 @@ PyNaCl==1.4.0
 python-digitalocean==1.16.0
 PyYAML==5.4.1
 requests==2.25.1
-scp==0.13.3
+scp==0.13.5
 six==1.16.0
 urllib3==1.26.5
 Werkzeug==2.0.1
