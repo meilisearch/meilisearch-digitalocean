@@ -94,7 +94,7 @@ def wait_for_droplet_power_off(droplet):
 def power_off_droplet(droplet):
     print('Powering down droplet with power_off...')
     try:
-        power_off = droplet.power_off(return_dict=True)
+        droplet.power_off(return_dict=True)
         wait_for_droplet_power_off(droplet)
     except Exception as err:
         print('   Exception: {}'.format(err))
