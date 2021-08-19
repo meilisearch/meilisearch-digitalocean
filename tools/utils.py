@@ -97,7 +97,7 @@ def power_off_droplet(droplet):
         wait_for_droplet_power_off(droplet)
     except Exception as err:
         print('   Exception: {}'.format(err))
-        destroy_droplet_and_exit(droplet)
+        raise
 
 def wait_for_snapshot_creation(droplet):
     try:
