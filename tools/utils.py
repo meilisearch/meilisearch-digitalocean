@@ -85,7 +85,6 @@ def wait_for_droplet_power_off(droplet):
                         return
                     if act.status == 'errored':
                         destroy_droplet_and_exit(droplet)
-                        return
             time.sleep(4)
     except Exception as err:
         print('   Exception: {}'.format(err))
