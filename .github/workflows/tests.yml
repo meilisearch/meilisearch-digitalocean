@@ -15,7 +15,7 @@ jobs:
     # Will still run for each push to bump-meilisearch-v*
     if: github.event_name != 'pull_request' || !startsWith(github.base_ref, 'bump-meilisearch-v')
     name: build-image-test
-    runs-on: macos-latest
+    runs-on: ubuntu-latest
     env:
       DIGITALOCEAN_ACCESS_TOKEN: ${{secrets.DIGITALOCEAN_ACCESS_TOKEN}}
       REQUEST_TIMEOUT_ENV_VAR: 30
