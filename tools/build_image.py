@@ -5,6 +5,13 @@ from utils import wait_for_droplet_creation, wait_for_health_check, \
     destroy_droplet_and_exit, check_meilisearch_version, STATUS_OK
 import config as conf
 
+# Remove analytics for CI jobs
+
+if len(sys.argv) == 3 and sys.argv[2] == 'no-analytics':
+    print('OK')
+    index = conf.USER_DATA.find('--env development')
+    conf.USER_DATA = conf.USER_DATA[:index] + '--no-analytics ' + conf.USER_DATA[index:]
+
 # Create droplet
 
 print('Creating droplet...')
