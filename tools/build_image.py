@@ -10,7 +10,7 @@ import config as conf
 if len(sys.argv) == 3 and sys.argv[2] == 'no-analytics':
     print('OK')
     index = conf.USER_DATA.find('--env development')
-    conf.USER_DATA = conf.USER_DATA[:index] + '--no-analytics ' + conf.USER_DATA[index:]
+    conf.USER_DATA = conf.USER_DATA[:index] + '--no-analytics=true ' + conf.USER_DATA[index:]
 
 # Create droplet
 
