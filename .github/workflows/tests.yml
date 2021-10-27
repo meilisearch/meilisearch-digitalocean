@@ -33,7 +33,10 @@ jobs:
       run: python3 tools/build_image.py $IMAGE_NAME --no-analytics
     - name: Test image
       run: python3 tools/test_image.py $IMAGE_NAME
-    
+    - name: Clean image
+      if: ${{ always() }}
+      run: python3 tools/destroy_image.py $IMAGE_NAME
+
   pylint:
     name: pylint
     runs-on: ubuntu-latest
