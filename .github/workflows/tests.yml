@@ -30,12 +30,9 @@ jobs:
     - name: Set image name as env variable
       run: echo "IMAGE_NAME=meilisearch_digitalocean_ci_test_$(date +'%d-%m-%Y-%H-%M-%S')" >> $GITHUB_ENV
     - name: Build image
-      run: python3 tools/build_image.py $IMAGE_NAME
+      run: python3 tools/build_image.py $IMAGE_NAME --no-analytics
     - name: Test image
       run: python3 tools/test_image.py $IMAGE_NAME
-    - name: Clean image
-      if: ${{ always() }}
-      run: python3 tools/destroy_image.py $IMAGE_NAME
     
   pylint:
     name: pylint
