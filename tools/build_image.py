@@ -76,7 +76,7 @@ print('   Droplet is OFF')
 
 # Create snapshot from Droplet
 
-if len(sys.argv) > 1:
+if len(sys.argv) > 1 and sys.argv[1] != '--no-analytics':
     SNAPSHOT_NAME = sys.argv[1]
 else:
     SNAPSHOT_NAME = conf.SNAPSHOT_NAME
