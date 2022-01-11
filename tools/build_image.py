@@ -5,6 +5,15 @@ from utils import wait_for_droplet_creation, wait_for_health_check, \
     destroy_droplet_and_exit, check_meilisearch_version, STATUS_OK
 import config as conf
 
+# Remove analytics for CI jobs
+
+if len(sys.argv) > 1 and '--no-analytics' in sys.argv:
+    print('Launch build image without analytics.')
+    index = conf.USER_DATA.find('--env development')
+    USER_DATA = conf.USER_DATA[:index] + '--no-analytics=true ' + conf.USER_DATA[index:]
+else:
+    USER_DATA = conf.USER_DATA
+
 # Create droplet
 
 print('Creating droplet...')
@@ -16,7 +25,7 @@ droplet = digitalocean.Droplet(token=conf.DIGITALOCEAN_ACCESS_TOKEN,
                                size_slug=conf.SIZE_SLUG,
                                tags=['marketplace'],
                                backups=conf.ENABLE_BACKUPS,
-                               user_data=conf.USER_DATA)
+                               user_data=USER_DATA)
 droplet.create()
 
 # Wait for Droplet to be created
@@ -67,7 +76,7 @@ print('   Droplet is OFF')
 
 # Create snapshot from Droplet
 
-if len(sys.argv) > 1:
+if len(sys.argv) > 1 and sys.argv[1] != '--no-analytics':
     SNAPSHOT_NAME = sys.argv[1]
 else:
     SNAPSHOT_NAME = conf.SNAPSHOT_NAME

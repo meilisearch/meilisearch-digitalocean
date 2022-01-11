@@ -2,22 +2,11 @@
 
 First of all, thank you for contributing to MeiliSearch! The goal of this document is to provide everything you need to know in order to contribute to MeiliSearch and its different integrations.
 
-- [Hacktoberfest](#hacktoberfest)
 - [Assumptions](#assumptions)
 - [How to Contribute](#how-to-contribute)
 - [Development Workflow](#development-workflow)
 - [Git Guidelines](#git-guidelines)
 - [Release Process (for internal team only)](#release-process-for-internal-team-only)
-
-## Hacktoberfest
-
-It's [Hacktoberfest month](https://blog.meilisearch.com/contribute-hacktoberfest-2021/)! 🥳
-
-🚀 If your PR gets accepted it will count into your participation to Hacktoberfest!
-
-✅ To be accepted it has either to have been merged, approved or tagged with the `hacktoberfest-accepted` label.
-
-🧐 Don't forget to check the [quality standards](https://hacktoberfest.digitalocean.com/resources/qualitystandards)! Low-quality PRs might get marked as `spam` or `invalid`, and will not count toward your participation in Hacktoberfest.
 
 ## Assumptions
 
@@ -110,10 +99,10 @@ After [adding your SSH key to DigitalOcean account](https://www.digitalocean.com
 
 1. In [`tools/config.py`](tools/config.py), update the `MEILI_CLOUD_SCRIPTS_VERSION_TAG` variable value with the new MeiliSearch version you want to release, in the format: `vX.X.X`. If you want to test with a MeiliSearch RC, replace it by the right RC version tag (`vX.X.XrcX`).
 
-2. Run the [`tools/build_image.py`](tools/build_image.py) script to build the DigitalOcean image:
+2. Run the [`tools/build_image.py`](tools/build_image.py) script to build the DigitalOcean image without analytics:
 
 ```bash
-python3 tools/build_image.py
+python3 tools/build_image.py --no-analytics
 ```
 
 This command will create a DigitalOcean Droplet on MeiliSearch's account and configure it in order to prepare the Marketplace image. It will then create a snapshot, which should be ready to be published to the Marketplace. The Droplet will automatically be removed from the account after the image creation.<br>
@@ -121,6 +110,12 @@ The image name will be MeiliSearch-v.X.X.X-Debian-X.
 
 3. Test the image: create a new Droplet based on the new snapshot `MeiliSearch-v.X.X.X-Debian-X`, and make sure everything is running smoothly. Connect via SSH to the droplet and test the configuration script that is run automatically on login.<br>
 🗑 Don't forget to destroy the Droplet after the test.
+
+4. When you are ready to create the final image to release juste remove the `--no-analytics` option
+
+```bash
+python3 tools/build_image.py
+```
 
 ### Publish the DO Image <!-- omit in TOC -->
 
