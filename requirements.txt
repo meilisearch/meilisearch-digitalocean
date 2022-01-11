@@ -1,9 +1,9 @@
 certifi==2021.10.8
 chardet==4.0.0
-idna==3.2
+idna==3.3
 jsonpickle==2.0.0
 pylint==2.10.2
 python-digitalocean==1.17.0
-requests==2.26.0
+requests==2.27.1
 six==1.16.0
-urllib3==1.26.7
+urllib3==1.26.8
