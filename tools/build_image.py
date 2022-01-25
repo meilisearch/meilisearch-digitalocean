@@ -34,11 +34,10 @@ try:
     wait_for_droplet_creation(droplet)
     droplet = droplet.load()
 except Exception as err:
-    print('   Exception: {}'.format(err))
+    print(f'   Exception: {err}')
     destroy_droplet_and_exit(droplet)
 
-print('   Droplet created. IP: {}, ID: {}'.format(
-    droplet.ip_address, droplet.id))
+print(f'   Droplet created. IP: {droplet.ip_address}, ID: {droplet.id}')
 
 # Wait for Health check after configuration is finished
 
@@ -57,7 +56,7 @@ try:
     check_meilisearch_version(
         droplet, conf.MEILI_CLOUD_SCRIPTS_VERSION_TAG)
 except Exception as err:
-    print('   Exception: {}'.format(err))
+    print(f'   Exception: {err}')
     destroy_droplet_and_exit(droplet)
 
 print('   Version of meilisearch match!')
@@ -69,7 +68,7 @@ try:
     shutdown = droplet.shutdown(return_dict=True)
     wait_for_droplet_shutdown(droplet)
 except Exception as err:
-    print('   Exception: {}'.format(err))
+    print(f'   Exception: {err}')
     destroy_droplet_and_exit(droplet)
 
 print('   Droplet is OFF')
@@ -81,17 +80,17 @@ if len(sys.argv) > 1 and sys.argv[1] != '--no-analytics':
 else:
     SNAPSHOT_NAME = conf.SNAPSHOT_NAME
 
-print('Creating a snapshot: {}'.format(SNAPSHOT_NAME))
+print(f'Creating a snapshot: {SNAPSHOT_NAME}')
 
 try:
     take_snapshot = droplet.take_snapshot(
         SNAPSHOT_NAME, return_dict=False, power_off=True)
     wait_for_snapshot_creation(droplet)
 except Exception as err:
-    print('  Exception: {}'.format(err))
+    print(f'  Exception: {err}')
     destroy_droplet_and_exit(droplet)
 
-print('   Snapshot created: {}'.format(SNAPSHOT_NAME))
+print(f'   Snapshot created: {SNAPSHOT_NAME}')
 
 # Destroy Droplet
 
