@@ -8,8 +8,7 @@ if len(sys.argv) > 1:
 else:
     raise Exception('No snapshot name specified')
 
-print('Destroying image named: {name}...'.format(
-    name=SNAPSHOT_NAME))
+print(f'Destroying image named: {SNAPSHOT_NAME}...')
 
 manager = digitalocean.Manager(token=conf.DIGITALOCEAN_ACCESS_TOKEN)
 images = manager.get_images()
@@ -18,15 +17,11 @@ MEILI_IMG = None
 for img in images:
     if img.name == SNAPSHOT_NAME:
         MEILI_IMG = img
-        print('Found image: {name} created at {created_at}'.format(
-            name=img.name,
-            created_at=img.created_at
-        ))
+        print(f'Found image: {img.name} created at {img.created_at}')
         break
 
 if MEILI_IMG is None:
-    raise Exception('Couldn\'t find the specified image: {}'.format(
-        SNAPSHOT_NAME))
+    raise Exception(f'Couldn\'t find the specified image: {SNAPSHOT_NAME}')
 
 # Destroy Snapshot
 

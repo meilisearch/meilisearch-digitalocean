@@ -13,13 +13,12 @@ def wait_for_droplet_creation(droplet):
             for act in actions:
                 if act.type == 'create':
                     act.load()
-                    print('   Action {} is {}'.format(
-                        act.type, act.status))
+                    print(f'   Action {act.type} is {act.status}')
                     if act.status == 'completed':
                         return
             time.sleep(4)
     except Exception as err:
-        print('   Exception: {}'.format(err))
+        print(f'   Exception: {err}')
         raise
 
 def wait_for_health_check(droplet, timeout_seconds=None):
@@ -28,7 +27,7 @@ def wait_for_health_check(droplet, timeout_seconds=None):
             or check_timeout(start_time, timeout_seconds) is not STATUS_TIMEOUT:
         try:
             resp = requests.get(
-                'http://{}/health'.format(droplet.ip_address), verify=False, timeout=10)
+                f'http://{droplet.ip_address}/health', verify=False, timeout=10)
             if resp.status_code >= 200 and resp.status_code < 300:
                 return STATUS_OK
         except Exception:
@@ -43,8 +42,7 @@ def wait_for_droplet_shutdown(droplet):
             for act in actions:
                 if act.type == 'shutdown':
                     act.load()
-                    print('   Action {} is {}'.format(
-                        act.type, act.status))
+                    print(f'   Action {act.type} is {act.status}')
                     if act.status == 'completed':
                         return
                     if act.status == 'errored':
@@ -52,7 +50,7 @@ def wait_for_droplet_shutdown(droplet):
                         return
             time.sleep(4)
     except Exception as err:
-        print('   Exception: {}'.format(err))
+        print(f'   Exception: {err}')
         raise
 
 def wait_for_droplet_power_off(droplet):
@@ -62,15 +60,14 @@ def wait_for_droplet_power_off(droplet):
             for act in actions:
                 if act.type == 'power_off':
                     act.load()
-                    print('   Action {} is {}'.format(
-                        act.type, act.status))
+                    print(f'   Action {act.type} is {act.status}')
                     if act.status == 'completed':
                         return
                     if act.status == 'errored':
                         destroy_droplet_and_exit(droplet)
             time.sleep(4)
     except Exception as err:
-        print('   Exception: {}'.format(err))
+        print(f'   Exception: {err}')
         raise
 
 def power_off_droplet(droplet):
@@ -79,7 +76,7 @@ def power_off_droplet(droplet):
         droplet.power_off(return_dict=True)
         wait_for_droplet_power_off(droplet)
     except Exception as err:
-        print('   Exception: {}'.format(err))
+        print(f'   Exception: {err}')
         raise
 
 def wait_for_snapshot_creation(droplet):
@@ -89,26 +86,25 @@ def wait_for_snapshot_creation(droplet):
             for act in actions:
                 if act.type == 'snapshot':
                     act.load()
-                    print('   Action {} is {}'.format(
-                        act.type, act.status))
+                    print(f'   Action {act.type} is {act.status}')
                     if act.status == 'completed':
                         return
             time.sleep(4)
     except Exception as err:
-        print('   Exception: {}'.format(err))
+        print(f'   Exception: {err}')
         time.sleep(300)
         raise
 
 def check_meilisearch_version(droplet, version):
     resp = requests.get(
-        'http://{}/version'.format(droplet.ip_address), verify=False, timeout=10).json()
+        f'http://{droplet.ip_address}/version', verify=False, timeout=10).json()
     if resp['pkgVersion'] in version:
         return
     raise Exception(
-        '    The version of meilisearch ({}) does not match the droplet ({})'.format(version, resp['pkgVersion']))
+        f"    The version of meilisearch ({version}) does not match the droplet ({resp['pkgVersion']})")
 
 def destroy_droplet_and_exit(droplet):
-    print('   Destroying droplet {}'.format(droplet.id))
+    print(f'   Destroying droplet {droplet.id}')
     droplet.destroy()
     print('ENDING PROCESS WITH EXIT CODE 1')
     sys.exit(1)

@@ -10,8 +10,7 @@ if len(sys.argv) > 1:
 else:
     raise Exception('No snapshot name specified')
 
-print('Running test for image named: {name}...'.format(
-    name=SNAPSHOT_NAME))
+print(f'Running test for image named: {SNAPSHOT_NAME}...')
 
 # Get the snapshot for the test
 
@@ -22,15 +21,11 @@ MEILI_IMG = None
 for img in images:
     if img.name == SNAPSHOT_NAME:
         MEILI_IMG = img
-        print('Found image: {name} created at {created_at}'.format(
-            name=img.name,
-            created_at=img.created_at
-        ))
+        print(f'Found image: {img.name} created at {img.created_at}')
         break
 
 if MEILI_IMG is None:
-    raise Exception('Couldn\'t find the specified image: {}'.format(
-        SNAPSHOT_NAME))
+    raise Exception(f'Couldn\'t find the specified image: {SNAPSHOT_NAME}')
 
 # Create droplet from the retreived snapshot
 
@@ -51,11 +46,10 @@ try:
     wait_for_droplet_creation(droplet)
     droplet = droplet.load()
 except Exception as err:
-    print('   Exception: {}'.format(err))
+    print(f'   Exception: {err}')
     destroy_droplet_and_exit(droplet)
 
-print('   Droplet created. IP: {}, ID: {}'.format(
-    droplet.ip_address, droplet.id))
+print(f'   Droplet created. IP: {droplet.ip_address}, ID: {droplet.id}')
 
 # Wait for Health check after configuration is finished
 
@@ -74,7 +68,7 @@ try:
     check_meilisearch_version(
         droplet, conf.MEILI_CLOUD_SCRIPTS_VERSION_TAG)
 except Exception as err:
-    print('   Exception: {}'.format(err))
+    print(f'   Exception: {err}')
     destroy_droplet_and_exit(droplet)
 
 print('   Version of meilisearch match!')
@@ -86,7 +80,7 @@ try:
     shutdown = droplet.shutdown(return_dict=True)
     wait_for_droplet_shutdown(droplet)
 except Exception as err:
-    print('   Exception: {}'.format(err))
+    print(f'   Exception: {err}')
     destroy_droplet_and_exit(droplet)
 
 print('   Droplet is OFF')
