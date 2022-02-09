@@ -1,6 +1,6 @@
 # Contributing <!-- omit in TOC -->
 
-First of all, thank you for contributing to MeiliSearch! The goal of this document is to provide everything you need to know in order to contribute to MeiliSearch and its different integrations.
+First of all, thank you for contributing to Meilisearch! The goal of this document is to provide everything you need to know in order to contribute to Meilisearch and its different integrations.
 
 - [Assumptions](#assumptions)
 - [How to Contribute](#how-to-contribute)
@@ -11,8 +11,8 @@ First of all, thank you for contributing to MeiliSearch! The goal of this docume
 ## Assumptions
 
 1. **You're familiar with [GitHub](https://github.com) and the [Pull Request](https://help.github.com/en/github/collaborating-with-issues-and-pull-requests/about-pull-requests)(PR) workflow.**
-2. **You've read the MeiliSearch [documentation](https://docs.meilisearch.com) and the [README](/README.md).**
-3. **You know about the [MeiliSearch community](https://docs.meilisearch.com/resources/contact.html). Please use this for help.**
+2. **You've read the Meilisearch [documentation](https://docs.meilisearch.com) and the [README](/README.md).**
+3. **You know about the [Meilisearch community](https://docs.meilisearch.com/resources/contact.html). Please use this for help.**
 
 ## How to Contribute
 
@@ -73,8 +73,8 @@ Some notes on GitHub PRs:
 
 ⚠️ The [cloud-scripts](https://github.com/meilisearch/cloud-scripts) repository should be upgraded to the new version before this repository can be updated and released.
 
-The release tags of this package follow exactly the MeiliSearch versions.<br>
-It means that, for example, the `v0.17.0` tag in this repository corresponds to the DO image running MeiliSearch `v0.17.0`.
+The release tags of this package follow exactly the Meilisearch versions.<br>
+It means that, for example, the `v0.17.0` tag in this repository corresponds to the DO image running Meilisearch `v0.17.0`.
 
 This repository currently does not provide any automated way to test and release the DO image.<br>
 **Please, follow carefully the steps in the next sections before any release.**
@@ -97,7 +97,7 @@ After [adding your SSH key to DigitalOcean account](https://www.digitalocean.com
 
 ### Test before Releasing <!-- omit in TOC -->
 
-1. In [`tools/config.py`](tools/config.py), update the `MEILI_CLOUD_SCRIPTS_VERSION_TAG` variable value with the new MeiliSearch version you want to release, in the format: `vX.X.X`. If you want to test with a MeiliSearch RC, replace it by the right RC version tag (`vX.X.XrcX`).
+1. In [`tools/config.py`](tools/config.py), update the `MEILI_CLOUD_SCRIPTS_VERSION_TAG` variable value with the new Meilisearch version you want to release, in the format: `vX.X.X`. If you want to test with a Meilisearch RC, replace it by the right RC version tag (`vX.X.XrcX`).
 
 2. Run the [`tools/build_image.py`](tools/build_image.py) script to build the DigitalOcean image without analytics:
 
@@ -105,10 +105,10 @@ After [adding your SSH key to DigitalOcean account](https://www.digitalocean.com
 python3 tools/build_image.py --no-analytics
 ```
 
-This command will create a DigitalOcean Droplet on MeiliSearch's account and configure it in order to prepare the Marketplace image. It will then create a snapshot, which should be ready to be published to the Marketplace. The Droplet will automatically be removed from the account after the image creation.<br>
-The image name will be MeiliSearch-v.X.X.X-Debian-X.
+This command will create a DigitalOcean Droplet on Meilisearch's account and configure it in order to prepare the Marketplace image. It will then create a snapshot, which should be ready to be published to the Marketplace. The Droplet will automatically be removed from the account after the image creation.<br>
+The image name will be Meilisearch-v.X.X.X-Debian-X.
 
-3. Test the image: create a new Droplet based on the new snapshot `MeiliSearch-v.X.X.X-Debian-X`, and make sure everything is running smoothly. Connect via SSH to the droplet and test the configuration script that is run automatically on login.<br>
+3. Test the image: create a new Droplet based on the new snapshot `Meilisearch-v.X.X.X-Debian-X`, and make sure everything is running smoothly. Connect via SSH to the droplet and test the configuration script that is run automatically on login.<br>
 🗑 Don't forget to destroy the Droplet after the test.
 
 4. When you are ready to create the final image to release juste remove the `--no-analytics` option
@@ -119,7 +119,7 @@ python3 tools/build_image.py
 
 ### Publish the DO Image <!-- omit in TOC -->
 
-⚠️ The DO image should never be published with a `RC` version of MeiliSearch.
+⚠️ The DO image should never be published with a `RC` version of Meilisearch.
 
 Once the tests in the previous section have been done:
 
@@ -138,22 +138,22 @@ git push origin vX.X.X
 
 ⚠️ If changes where made to the repository between your testing branch was created and the moment it was merged, you should consider building the image and testing it again. Some important changes may have been introduced, unexpectedly changing the behavior of the image that will be published to the Marketplace.
 
-4. In the [DigitalOcean Vendor Portal](https://marketplace.digitalocean.com/vendorportal), click on the title of the `MeiliSearch` image. A form will open for a new image submission. Update the information regarding the new version in the form:
+4. In the [DigitalOcean Vendor Portal](https://marketplace.digitalocean.com/vendorportal), click on the title of the `Meilisearch` image. A form will open for a new image submission. Update the information regarding the new version in the form:
 
 - Update the `App version` (with the version number, without the starting v, so `vX.X.X` becomes `X.X.X`).
-- In the `System image` field, click on `Select system image` and select the image you have tested from the list (`MeiliSearch-v.X.X.X-Debian-X`).
-- In the `Software Included` field, update the MeiliSearch version.
-- Check the `Application summary`, `Application Description` and `Getting started instructions` fields for any inconsistent information that should be updated about MeiliSearch usage or installation.
-- In the `Reason for update` field, write "Bump MeiliSearch to vX.X.X".
+- In the `System image` field, click on `Select system image` and select the image you have tested from the list (`Meilisearch-v.X.X.X-Debian-X`).
+- In the `Software Included` field, update the Meilisearch version.
+- Check the `Application summary`, `Application Description` and `Getting started instructions` fields for any inconsistent information that should be updated about Meilisearch usage or installation.
+- In the `Reason for update` field, write "Bump Meilisearch to vX.X.X".
 - Verify the form, and hit on `Submit`.
 
-⚠️ When the image is submitted to the Marketplace, MeiliSearch will immediately lose its ownership. The submitted image won't appear anymore in the organization dashboard, and no further modification can be done.
+⚠️ When the image is submitted to the Marketplace, Meilisearch will immediately lose its ownership. The submitted image won't appear anymore in the organization dashboard, and no further modification can be done.
 
 This will start the DigitalOcean review process. This can take a few days, and the result will be notified via email to the DigitalOcean admin account. If the image is accepted, it will be automatically published on the Marketplace. If it is rejected, an email explaining the problems will be sent to administrators.
 
-### Update the DO Image between two MeiliSearch Releases <!-- omit in TOC -->
+### Update the DO Image between two Meilisearch Releases <!-- omit in TOC -->
 
-It can happen that you need to release a new DO image but you cannot wait for the new MeiliSearch release.<br>
+It can happen that you need to release a new DO image but you cannot wait for the new Meilisearch release.<br>
 For example, the `v0.17.0` is already pushed but you find out you need to fix the installation script: you can't wait for the `v0.18.0` release and need to re-publish the `v0.17.0` DO image.
 
 In this case:
