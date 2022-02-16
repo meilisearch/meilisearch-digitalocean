@@ -10,7 +10,7 @@ import config as conf
 if len(sys.argv) > 1 and '--no-analytics' in sys.argv:
     print('Launch build image without analytics.')
     index = conf.USER_DATA.find('--env development')
-    USER_DATA = conf.USER_DATA[:index] + '--no-analytics=true ' + conf.USER_DATA[index:]
+    USER_DATA = conf.USER_DATA[:index] + '--no-analytics ' + conf.USER_DATA[index:]
 else:
     USER_DATA = conf.USER_DATA
 
