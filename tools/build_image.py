@@ -42,7 +42,7 @@ print(f'   Droplet created. IP: {droplet.ip_address}, ID: {droplet.id}')
 # Wait for Health check after configuration is finished
 
 print('Waiting for Health check (may take a few minutes: config and reboot)')
-HEALTH = wait_for_health_check(droplet, timeout_seconds=1000)
+HEALTH = wait_for_health_check(droplet, timeout_seconds=600)
 if HEALTH == STATUS_OK:
     print('   Instance is healthy')
 else:
