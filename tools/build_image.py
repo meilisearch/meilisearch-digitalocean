@@ -41,59 +41,59 @@ print(f'   Droplet created. IP: {droplet.ip_address}, ID: {droplet.id}')
 
 # Wait for Health check after configuration is finished
 
-# print('Waiting for Health check (may take a few minutes: config and reboot)')
-# HEALTH = wait_for_health_check(droplet, timeout_seconds=600)
-# if HEALTH == STATUS_OK:
-#     print('   Instance is healthy')
-# else:
-#     print('   Timeout waiting for health check')
-#     destroy_droplet_and_exit(droplet)
+print('Waiting for Health check (may take a few minutes: config and reboot)')
+HEALTH = wait_for_health_check(droplet, timeout_seconds=1000)
+if HEALTH == STATUS_OK:
+    print('   Instance is healthy')
+else:
+    print('   Timeout waiting for health check')
+    destroy_droplet_and_exit(droplet)
 
 # Check version
 
-# print('Waiting for Version check')
-# try:
-#     check_meilisearch_version(
-#         droplet, conf.MEILI_CLOUD_SCRIPTS_VERSION_TAG)
-# except Exception as err:
-#     print(f'   Exception: {err}')
-#     destroy_droplet_and_exit(droplet)
+print('Waiting for Version check')
+try:
+    check_meilisearch_version(
+        droplet, conf.MEILI_CLOUD_SCRIPTS_VERSION_TAG)
+except Exception as err:
+    print(f'   Exception: {err}')
+    destroy_droplet_and_exit(droplet)
 
-# print('   Version of meilisearch match!')
+print('   Version of meilisearch match!')
 
 # Power down Droplet
 
-# print('Powering down droplet...')
-# try:
-#     shutdown = droplet.shutdown(return_dict=True)
-#     wait_for_droplet_shutdown(droplet)
-# except Exception as err:
-#     print(f'   Exception: {err}')
-#     destroy_droplet_and_exit(droplet)
+print('Powering down droplet...')
+try:
+    shutdown = droplet.shutdown(return_dict=True)
+    wait_for_droplet_shutdown(droplet)
+except Exception as err:
+    print(f'   Exception: {err}')
+    destroy_droplet_and_exit(droplet)
 
-# print('   Droplet is OFF')
+print('   Droplet is OFF')
 
 # Create snapshot from Droplet
 
-# if len(sys.argv) > 1 and sys.argv[1] != '--no-analytics':
-#     SNAPSHOT_NAME = sys.argv[1]
-# else:
-#     SNAPSHOT_NAME = conf.SNAPSHOT_NAME
+if len(sys.argv) > 1 and sys.argv[1] != '--no-analytics':
+    SNAPSHOT_NAME = sys.argv[1]
+else:
+    SNAPSHOT_NAME = conf.SNAPSHOT_NAME
 
-# print(f'Creating a snapshot: {SNAPSHOT_NAME}')
+print(f'Creating a snapshot: {SNAPSHOT_NAME}')
 
-# try:
-#     take_snapshot = droplet.take_snapshot(
-#         SNAPSHOT_NAME, return_dict=False, power_off=True)
-#     wait_for_snapshot_creation(droplet)
-# except Exception as err:
-#     print(f'  Exception: {err}')
-#     destroy_droplet_and_exit(droplet)
+try:
+    take_snapshot = droplet.take_snapshot(
+        SNAPSHOT_NAME, return_dict=False, power_off=True)
+    wait_for_snapshot_creation(droplet)
+except Exception as err:
+    print(f'  Exception: {err}')
+    destroy_droplet_and_exit(droplet)
 
-# print(f'   Snapshot created: {SNAPSHOT_NAME}')
+print(f'   Snapshot created: {SNAPSHOT_NAME}')
 
-# # Destroy Droplet
+# Destroy Droplet
 
-# print('Destroying Droplet...')
-# droplet.destroy()
-# print('   Droplet destroyed')
+print('Destroying Droplet...')
+droplet.destroy()
+print('   Droplet destroyed')
