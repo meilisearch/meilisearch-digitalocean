@@ -1,6 +1,5 @@
 import sys
 import digitalocean
-import time
 from utils import wait_for_droplet_creation, wait_for_health_check, \
     wait_for_droplet_shutdown, wait_for_snapshot_creation, \
     destroy_droplet_and_exit, check_meilisearch_version, STATUS_OK, \
@@ -53,7 +52,7 @@ print(f'   Droplet created. IP: {droplet.ip_address}, ID: {droplet.id}')
 # Wait for Health check after configuration is finished
 
 print('Waiting for Health check (may take a few minutes: config and reboot)')
-HEALTH = wait_for_health_check(droplet, timeout_seconds=600)
+HEALTH = wait_for_health_check(droplet, timeout_seconds=1000)
 if HEALTH == STATUS_OK:
     print('   Instance is healthy')
 else:

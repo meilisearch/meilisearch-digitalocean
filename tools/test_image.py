@@ -1,7 +1,8 @@
 import sys
 import digitalocean
 from utils import wait_for_droplet_creation, wait_for_health_check, \
-    wait_for_droplet_shutdown, check_meilisearch_version, destroy_droplet_and_exit, STATUS_OK
+    wait_for_droplet_shutdown, check_meilisearch_version, \
+    destroy_droplet_and_exit, STATUS_OK, wait_for_droplet_ip
 
 import config as conf
 
@@ -49,12 +50,21 @@ except Exception as err:
     print(f'   Exception: {err}')
     destroy_droplet_and_exit(droplet)
 
+if droplet.load().ip_address is None:
+    print('Waiting for ip address from droplet')
+    IP = wait_for_droplet_ip(droplet, timeout_seconds=600)
+    if IP == STATUS_OK:
+        print(f'   Droplet IP: {droplet.ip_address}')
+    else:
+        print('   Timeout waiting for IP check')
+        destroy_droplet_and_exit(droplet)
+
 print(f'   Droplet created. IP: {droplet.ip_address}, ID: {droplet.id}')
 
 # Wait for Health check after configuration is finished
 
 print('Waiting for Health check (may take a few minutes)')
-HEALTH = wait_for_health_check(droplet, timeout_seconds=600)
+HEALTH = wait_for_health_check(droplet, timeout_seconds=1000)
 if HEALTH == STATUS_OK:
     print('   Instance is healthy')
 else:

@@ -27,8 +27,7 @@ def wait_for_droplet_ip(droplet, timeout_seconds=None):
             or check_timeout(start_time, timeout_seconds) is not STATUS_TIMEOUT:
         if droplet.load().ip_address is not None:
             return STATUS_OK
-        else:
-            time.sleep(2)
+        time.sleep(2)
     return STATUS_TIMEOUT
 
 def wait_for_health_check(droplet, timeout_seconds=None):
