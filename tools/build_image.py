@@ -1,8 +1,10 @@
 import sys
 import digitalocean
+import time
 from utils import wait_for_droplet_creation, wait_for_health_check, \
     wait_for_droplet_shutdown, wait_for_snapshot_creation, \
-    destroy_droplet_and_exit, check_meilisearch_version, STATUS_OK
+    destroy_droplet_and_exit, check_meilisearch_version, STATUS_OK, \
+    wait_for_droplet_ip
 import config as conf
 
 # Remove analytics for CI jobs
@@ -33,12 +35,18 @@ droplet.create()
 try:
     wait_for_droplet_creation(droplet)
     droplet = droplet.load()
-    while droplet.ip_address == None:
-        print("No IP address")
-        droplet = droplet.load()
 except Exception as err:
     print(f'   Exception: {err}')
     destroy_droplet_and_exit(droplet)
+
+if droplet.load().ip_address is None:
+    print('Waiting for ip address from droplet')
+    IP = wait_for_droplet_ip(droplet, timeout_seconds=600)
+    if IP == STATUS_OK:
+        print(f'   Droplet IP: {droplet.ip_address}')
+    else:
+        print('   Timeout waiting for IP check')
+        destroy_droplet_and_exit(droplet)
 
 print(f'   Droplet created. IP: {droplet.ip_address}, ID: {droplet.id}')
 
