@@ -37,7 +37,7 @@ def wait_for_health_check(droplet, timeout_seconds=None):
         try:
             resp = requests.get(
                 f'http://{droplet.ip_address}/health', verify=False, timeout=10)
-            print(f'    Response: {resp}')
+            print(f'    Response: {resp}, IP: {droplet.ip_address}')
             if resp.status_code >= 200 and resp.status_code < 300:
                 return STATUS_OK
         except Exception:
