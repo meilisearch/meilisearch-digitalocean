@@ -31,7 +31,7 @@ if MEILI_IMG is None:
 
 droplet = digitalocean.Droplet(token=conf.DIGITALOCEAN_ACCESS_TOKEN,
                                name=conf.DROPLET_TEST_NAME,
-                               region='nyc1',  # New York
+                               region='lon1', # London
                                image=MEILI_IMG.id,
                                size_slug=conf.SIZE_SLUG,
                                tags=['meisearch-digitalocean-ci'],

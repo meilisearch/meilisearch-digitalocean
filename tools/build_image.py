@@ -20,7 +20,7 @@ print('Creating droplet...')
 
 droplet = digitalocean.Droplet(token=conf.DIGITALOCEAN_ACCESS_TOKEN,
                                name=conf.DROPLET_NAME,
-                               region='nyc1',  # New York
+                               region='lon1', # London
                                image='debian-10-x64',  # Debian 10.3
                                size_slug=conf.SIZE_SLUG,
                                tags=['marketplace'],
@@ -33,6 +33,9 @@ droplet.create()
 try:
     wait_for_droplet_creation(droplet)
     droplet = droplet.load()
+    while droplet.ip_address == None:
+        print("No IP address")
+        droplet = droplet.load()
 except Exception as err:
     print(f'   Exception: {err}')
     destroy_droplet_and_exit(droplet)
@@ -42,7 +45,7 @@ print(f'   Droplet created. IP: {droplet.ip_address}, ID: {droplet.id}')
 # Wait for Health check after configuration is finished
 
 print('Waiting for Health check (may take a few minutes: config and reboot)')
-HEALTH = wait_for_health_check(droplet, timeout_seconds=3000)
+HEALTH = wait_for_health_check(droplet, timeout_seconds=600)
 if HEALTH == STATUS_OK:
     print('   Instance is healthy')
 else:
