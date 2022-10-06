@@ -50,14 +50,13 @@ except Exception as err:
     print(f'   Exception: {err}')
     destroy_droplet_and_exit(droplet)
 
-if droplet.load().ip_address is None:
-    print('Waiting for ip address from droplet')
-    IP = wait_for_droplet_ip(droplet, timeout_seconds=600)
-    if IP == STATUS_OK:
-        print(f'   Droplet IP: {droplet.ip_address}')
-    else:
-        print('   Timeout waiting for IP check')
-        destroy_droplet_and_exit(droplet)
+print('Waiting for ip address from droplet')
+IP_AVAILABLE = wait_for_droplet_ip(droplet, timeout_seconds=600)
+if IP_AVAILABLE == STATUS_OK:
+    print(f'   Droplet IP: {droplet.ip_address}')
+else:
+    print('   Timeout waiting for IP check')
+    destroy_droplet_and_exit(droplet)
 
 print(f'   Droplet created. IP: {droplet.ip_address}, ID: {droplet.id}')
 
