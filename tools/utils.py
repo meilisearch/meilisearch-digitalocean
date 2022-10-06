@@ -24,6 +24,9 @@ def wait_for_droplet_creation(droplet):
 
 def wait_for_droplet_ip(droplet, timeout_seconds=TIMEOUT):
     start_time = datetime.datetime.now()
+    if timeout_seconds is None:
+        print('   Timeout cannot be null')
+        return STATUS_TIMEOUT
     while check_timeout(start_time, timeout_seconds) is not STATUS_TIMEOUT:
         if droplet.load().ip_address is not None:
             return STATUS_OK
@@ -32,6 +35,9 @@ def wait_for_droplet_ip(droplet, timeout_seconds=TIMEOUT):
 
 def wait_for_health_check(droplet, timeout_seconds=TIMEOUT):
     start_time = datetime.datetime.now()
+    if timeout_seconds is None:
+        print('   Timeout cannot be null')
+        return STATUS_TIMEOUT
     while check_timeout(start_time, timeout_seconds) is not STATUS_TIMEOUT:
         try:
             resp = requests.get(
