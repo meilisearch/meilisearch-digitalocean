@@ -50,7 +50,7 @@ except Exception as err:
     print(f'   Exception: {err}')
     destroy_droplet_and_exit(droplet)
 
-print('Waiting for ip address from droplet')
+print('Waiting until the droplet has an IP address')
 IP_AVAILABLE = wait_for_droplet_ip(droplet, timeout_seconds=600)
 if IP_AVAILABLE == STATUS_OK:
     print(f'   Droplet IP: {droplet.ip_address}')
