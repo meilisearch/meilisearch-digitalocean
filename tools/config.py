@@ -9,7 +9,7 @@ MEILI_CLOUD_SCRIPTS_VERSION_TAG = 'v0.29.0'
 
 DIGITALOCEAN_ACCESS_TOKEN = os.getenv('DIGITALOCEAN_ACCESS_TOKEN')
 DIGITALOCEAN_END_POINT = 'https://api.digitalocean.com/v2'
-SNAPSHOT_NAME = f'MeiliSearch-{MEILI_CLOUD_SCRIPTS_VERSION_TAG}-Debian-10.3'
+SNAPSHOT_NAME = f'MeiliSearch-{MEILI_CLOUD_SCRIPTS_VERSION_TAG}-Ubuntu-20.04'
 # https://developers.digitalocean.com/documentation/changelog/api-v2/new-size-slugs-for-droplet-plan-changes/
 SIZE_SLUG = 's-1vcpu-1gb'
 USER_DATA = requests.get(
