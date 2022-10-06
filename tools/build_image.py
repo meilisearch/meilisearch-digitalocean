@@ -2,7 +2,8 @@ import sys
 import digitalocean
 from utils import wait_for_droplet_creation, wait_for_health_check, \
     wait_for_droplet_shutdown, wait_for_snapshot_creation, \
-    destroy_droplet_and_exit, check_meilisearch_version, STATUS_OK
+    destroy_droplet_and_exit, check_meilisearch_version, STATUS_OK, \
+    wait_for_droplet_ip
 import config as conf
 
 # Remove analytics for CI jobs
@@ -20,7 +21,7 @@ print('Creating droplet...')
 
 droplet = digitalocean.Droplet(token=conf.DIGITALOCEAN_ACCESS_TOKEN,
                                name=conf.DROPLET_NAME,
-                               region='lon1',  # London
+                               region='lon1', # London
                                image='debian-10-x64',  # Debian 10.3
                                size_slug=conf.SIZE_SLUG,
                                tags=['marketplace'],
@@ -35,6 +36,14 @@ try:
     droplet = droplet.load()
 except Exception as err:
     print(f'   Exception: {err}')
+    destroy_droplet_and_exit(droplet)
+
+print('Waiting until the droplet has an IP address')
+IP_AVAILABLE = wait_for_droplet_ip(droplet, timeout_seconds=600)
+if IP_AVAILABLE == STATUS_OK:
+    print(f'   Droplet IP: {droplet.ip_address}')
+else:
+    print('   Timeout waiting for the IP address of the droplet')
     destroy_droplet_and_exit(droplet)
 
 print(f'   Droplet created. IP: {droplet.ip_address}, ID: {droplet.id}')
