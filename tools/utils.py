@@ -5,7 +5,6 @@ import requests
 
 STATUS_OK = 0
 STATUS_TIMEOUT = 1
-TIMEOUT=600
 
 def wait_for_droplet_creation(droplet):
     try:
@@ -22,7 +21,7 @@ def wait_for_droplet_creation(droplet):
         print(f'   Exception: {err}')
         raise
 
-def wait_for_droplet_ip(droplet, timeout_seconds=TIMEOUT):
+def wait_for_droplet_ip(droplet, timeout_seconds=None):
     start_time = datetime.datetime.now()
     if timeout_seconds is None:
         print('   Timeout cannot be null')
@@ -33,7 +32,7 @@ def wait_for_droplet_ip(droplet, timeout_seconds=TIMEOUT):
         time.sleep(2)
     return STATUS_TIMEOUT
 
-def wait_for_health_check(droplet, timeout_seconds=TIMEOUT):
+def wait_for_health_check(droplet, timeout_seconds=None):
     start_time = datetime.datetime.now()
     if timeout_seconds is None:
         print('   Timeout cannot be null')
