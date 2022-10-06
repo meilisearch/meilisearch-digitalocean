@@ -21,7 +21,7 @@ def wait_for_droplet_creation(droplet):
         print(f'   Exception: {err}')
         raise
 
-def wait_for_droplet_ip(droplet, timeout_seconds=None):
+def wait_for_droplet_ip(droplet, timeout_seconds=1000):
     start_time = datetime.datetime.now()
     while timeout_seconds is None \
             or check_timeout(start_time, timeout_seconds) is not STATUS_TIMEOUT:
