@@ -43,7 +43,7 @@ IP_AVAILABLE = wait_for_droplet_ip(droplet, timeout_seconds=600)
 if IP_AVAILABLE == STATUS_OK:
     print(f'   Droplet IP: {droplet.ip_address}')
 else:
-    print('   Timeout waiting for IP check')
+    print('   Timeout waiting for the IP address of the droplet')
     destroy_droplet_and_exit(droplet)
 
 print(f'   Droplet created. IP: {droplet.ip_address}, ID: {droplet.id}')
