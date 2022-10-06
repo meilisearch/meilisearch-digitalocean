@@ -21,13 +21,27 @@ def wait_for_droplet_creation(droplet):
         print(f'   Exception: {err}')
         raise
 
+def wait_for_droplet_ip(droplet, timeout_seconds=None):
+    start_time = datetime.datetime.now()
+    if timeout_seconds is None:
+        print('   Timeout cannot be null')
+        return STATUS_TIMEOUT
+    while check_timeout(start_time, timeout_seconds) is not STATUS_TIMEOUT:
+        if droplet.load().ip_address is not None:
+            return STATUS_OK
+        time.sleep(2)
+    return STATUS_TIMEOUT
+
 def wait_for_health_check(droplet, timeout_seconds=None):
     start_time = datetime.datetime.now()
-    while timeout_seconds is None \
-            or check_timeout(start_time, timeout_seconds) is not STATUS_TIMEOUT:
+    if timeout_seconds is None:
+        print('   Timeout cannot be null')
+        return STATUS_TIMEOUT
+    while check_timeout(start_time, timeout_seconds) is not STATUS_TIMEOUT:
         try:
             resp = requests.get(
                 f'http://{droplet.ip_address}/health', verify=False, timeout=10)
+            print(f'    Droplet health: {resp}, IP: {droplet.ip_address}')
             if resp.status_code >= 200 and resp.status_code < 300:
                 return STATUS_OK
         except Exception:
