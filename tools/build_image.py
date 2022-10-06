@@ -38,8 +38,10 @@ except Exception as err:
     print(f'   Exception: {err}')
     destroy_droplet_and_exit(droplet)
 
+TIMEOUT=600
+
 print('Waiting until the droplet has an IP address')
-IP_AVAILABLE = wait_for_droplet_ip(droplet, timeout_seconds=600)
+IP_AVAILABLE = wait_for_droplet_ip(droplet, timeout_seconds=TIMEOUT)
 if IP_AVAILABLE == STATUS_OK:
     print(f'   Droplet IP: {droplet.ip_address}')
 else:
@@ -51,7 +53,7 @@ print(f'   Droplet created. IP: {droplet.ip_address}, ID: {droplet.id}')
 # Wait for Health check after configuration is finished
 
 print('Waiting for Health check (may take a few minutes: config and reboot)')
-HEALTH = wait_for_health_check(droplet, timeout_seconds=600)
+HEALTH = wait_for_health_check(droplet, timeout_seconds=TIMEOUT)
 if HEALTH == STATUS_OK:
     print('   Instance is healthy')
 else:

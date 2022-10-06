@@ -5,6 +5,7 @@ import requests
 
 STATUS_OK = 0
 STATUS_TIMEOUT = 1
+TIMEOUT=600
 
 def wait_for_droplet_creation(droplet):
     try:
@@ -21,19 +22,17 @@ def wait_for_droplet_creation(droplet):
         print(f'   Exception: {err}')
         raise
 
-def wait_for_droplet_ip(droplet, timeout_seconds=None):
+def wait_for_droplet_ip(droplet, timeout_seconds=TIMEOUT):
     start_time = datetime.datetime.now()
-    while timeout_seconds is None \
-            or check_timeout(start_time, timeout_seconds) is not STATUS_TIMEOUT:
+    while check_timeout(start_time, timeout_seconds) is not STATUS_TIMEOUT:
         if droplet.load().ip_address is not None:
             return STATUS_OK
         time.sleep(2)
     return STATUS_TIMEOUT
 
-def wait_for_health_check(droplet, timeout_seconds=None):
+def wait_for_health_check(droplet, timeout_seconds=TIMEOUT):
     start_time = datetime.datetime.now()
-    while timeout_seconds is None \
-            or check_timeout(start_time, timeout_seconds) is not STATUS_TIMEOUT:
+    while check_timeout(start_time, timeout_seconds) is not STATUS_TIMEOUT:
         try:
             resp = requests.get(
                 f'http://{droplet.ip_address}/health', verify=False, timeout=10)
