@@ -21,8 +21,8 @@ print('Creating droplet...')
 
 droplet = digitalocean.Droplet(token=conf.DIGITALOCEAN_ACCESS_TOKEN,
                                name=conf.DROPLET_NAME,
-                               region='lon1', # London
-                               image='debian-10-x64',  # Debian 10.3
+                               region='lon1',  # London
+                               image='debian-10-x64', # Debian 10.3
                                size_slug=conf.SIZE_SLUG,
                                tags=['marketplace'],
                                backups=conf.ENABLE_BACKUPS,
