@@ -1,5 +1,5 @@
-certifi==2022.9.24
-chardet==5.0.0
+certifi==2022.12.7
+chardet==5.1.0
 idna==3.4
 jsonpickle==3.0.1
 pylint==2.13.9
