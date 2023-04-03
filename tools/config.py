@@ -3,7 +3,7 @@ import requests
 
 # Update with the Meilisearch version TAG you want to build the image with
 
-MEILI_CLOUD_SCRIPTS_VERSION_TAG = 'v1.0.2'
+MEILI_CLOUD_SCRIPTS_VERSION_TAG = 'v1.1.0'
 
 # Script settings
 
