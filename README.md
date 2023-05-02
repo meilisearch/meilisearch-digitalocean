@@ -15,7 +15,7 @@
 
 <p align="center">
   <a href="https://github.com/meilisearch/meilisearch-digitalocean/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-informational" alt="License"></a>
-  <a href="https://app.bors.tech/repositories/34948"><img src="https://bors.tech/images/badge_small.svg" alt="Bors enabled"></a>
+  <a href="https://ms-bors.herokuapp.com/repositories/61"><img src="https://bors.tech/images/badge_small.svg" alt="Bors enabled"></a>
 </p>
 
 <p align="center">⚡ Meilisearch tools for DigitalOcean integration</p>
