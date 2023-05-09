@@ -2,7 +2,7 @@
   <img src="https://raw.githubusercontent.com/meilisearch/integration-guides/main/assets/logos/meilisearch_do.svg" alt="Meilisearch-DigitalOcean" width="200" height="200" />
 </p>
 
-<h1 align="center">Meilisearch DigitalOcean</h1>
+<h1 align="center">[DEPRECATED] Meilisearch DigitalOcean</h1>
 
 <h4 align="center">
   <a href="https://github.com/meilisearch/meilisearch">Meilisearch</a> |
@@ -19,6 +19,12 @@
 </p>
 
 <p align="center">⚡ Meilisearch tools for DigitalOcean integration</p>
+
+---------
+
+⚠️ **Please note that this repository is no longer being maintained and has been deprecated. DigitalOcean is still a provider we maintain integration with, and this is the new repository [cloud-providers](https://github.com/meilisearch/cloud-providers).**
+
+---------
 
 **Meilisearch DigitalOcean** is a set of tools and scripts to improve user deployment of Meilisearch on [DigitalOcean](https://www.digitalocean.com/).
 
